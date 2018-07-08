@@ -1,0 +1,8 @@
+*.txt
+# compiled files
+obj
+bin
+packages
+# user files
+.user
+.suo
