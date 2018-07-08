@@ -26,5 +26,6 @@ namespace ClassScheduleAPI.Models
         }
     
         public virtual DbSet<Children> Children { get; set; }
+        public virtual DbSet<Course> Course { get; set; }
     }
 }

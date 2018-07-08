@@ -6,6 +6,7 @@
     <edmx:Diagrams>
       <Diagram DiagramId="67c32149a76d497d8f9a18db336e6bb5" Name="Diagram1">
         <EntityTypeShape EntityType="ClassScheduleDBModel.Children" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.Course" Width="1.5" PointX="3.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
