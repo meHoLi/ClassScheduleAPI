@@ -31,6 +31,7 @@
           <Property Name="RemindTime" Type="varchar" MaxLength="50" />
           <Property Name="Remarks" Type="nvarchar" MaxLength="500" />
           <Property Name="ChildrenID" Type="int" />
+          <Property Name="SchoolName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityContainer Name="ClassScheduleDBModelStoreContainer">
           <EntitySet Name="Children" EntityType="Self.Children" Schema="dbo" store:Type="Tables" />
@@ -70,6 +71,7 @@
           <Property Name="RemindTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Remarks" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="SchoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -93,6 +95,7 @@
           <EntitySetMapping Name="Course">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Course">
               <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
                 <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="RemindTime" ColumnName="RemindTime" />

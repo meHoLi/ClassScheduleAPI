@@ -1,5 +1,6 @@
 ﻿using ClassScheduleAPI.Common;
 using ClassScheduleAPI.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,27 +16,50 @@ namespace ClassScheduleAPI.Controllers
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var list = db.Children.Where(p => p.OpenID == openID).ToList();
-                return Json(list, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public ActionResult Add(Children model)
-        {
-            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-            {
                 ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
                 try
                 {
-                    var entity = db.Children.Add(model);
-                    db.SaveChanges();
-                    msg.Status = true;
+                    var list = db.Children.Where(p => p.OpenID == openID).ToList();
+                    msg.Data = list;
                 }
                 catch (Exception e)
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        public ActionResult Add()
+        {
+
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+
+                using (var scope = db.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var modelList = Request.Form["modelList"];
+                        var list = JsonConvert.DeserializeObject<List<Children>>(modelList);
+                        foreach (var item in list)
+                        {
+                            Children model = new Children();
+                            var entity = db.Children.Add(item);
+                            db.SaveChanges();
+                        }
+                        msg.Status = true;
+                        scope.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        msg.Status = false;
+                        scope.Rollback();
+                    }
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult Update(Children model)

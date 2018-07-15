@@ -24,5 +24,6 @@ namespace ClassScheduleAPI.Models
         public string RemindTime { get; set; }
         public string Remarks { get; set; }
         public Nullable<int> ChildrenID { get; set; }
+        public string SchoolName { get; set; }
     }
 }
