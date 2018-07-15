@@ -150,10 +150,17 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Common\FormatDateTime.cs" />
+    <Compile Include="Common\JsonpResult.cs" />
     <Compile Include="Common\ResponseMessage.cs" />
+    <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\FileUploadControllerJCY.cs" />
+    <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SaveFileController.cs" />
+    <Compile Include="Controllers\WeChatAppAuthorizeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -239,6 +246,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Views\Children\" />
     <Folder Include="Views\Course\" />
+    <Folder Include="Views\WeChatAppAuthorize\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
