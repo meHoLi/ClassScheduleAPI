@@ -21,7 +21,7 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="appId">应用程序的AppId</param>
         /// <param name="appSecret">应用程序的AppSecret</param>
-        public WeChatAppDecrypt(string appId, string appSecret)
+        public WeChatAppDecrypt(string appId= "wx5cb6b9d02cdd9681", string appSecret= "7f5fe941009e8e34bbec5931a53d7f96")
         {
             this.appId = appId;
             this.appSecret = appSecret;

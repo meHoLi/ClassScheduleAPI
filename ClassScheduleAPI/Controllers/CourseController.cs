@@ -35,6 +35,7 @@ namespace ClassScheduleAPI.Controllers
 
 
         // GET: Course
+
         public ActionResult Index(int childrenID, int page = 1, int pageSize = 7)
         {
             ResponseMessage msg = new ResponseMessage();
@@ -83,6 +84,17 @@ namespace ClassScheduleAPI.Controllers
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult GetCourseByID(int id)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                var model = db.Course.FirstOrDefault(p => p.ID == id);
+                msg.Status = true;
+                msg.Data = model;
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public ActionResult GetChildrenCourseByDate(int childrenID, string startTime, string endTime)
         {
@@ -105,10 +117,10 @@ namespace ClassScheduleAPI.Controllers
                         model.CourseName = item.CourseName;
                         model.EndTime = item.EndTime;
                         model.ID = item.ID;
-                        if (string.IsNullOrWhiteSpace(item.RemindTime))
+                        if (string.IsNullOrWhiteSpace(item.RemindTime) || item.RemindTime == "-9999")
                             model.RemindDes = "未设置";
                         else
-                            model.RemindDes = DateTime.Parse(item.RemindTime) > DateTime.Now ? "已提醒" : "未提醒";
+                            model.RemindDes = DateTime.Parse(item.StartTime).AddMinutes(int.Parse(item.RemindTime)) > DateTime.Now ? "已提醒" : "未提醒";
                         model.RemindTime = item.RemindTime;
                         model.Phone = item.Phone;
                         model.Remarks = item.Remarks;
@@ -141,7 +153,7 @@ namespace ClassScheduleAPI.Controllers
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult Update(Course model)
@@ -160,7 +172,7 @@ namespace ClassScheduleAPI.Controllers
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult Delete(int id)
@@ -177,7 +189,7 @@ namespace ClassScheduleAPI.Controllers
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
