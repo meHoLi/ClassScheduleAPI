@@ -33,7 +33,7 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="code">客户端发来的code</param>
         /// <returns>Json数据包</returns>
-        private string GetOpenIdAndSessionKeyString(string code)
+        public string GetOpenIdAndSessionKeyString(string code)
         {
             string temp = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + appId
