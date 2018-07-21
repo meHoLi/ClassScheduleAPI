@@ -13,6 +13,8 @@ namespace ClassScheduleAPI.Controllers
     {
 
 
+        // GET: Course
+
         /// <summary>
         /// 得到本周第一天(以星期一为第一天)
         /// </summary>
@@ -33,8 +35,6 @@ namespace ClassScheduleAPI.Controllers
         }
 
 
-
-        // GET: Course
 
         public ActionResult Index(int childrenID, int page = 1, int pageSize = 7)
         {
