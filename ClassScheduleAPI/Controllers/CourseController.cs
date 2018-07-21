@@ -246,5 +246,32 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+
+
+
+        /// <summary>
+        /// 本周新加课程（清空本周课程）
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public ActionResult Deletes(string startTime, string endTime)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                try
+                {
+                    db.Database.ExecuteSqlCommand("delete Course where StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
     }
 }
