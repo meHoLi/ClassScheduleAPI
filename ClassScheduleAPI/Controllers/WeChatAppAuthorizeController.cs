@@ -15,13 +15,13 @@ namespace ClassScheduleAPI.Controllers
         }
 
 
-        private ActionResult GetOpenIdAndSessionKeyString(string code)
+        public ActionResult GetOpenIdAndSessionKeyString(string code)
         {
             ResponseMessage msg = new ResponseMessage();
             msg.Status = true;
             try
             {
-                string temp = new WeChatAppDecrypt("wx3acda84288bf9573", "5fc1a6b7bcb9b5bad9df6f8e8862a170").GetOpenIdAndSessionKeyString(code);
+                string temp = new WeChatAppDecrypt("wx3acda84288bf9573", "06a0ccc89e812a7234a851aa9ea06fc4").GetOpenIdAndSessionKeyString(code);
                 msg.Data = temp;
             }
             catch (Exception e)
