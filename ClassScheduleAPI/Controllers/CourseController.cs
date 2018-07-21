@@ -145,6 +145,15 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    bool isExisted = db.Course.Any(p => p.ChildrenID == model.ChildrenID
+                           && string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) >= 0
+                           && string.Compare(p.EndTime, model.EndTime, StringComparison.Ordinal) <= 0);
+                    if (isExisted)
+                    {
+                        msg.Status = false;
+                        //代表数据已经存在
+                        msg.Result = "800";
+                    }
                     var entity = db.Course.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
@@ -152,6 +161,7 @@ namespace ClassScheduleAPI.Controllers
                 catch (Exception e)
                 {
                     msg.Status = false;
+                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
@@ -163,6 +173,16 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+
+                    bool isExisted = db.Course.Any(p => p.ID != model.ID
+                           && string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) >= 0
+                           && string.Compare(p.EndTime, model.EndTime, StringComparison.Ordinal) <= 0);
+                    if (isExisted)
+                    {
+                        msg.Status = false;
+                        //代表数据已经存在
+                        msg.Result = "800";
+                    }
                     db.Course.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
@@ -171,6 +191,7 @@ namespace ClassScheduleAPI.Controllers
                 catch (Exception e)
                 {
                     msg.Status = false;
+                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
@@ -204,20 +225,27 @@ namespace ClassScheduleAPI.Controllers
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var list = db.Course.Where(p => p.ChildrenID == childrenID
-                && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
-                && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
-                .ToList();
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
+                //isExistence 是否有重复数据
                 msg.Data = new { isExistence = false };
                 try
                 {
-                    string st = DateTime.Parse(startTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeStr);
-                    string et = DateTime.Parse(endTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeStr);
+                    //上周开始时间
+                    string st = DateTime.Parse(startTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
+                    //上周结束时间
+                    string et = DateTime.Parse(endTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
+
+                    //上周课程数据
+                    var list = db.Course.Where(p => p.ChildrenID == childrenID
+                && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
+                && string.Compare(p.EndTime, et,StringComparison.Ordinal) <= 0)
+                .ToList();
+
+                    //当前周课程数据
                     var clist = db.Course.Where(p => p.ChildrenID == childrenID
-                  && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
-                  && string.Compare(p.EndTime, et, StringComparison.Ordinal) <= 0)
+                  && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                  && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                 .ToList();
                     foreach (var item in list)
                     {
@@ -255,14 +283,14 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        public ActionResult Deletes(string startTime, string endTime)
+        public ActionResult Deletes(int childrenID, string startTime, string endTime)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete Course where StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
+                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID="+ childrenID + " and StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
                     msg.Status = true;
                 }
                 catch (Exception e)

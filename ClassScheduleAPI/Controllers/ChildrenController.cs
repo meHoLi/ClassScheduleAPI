@@ -42,7 +42,7 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-        public ActionResult Add()
+        public ActionResult AddList()
         {
 
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -73,6 +73,26 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult Add(Children model)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                try
+                {
+                    var entity = db.Children.Add(model);
+                    db.SaveChanges();
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult Update(Children model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -80,7 +100,6 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    //https://blog.csdn.net/u011872945/article/details/72966946
                     db.Children.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
@@ -90,7 +109,7 @@ namespace ClassScheduleAPI.Controllers
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
         public ActionResult Delete(int id)
@@ -107,7 +126,7 @@ namespace ClassScheduleAPI.Controllers
                 {
                     msg.Status = false;
                 }
-                return Json(msg);
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
     }

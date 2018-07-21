@@ -16,7 +16,7 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="saveImgSrc">图片路径 例如/File/Product/</param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ActionResult HandleFileSave(string saveImgSrc, string TenantId, string callback = "")
+        public ActionResult HandleFileSave(string saveImgSrc="Iimg", string TenantId="WX", string callback = "")
         {
             JsonpResult<object> json = null;
             string fileName = "";
@@ -26,7 +26,7 @@ namespace ClassScheduleAPI.Controllers
             {
                 //接受上传文件
                 HttpPostedFileBase postFile = Request.Files[0];
-                string name = Request.QueryString["name"];
+                //string name = Request.QueryString["name"];
                 if (postFile != null)
                 {
                     //获取上传目录 转换为物理路径

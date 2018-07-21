@@ -156,10 +156,8 @@
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
-    <Compile Include="Controllers\FileUploadControllerJCY.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\SaveFileController.cs" />
     <Compile Include="Controllers\WeChatAppAuthorizeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

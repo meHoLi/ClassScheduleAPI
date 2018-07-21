@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using ClassScheduleAPI.Common;
 namespace ClassScheduleAPI.Controllers
 {
     public class WeChatAppAuthorizeController : Controller
@@ -12,6 +12,22 @@ namespace ClassScheduleAPI.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+
+        private ActionResult GetOpenIdAndSessionKeyString(string code)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            msg.Status = true;
+            try
+            {
+
+            }
+            catch (Exception e)
+            {
+                msg.Status = false;
+            }
+            return Json(msg, JsonRequestBehavior.AllowGet);
         }
 
         //https://blog.csdn.net/ivanyoung66/article/details/72523231
