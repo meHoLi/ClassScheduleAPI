@@ -9,6 +9,8 @@ using Senparc.Weixin.MP;
 using System.Net;
 using System.IO;
 using System.Web.Security;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace ClassScheduleAPI.Controllers
 {
@@ -63,41 +65,12 @@ namespace ClassScheduleAPI.Controllers
 
 
         /// <summary>
-        /// 页面授权
-        /// </summary>
-
-        public void GetAuthorizeUrl(string state)
-        {
-            string url = "https://pay.houjiale.com/WeChatAppAuthorize/WxBaseCallbackFun";
-            string urls = OAuthApi.GetAuthorizeUrl(APPID, url, state, OAuthScope.snsapi_base, "code", true);
-            LogHelper.Debug("+++++++++++++++++++++++++++++++++++++++++++++++++");
-            LogHelper.Debug("state:" + state);
-            LogHelper.Debug("urls:" + urls);
-        }
-
-        /// <summary>
-        /// 授权回调
-        /// </summary>
-        /// <param name="code"></param>
-        /// <param name="state"></param>
-        /// <returns></returns>
-        [HttpGet]
-        public void WxBaseCallbackFun(string code, string state)
-        {
-            LogHelper.Debug("--------------------------------------------------------");
-            LogHelper.Debug("code:" + code);
-            LogHelper.Debug("state:" + state);
-            var openIdResult = OAuthApi.GetAccessToken(APPID, AppSecret, code, "authorization_code");
-            SendTemplateMsg(openIdResult.access_token, state);
-        }
-
-
-        /// <summary>
         /// 发送模板消息
         /// </summary>
         /// <param name="accessToken">AccessToken</param>
         /// <param name="data">发送的模板数据</param>
         /// <returns></returns>
+
         public string SendTemplateMsg(string accessToken, string data)
         {
             LogHelper.Debug("=============================================================");
@@ -120,6 +93,63 @@ namespace ClassScheduleAPI.Controllers
             return strMsg;
         }
 
+        /// <summary>
+        /// 消息推送，异步
+        /// </summary>
+        /// <param name="accessToken"></param>
+        /// <param name="data"></param>
+        /// <param name="StartTime">上课时间</param>
+        /// <param name="RemindTime">提前提醒间隔（分钟）</param>
+        public void SendMsgAsync(string accessToken, string data, string StartTime, int RemindTime)
+        {
+            try
+            {
+                DateTime st = DateTime.Parse(StartTime).AddMinutes(-RemindTime);
+                DateTime dn = DateTime.Now;
+                if (st > dn)
+                {
+                    int s = (int)(st - dn).TotalSeconds;
+                    //RemindTime = "-9999"时前台做逻辑，不调用此方法
+                    ExecSendMsgAsync(accessToken, data, s);
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public async Task<int> ExecSendMsgAsync(string accessToken, string data, int s)
+        {
+            try
+            {
+                var a = await ThreadSleepAsync(s);
+                string url = string.Format("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}", accessToken);
+                HttpWebRequest hwr = WebRequest.Create(url) as HttpWebRequest;
+                hwr.Method = "POST";
+                hwr.ContentType = "application/x-www-form-urlencoded";
+                byte[] payload;
+                payload = System.Text.Encoding.UTF8.GetBytes(data); //通过UTF-8编码
+                hwr.ContentLength = payload.Length;
+                Stream writer = hwr.GetRequestStream();
+                writer.Write(payload, 0, payload.Length);
+                writer.Close();
+                var result = hwr.GetResponse() as HttpWebResponse; //此句是获得上面URl返回的数据
+                string strMsg = WebResponseGet(result);
+                LogHelper.Debug("strMsgAsync:" + strMsg);
+            }
+            catch (Exception e)
+            {
+                LogHelper.Debug("strMsgAsyncError:" + e.Message);
+
+            };
+            return 1;
+        }
+        public async Task<int> ThreadSleepAsync(int s)
+        {
+            Thread.Sleep(1000 * s);
+            return 1;
+        }
         public string WebResponseGet(HttpWebResponse webResponse)
         {
             LogHelper.Debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");

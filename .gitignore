@@ -2,6 +2,8 @@
 # compiled files
 obj
 bin
+Log
+File
 packages
 # user files
 .user
