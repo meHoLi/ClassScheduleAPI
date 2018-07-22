@@ -239,7 +239,7 @@ namespace ClassScheduleAPI.Controllers
                     //上周课程数据
                     var list = db.Course.Where(p => p.ChildrenID == childrenID
                 && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
-                && string.Compare(p.EndTime, et,StringComparison.Ordinal) <= 0)
+                && string.Compare(p.EndTime, et, StringComparison.Ordinal) <= 0)
                 .ToList();
 
                     //当前周课程数据
@@ -290,7 +290,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID="+ childrenID + " and StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
+                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
                     msg.Status = true;
                 }
                 catch (Exception e)

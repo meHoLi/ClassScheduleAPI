@@ -19,13 +19,16 @@
       <publishTime>07/08/2018 15:48:43</publishTime>
     </File>
     <File Include="bin/ClassScheduleAPI.dll">
-      <publishTime>07/21/2018 14:01:04</publishTime>
+      <publishTime>07/22/2018 15:07:56</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>01/04/2017 00:44:16</publishTime>
     </File>
     <File Include="bin/EntityFramework.SqlServer.dll">
       <publishTime>01/04/2017 00:44:16</publishTime>
+    </File>
+    <File Include="bin/log4net.dll">
+      <publishTime>07/22/2018 11:48:27</publishTime>
     </File>
     <File Include="bin/Microsoft.AI.Agent.Intercept.dll">
       <publishTime>11/30/2016 16:07:42</publishTime>
@@ -55,7 +58,7 @@
       <publishTime>01/05/2012 11:08:46</publishTime>
     </File>
     <File Include="bin/Newtonsoft.Json.dll">
-      <publishTime>08/03/2014 20:33:56</publishTime>
+      <publishTime>07/22/2018 11:29:16</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>06/27/2016 14:50:24</publishTime>
@@ -135,6 +138,15 @@
     <File Include="bin/roslyn/VBCSCompiler.exe.config">
       <publishTime>06/27/2016 14:50:24</publishTime>
     </File>
+    <File Include="bin/Senparc.CO2NET.dll">
+      <publishTime>07/22/2018 11:29:18</publishTime>
+    </File>
+    <File Include="bin/Senparc.Weixin.dll">
+      <publishTime>07/22/2018 11:29:19</publishTime>
+    </File>
+    <File Include="bin/Senparc.Weixin.MP.dll">
+      <publishTime>07/22/2018 11:29:21</publishTime>
+    </File>
     <File Include="bin/System.Web.Helpers.dll">
       <publishTime>01/28/2015 04:04:30</publishTime>
     </File>
@@ -161,6 +173,9 @@
     </File>
     <File Include="bin/zh-Hans/EntityFramework.resources.dll">
       <publishTime>01/04/2017 00:44:32</publishTime>
+    </File>
+    <File Include="bin/zh-Hans/EntityFramework.SqlServer.resources.dll">
+      <publishTime>07/22/2018 11:28:59</publishTime>
     </File>
     <File Include="bin/zh-Hans/System.Web.Helpers.resources.dll">
       <publishTime>01/28/2015 04:04:32</publishTime>
@@ -209,6 +224,9 @@
     </File>
     <File Include="Global.asax">
       <publishTime>07/08/2018 15:48:27</publishTime>
+    </File>
+    <File Include="log4net.config">
+      <publishTime>07/22/2018 11:43:58</publishTime>
     </File>
     <File Include="Models/ClassScheduleDBModel.edmx.diagram">
       <publishTime>07/08/2018 19:47:50</publishTime>
@@ -271,7 +289,7 @@
       <publishTime>07/08/2018 15:48:27</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/21/2018 14:01:05</publishTime>
+      <publishTime>07/22/2018 12:05:48</publishTime>
     </File>
   </ItemGroup>
 </Project>

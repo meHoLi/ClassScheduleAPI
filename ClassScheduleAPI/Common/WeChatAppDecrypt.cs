@@ -21,11 +21,25 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="appId">应用程序的AppId</param>
         /// <param name="appSecret">应用程序的AppSecret</param>
-        public WeChatAppDecrypt(string appId= "wx5cb6b9d02cdd9681", string appSecret= "7f5fe941009e8e34bbec5931a53d7f96")
+        public WeChatAppDecrypt(string appId= "wx694ef3488ec1381b", string appSecret= "67ed5d3fa3aa51f7d4ceb063d9caf457")
         {
             this.appId = appId;
             this.appSecret = appSecret;
             return;
+        }
+
+        /// <summary>
+        /// 获取Token
+        /// </summary>
+        /// <returns>Json数据包</returns>
+        public string GetToken()
+        {
+            string temp ="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&" +
+                "appid=" + appId
+                + "&secret=" + appSecret;
+
+            return GetResponse(temp);
+
         }
 
         /// <summary>
@@ -171,7 +185,7 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        private string GetResponse(string url)
+        public string GetResponse(string url)
         {
             if (url.StartsWith("https"))
                 System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;

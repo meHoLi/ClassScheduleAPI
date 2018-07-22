@@ -18,15 +18,15 @@ namespace ClassScheduleAPI.Controllers
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                try
-                {
+                //try
+                //{
                     var list = db.Children.Where(p => p.OpenID == openID).ToList();
                     msg.Data = list;
-                }
-                catch (Exception e)
-                {
-                    msg.Status = false;
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    msg.Status = false;
+                //}
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
