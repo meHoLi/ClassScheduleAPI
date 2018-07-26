@@ -18,11 +18,11 @@ namespace ClassScheduleAPI.Controllers
     {
         // GET: WeChatAppAuthorize
         //cqs
-        private const string APPID = "wx3acda84288bf9573";
-        private const string AppSecret = "06a0ccc89e812a7234a851aa9ea06fc4";
+        //private const string APPID = "wx3acda84288bf9573";
+        //private const string AppSecret = "06a0ccc89e812a7234a851aa9ea06fc4";
         //my
-        //private const string APPID = "wx694ef3488ec1381b";
-        //private const string AppSecret = "67ed5d3fa3aa51f7d4ceb063d9caf457";
+        private const string APPID = "wx694ef3488ec1381b";
+        private const string AppSecret = "67ed5d3fa3aa51f7d4ceb063d9caf457";
 
         public ActionResult Index()
         {
@@ -40,6 +40,8 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult GetOpenIdAndSessionKeyString(string code)
         {
+            LogHelper.Error("GetOpenIdAndSessionKeyString");
+
             ResponseMessage msg = new ResponseMessage();
             msg.Status = true;
             try
@@ -50,6 +52,7 @@ namespace ClassScheduleAPI.Controllers
             catch (Exception e)
             {
                 msg.Status = false;
+                LogHelper.Error($"GetOpenIdAndSessionKeyString:{e.Message}");
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }

@@ -14,6 +14,8 @@ namespace ClassScheduleAPI.Controllers
         // GET: Children
         public ActionResult Index(string openID)
         {
+            LogHelper.Error("Children/Index");
+
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
