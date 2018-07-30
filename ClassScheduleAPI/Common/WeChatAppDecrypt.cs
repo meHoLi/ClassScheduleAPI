@@ -247,4 +247,12 @@ namespace ClassScheduleAPI.Common
         public string errcode { get; set; }
         public string errmsg { get; set; }
     }
+    /// <summary>
+    /// 微信小程序从服务端获取的token信息结构
+    /// </summary>
+    public class WechatToken
+    {
+        public string access_token { get; set; }
+        public int expires_in { get; set; }
+    }
 }

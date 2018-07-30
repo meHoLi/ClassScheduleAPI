@@ -120,7 +120,7 @@ namespace ClassScheduleAPI.Controllers
                         if (string.IsNullOrWhiteSpace(item.RemindTime) || item.RemindTime == "-9999")
                             model.RemindDes = "未设置";
                         else
-                            model.RemindDes = DateTime.Parse(item.StartTime).AddMinutes(int.Parse(item.RemindTime)) > DateTime.Now ? "已提醒" : "未提醒";
+                            model.RemindDes = DateTime.Parse(item.StartTime).AddMinutes(int.Parse(item.RemindTime)) < DateTime.Now ? "已提醒" : "未提醒";
                         model.RemindTime = item.RemindTime;
                         model.Phone = item.Phone;
                         model.Remarks = item.Remarks;
@@ -153,6 +153,7 @@ namespace ClassScheduleAPI.Controllers
                         msg.Status = false;
                         //代表数据已经存在
                         msg.Result = "800";
+                        return Json(msg, JsonRequestBehavior.AllowGet);
                     }
                     var entity = db.Course.Add(model);
                     db.SaveChanges();

@@ -11,6 +11,7 @@ using System.IO;
 using System.Web.Security;
 using System.Threading.Tasks;
 using System.Threading;
+using Newtonsoft.Json;
 
 namespace ClassScheduleAPI.Controllers
 {
@@ -127,7 +128,11 @@ namespace ClassScheduleAPI.Controllers
             try
             {
                 var a = await ThreadSleepAsync(s);
-                string url = string.Format("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}", accessToken);
+
+                accessToken = new WeChatAppDecrypt(APPID, AppSecret).GetToken();
+                //反序列化结果
+                WechatToken tokenModel = JsonConvert.DeserializeObject<WechatToken>(accessToken);
+                string url = string.Format("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}", tokenModel.access_token);
                 HttpWebRequest hwr = WebRequest.Create(url) as HttpWebRequest;
                 hwr.Method = "POST";
                 hwr.ContentType = "application/x-www-form-urlencoded";
