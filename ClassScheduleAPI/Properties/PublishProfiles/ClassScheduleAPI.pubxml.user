@@ -19,7 +19,7 @@
       <publishTime>07/08/2018 15:48:43</publishTime>
     </File>
     <File Include="bin/ClassScheduleAPI.dll">
-      <publishTime>07/30/2018 23:00:35</publishTime>
+      <publishTime>08/04/2018 11:10:38</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>01/04/2017 00:44:16</publishTime>
@@ -289,7 +289,7 @@
       <publishTime>07/08/2018 15:48:27</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>07/30/2018 23:00:35</publishTime>
+      <publishTime>08/04/2018 10:19:13</publishTime>
     </File>
   </ItemGroup>
 </Project>

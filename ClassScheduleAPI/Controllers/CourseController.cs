@@ -146,8 +146,11 @@ namespace ClassScheduleAPI.Controllers
                 try
                 {
                     bool isExisted = db.Course.Any(p => p.ChildrenID == model.ChildrenID
-                           && string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) >= 0
-                           && string.Compare(p.EndTime, model.EndTime, StringComparison.Ordinal) <= 0);
+                           && (
+                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ));
                     if (isExisted)
                     {
                         msg.Status = false;
@@ -176,8 +179,11 @@ namespace ClassScheduleAPI.Controllers
                 {
 
                     bool isExisted = db.Course.Any(p => p.ID != model.ID
-                           && string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) >= 0
-                           && string.Compare(p.EndTime, model.EndTime, StringComparison.Ordinal) <= 0);
+                            && (
+                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ));
                     if (isExisted)
                     {
                         msg.Status = false;
@@ -237,6 +243,15 @@ namespace ClassScheduleAPI.Controllers
                     //上周结束时间
                     string et = DateTime.Parse(endTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
 
+                    ////上周课程数据
+                    //var list = db.Course.Where(p => p.ChildrenID == childrenID
+                    //  && (
+                    //      (string.Compare(p.StartTime, et, StringComparison.Ordinal) <= 0 && string.Compare(et, p.EndTime, StringComparison.Ordinal) <= 0)
+                    //       ||
+                    //       (string.Compare(p.StartTime, st, StringComparison.Ordinal) <= 0 && string.Compare(st, p.EndTime, StringComparison.Ordinal) <= 0)
+                    //       ))
+                    //.ToList();
+
                     //上周课程数据
                     var list = db.Course.Where(p => p.ChildrenID == childrenID
                 && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
@@ -250,11 +265,14 @@ namespace ClassScheduleAPI.Controllers
                 .ToList();
                     foreach (var item in list)
                     {
-                        item.StartTime = DateTime.Parse(item.StartTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeStr);
-                        item.EndTime = DateTime.Parse(item.EndTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeStr);
+                        item.StartTime = DateTime.Parse(item.StartTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        item.EndTime = DateTime.Parse(item.EndTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         bool isExistence = clist.Any(p => p.ChildrenID == childrenID
-                   && string.Compare(p.StartTime, item.StartTime, StringComparison.Ordinal) >= 0
-                   && string.Compare(p.EndTime, item.EndTime, StringComparison.Ordinal) <= 0);
+                        && (
+                          (string.Compare(p.StartTime, item.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(item.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, item.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(item.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ));
                         if (!isExistence)
                         {
                             var entity = db.Course.Add(item);

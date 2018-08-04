@@ -1,4 +1,5 @@
 ﻿using ClassScheduleAPI.Common;
+using ClassScheduleAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,15 +11,18 @@ namespace ClassScheduleAPI.Controllers
 {
     public class FileUploadController : Controller
     {
+        //https://developers.weixin.qq.com/blogdetail?action=get_post_info&docid=0006e63da60f40cb8c0755d5156400&highline=%E5%B0%8F%E7%A8%8B%E5%BA%8F%20%E5%9B%BE%E7%89%87%E4%B8%8D%E6%98%BE%E7%A4%BA
         /// <summary>
         /// 跨域上传附件
         /// </summary>
         /// <param name="saveImgSrc">图片路径 例如/File/Product/</param>
         /// <param name="callback"></param>
         /// <returns></returns>
-        public ActionResult HandleFileSave(string saveImgSrc="Iimg", string TenantId="WX", string callback = "")
+        public ActionResult HandleFileSave(string domainName = "https://www.xiaoshangbang.com", string saveImgSrc = "Iimg", string TenantId = "WX", string callback = "")
         {
-            JsonpResult<object> json = null;
+            ResponseMessage msg = new ResponseMessage();
+            msg.Status = true;
+
             string fileName = "";
             string tempSaveFile = "";
             Guid fileId = Guid.NewGuid();
@@ -51,9 +55,13 @@ namespace ClassScheduleAPI.Controllers
                     {
                         //保存文件
                         postFile.SaveAs(saveFile);
+                        msg.Status = true;
+                        msg.Data = new { filePath = domainName + tempSaveFile };
                     }
                     catch
                     {
+                        msg.Status = false;
+
                     }
 
                 }
@@ -66,15 +74,15 @@ namespace ClassScheduleAPI.Controllers
             {
                 //"上传文件失败";
             }
-            var getval = new
-            {
-                jsonrpc = "2.0",
-                id = fileId,
-                filePath = tempSaveFile
+            //var getval = new
+            //{
+            //    jsonrpc = "2.0",
+            //    id = fileId,
+            //    filePath = tempSaveFile
 
-            };
-            json = new JsonpResult<object>(getval, callback);
-            return json;
+            //};
+            //json = new JsonpResult<object>(getval, callback);
+            return Json(msg);
 
         }
     }
