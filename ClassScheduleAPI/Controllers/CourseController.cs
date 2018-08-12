@@ -178,7 +178,7 @@ namespace ClassScheduleAPI.Controllers
                 try
                 {
 
-                    bool isExisted = db.Course.Any(p => p.ID != model.ID
+                    bool isExisted = db.Course.Any(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID
                             && (
                           (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
                            ||
