@@ -1,4 +1,4 @@
-#*.txt
+*.txt
 # compiled files
 obj
 bin
@@ -8,4 +8,5 @@ packages
 # user files
 .user
 .suo
-Œ Ã‚
+V1
+V2
