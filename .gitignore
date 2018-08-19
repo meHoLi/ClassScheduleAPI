@@ -4,9 +4,9 @@ obj
 bin
 Log
 File
+V1
+V2
 packages
 # user files
 .user
 .suo
-V1/
-V2/
