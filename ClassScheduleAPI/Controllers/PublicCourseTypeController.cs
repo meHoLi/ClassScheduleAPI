@@ -1,6 +1,5 @@
 ﻿using ClassScheduleAPI.Common;
 using ClassScheduleAPI.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,101 +8,59 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    public class ChildrenController : Controller
+    public class PublicCourseTypeController : Controller
     {
-        // GET: Children
         public ActionResult Index(string openID)
         {
-            //LogHelper.Error("Children/Index");
-
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                //try
-                //{
-                    var list = db.Children.Where(p => p.OpenID == openID).ToList();
-                    msg.Data = list;
-                //}
-                //catch (Exception e)
-                //{
-                //    msg.Status = false;
-                //}
+                var list = db.PublicCourseType.Where(p => p.OpenID == openID).ToList();
+                msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult GetChildrenByID(int id)
+
+        public ActionResult GetPublicCourseTypeByID(int id)
         {
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var model = db.Children.FirstOrDefault(p => p.ID == id);
+                var model = db.PublicCourseType.FirstOrDefault(p => p.ID == id);
                 msg.Status = true;
                 msg.Data = model;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult AddList()
-        {
-
-            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-            {
-                ResponseMessage msg = new ResponseMessage();
-
-                using (var scope = db.Database.BeginTransaction())
-                {
-                    try
-                    {
-                        var modelList = Request.Form["modelList"];
-                        var list = JsonConvert.DeserializeObject<List<Children>>(modelList);
-                        foreach (var item in list)
-                        {
-                            Children model = new Children();
-                            var entity = db.Children.Add(item);
-                            db.SaveChanges();
-                        }
-                        msg.Status = true;
-                        scope.Commit();
-                    }
-                    catch (Exception e)
-                    {
-                        msg.Status = false;
-                        scope.Rollback();
-                    }
-                }
-                return Json(msg, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        public ActionResult Add(Children model)
+        public ActionResult Add(PublicCourseType model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    var entity = db.Children.Add(model);
+                    var entity = db.PublicCourseType.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
                 }
                 catch (Exception e)
                 {
                     msg.Status = false;
-                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult Update(Children model)
+        public ActionResult Update(PublicCourseType model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Children.Attach(model);
+                    db.PublicCourseType.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     msg.Status = true;
@@ -111,7 +68,6 @@ namespace ClassScheduleAPI.Controllers
                 catch (Exception e)
                 {
                     msg.Status = false;
-                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
@@ -123,13 +79,12 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete Children where id= " + id);
+                    db.Database.ExecuteSqlCommand("delete PublicCourseType where id= " + id);
                     msg.Status = true;
                 }
                 catch (Exception e)
                 {
                     msg.Status = false;
-                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }

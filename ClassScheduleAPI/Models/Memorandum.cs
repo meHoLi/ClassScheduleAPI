@@ -12,20 +12,13 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Course
+    public partial class Memorandum
     {
         public int ID { get; set; }
-        public Nullable<int> ChildrenID { get; set; }
-        public string CourseName { get; set; }
+        public string OpenID { get; set; }
+        public string MemorandumContent { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
-        public string Address { get; set; }
-        public string Teacher { get; set; }
-        public string Phone { get; set; }
         public string RemindTime { get; set; }
-        public string Remarks { get; set; }
-        public string SchoolName { get; set; }
-        public string CourseType { get; set; }
-        public string Frequency { get; set; }
     }
 }

@@ -15,26 +15,6 @@ namespace ClassScheduleAPI.Controllers
 
         // GET: Course
 
-        /// <summary>
-        /// 得到本周第一天(以星期一为第一天)
-        /// </summary>
-        /// <param name="datetime"></param>
-        /// <returns></returns>
-        public DateTime GetWeekFirstDayMon(DateTime datetime)
-        {
-            //星期一为第一天
-            int weeknow = Convert.ToInt32(datetime.DayOfWeek);
-
-            //因为是以星期一为第一天，所以要判断weeknow等于0时，要向前推6天。
-            weeknow = (weeknow == 0 ? (7 - 1) : (weeknow - 1));
-            int daydiff = (-1) * weeknow;
-
-            //本周第一天
-            string FirstDay = datetime.AddDays(daydiff).ToString(FormatDateTime.ShortDateTimeStr);
-            return Convert.ToDateTime(FirstDay);
-        }
-
-
 
         public ActionResult Index(int childrenID, int page = 1, int pageSize = 7)
         {
@@ -45,7 +25,7 @@ namespace ClassScheduleAPI.Controllers
             DateTime st;
             DateTime et;
             Children cModel = new Children();
-            var ct = GetWeekFirstDayMon(DateTime.Now);
+            var ct = DateCalc.GetWeekFirstDayMon(DateTime.Now);
             st = ct.AddDays((page - 1) * pageSize);
             et = ct.AddDays(page * pageSize);
             startTime = st.ToString(FormatDateTime.ShortDateTimeStr);
@@ -138,27 +118,101 @@ namespace ClassScheduleAPI.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 时间范围内是否已经存在数据
+        /// </summary>
+        /// <param name="courseList"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool CourseListRangeAny(List<Course> courseList, Course model)
+        {
+            bool isExisted = courseList.Any(p =>
+                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           );
+            return isExisted;
+        }
+
+        /// <summary>
+        /// 时间范围内是否已经存在数据
+        /// </summary>
+        /// <param name="courseList"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool CourseListRangeAny(List<Course> courseList, PublicCourse model)
+        {
+            bool isExisted = courseList.Any(p =>
+                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           );
+            return isExisted;
+        }
+
+
         public ActionResult Add(Course model)
         {
+            //新加入的课程数据集合
+            List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    bool isExisted = db.Course.Any(p => p.ChildrenID == model.ChildrenID
-                           && (
-                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                           ||
-                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                           ));
-                    if (isExisted)
+                    var courseList = db.Course.Where(p => p.ChildrenID == model.ChildrenID).ToList();
+                    for (int i = 0; i < ApplicationConstant.forDay;)
                     {
-                        msg.Status = false;
-                        //代表数据已经存在
-                        msg.Result = "800";
-                        return Json(msg, JsonRequestBehavior.AllowGet);
+                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【仅今天】代表数据已经存在
+                                msg.Result = "800";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            i = ApplicationConstant.forDay;
+                        }
+                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【每天这个时段】代表数据已经存在
+                                msg.Result = "801";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            int interval = 1;
+                            i = i + 1;
+                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        }
+                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【每周这个时段】代表数据已经存在
+                                msg.Result = "802";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            int interval = 7;
+                            i = i + interval;
+                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        }
                     }
-                    var entity = db.Course.Add(model);
+
+
+                    var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -172,26 +226,67 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Update(Course model)
         {
+            //周期。 循环天数。  【每天这个时段 / 每周这个时段】最多循环添加365天数据
+            int forDay = 365;
+            //新加入的课程数据集合
+            List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
 
-                    bool isExisted = db.Course.Any(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID
-                            && (
-                          (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                           ||
-                           (string.Compare(p.StartTime, model.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(model.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                           ));
-                    if (isExisted)
+                    for (int i = 0; i < forDay;)
                     {
-                        msg.Status = false;
-                        //代表数据已经存在
-                        msg.Result = "800";
+                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【仅今天】代表数据已经存在
+                                msg.Result = "800";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            i = forDay;
+                        }
+                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【每天这个时段】代表数据已经存在
+                                msg.Result = "801";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            int interval = 1;
+                            i = i + 1;
+                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        }
+                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
+                        {
+                            bool isExisted = CourseListRangeAny(courseList, model);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                //【每周这个时段】代表数据已经存在
+                                msg.Result = "802";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
+                            newCourseList.Add(model);
+                            int interval = 7;
+                            i = i + interval;
+                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        }
                     }
-                    db.Course.Attach(model);
-                    db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                    db.Database.ExecuteSqlCommand("delete Course where StartTime>= " + model.StartTime);
+                    var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -219,6 +314,59 @@ namespace ClassScheduleAPI.Controllers
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        /// <summary>
+        /// 导入课程表
+        /// </summary>
+        /// <param name="publicCourseInfoID"></param>
+        /// <returns></returns>
+
+        public ActionResult ImportCourse(int publicCourseInfoID, int childrenID)
+        {
+            //新加入的课程数据集合
+            List<Course> newCourseList = new List<Course>();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
+                //isExistence 是否有重复数据
+                msg.Data = new { isExistence = false };
+                try
+                {
+                    var list = db.PublicCourse.Where(p => p.PublicCourseInfoID == publicCourseInfoID).ToList();
+                    string startTime = list.Min(p => p.StartTime);
+                    string endTime = list.Max(p => p.EndTime);
+                    //校验导入课程表的时间段内是否有课程冲突
+                    var clist = db.Course.Where(p => p.ChildrenID == childrenID
+                  && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                  && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
+                .ToList();
+
+                    foreach (var item in list)
+                    {
+                        bool isExisted = CourseListRangeAny(clist, item);
+                        if (isExisted)
+                        {
+                            msg.Status = false;
+                            msg.Result = "900";
+                            return Json(msg, JsonRequestBehavior.AllowGet);
+                        }
+                        Course model = ObjectHelper.TransReflection<PublicCourse, Course>(item);
+                        newCourseList.Add(model);
+                    }
+                    var entity = db.Course.AddRange(newCourseList);
+                    db.SaveChanges();
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+
         }
 
         /// <summary>
@@ -289,12 +437,11 @@ namespace ClassScheduleAPI.Controllers
                 catch (Exception e)
                 {
                     msg.Status = false;
+                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-
-
 
         /// <summary>
         /// 本周新加课程（清空本周课程）
@@ -315,6 +462,7 @@ namespace ClassScheduleAPI.Controllers
                 catch (Exception e)
                 {
                     msg.Status = false;
+                    msg.Result = "500";
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }

@@ -5,8 +5,12 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="67c32149a76d497d8f9a18db336e6bb5" Name="Diagram1">
-        <EntityTypeShape EntityType="ClassScheduleDBModel.Children" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ClassScheduleDBModel.Course" Width="1.5" PointX="3.375" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.Children" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.Course" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.Memorandum" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourse" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseInfo" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseType" Width="1.5" PointX="6.75" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

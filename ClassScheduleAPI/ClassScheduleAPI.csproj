@@ -169,19 +169,28 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Common\ApplicationConstant.cs" />
+    <Compile Include="Common\DateCalc.cs" />
+    <Compile Include="Common\EnumUnit.cs" />
     <Compile Include="Common\FormatDateTime.cs" />
     <Compile Include="Common\JsonpResult.cs" />
     <Compile Include="Common\LogHelper.cs" />
+    <Compile Include="Common\ObjectHelper.cs" />
     <Compile Include="Common\ResponseMessage.cs" />
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
+    <Compile Include="Controllers\PublicCourseController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
+    <Compile Include="Controllers\PublicCourseInfoController.cs" />
+    <Compile Include="Controllers\PublicCourseTypeController.cs" />
+    <Compile Include="Controllers\MemorandumController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\WeChatAppAuthorizeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ModelsBusiness\PublicCourseBusiness.cs" />
     <Compile Include="ModelsBusiness\CourseBusiness.cs" />
     <Compile Include="Models\Children.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
@@ -202,6 +211,18 @@
       <DependentUpon>ClassScheduleDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Course.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Memorandum.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PublicCourse.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PublicCourseInfo.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\PublicCourseType.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />

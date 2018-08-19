@@ -12,10 +12,10 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Course
+    public partial class PublicCourse
     {
         public int ID { get; set; }
-        public Nullable<int> ChildrenID { get; set; }
+        public Nullable<int> PublicCourseTypeID { get; set; }
         public string CourseName { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
@@ -27,5 +27,7 @@ namespace ClassScheduleAPI.Models
         public string SchoolName { get; set; }
         public string CourseType { get; set; }
         public string Frequency { get; set; }
+        public string OpenID { get; set; }
+        public Nullable<int> PublicCourseInfoID { get; set; }
     }
 }
