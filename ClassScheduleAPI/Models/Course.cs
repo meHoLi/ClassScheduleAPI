@@ -27,5 +27,8 @@ namespace ClassScheduleAPI.Models
         public string SchoolName { get; set; }
         public string CourseType { get; set; }
         public string Frequency { get; set; }
+        public Nullable<int> PublicCourseTypeID { get; set; }
+        public Nullable<int> PublicCourseInfoID { get; set; }
+        public string OpenID { get; set; }
     }
 }

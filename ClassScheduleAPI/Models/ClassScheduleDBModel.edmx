@@ -34,6 +34,9 @@
           <Property Name="SchoolName" Type="nvarchar" MaxLength="50" />
           <Property Name="CourseType" Type="varchar" MaxLength="50" />
           <Property Name="Frequency" Type="varchar" MaxLength="50" />
+          <Property Name="PublicCourseTypeID" Type="int" />
+          <Property Name="PublicCourseInfoID" Type="int" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -134,6 +137,9 @@
           <Property Name="SchoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PublicCourseTypeID" Type="Int32" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -207,6 +213,9 @@
           <EntitySetMapping Name="Course">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Course">
               <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
+                <ScalarProperty Name="PublicCourseTypeID" ColumnName="PublicCourseTypeID" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="CourseType" ColumnName="CourseType" />
                 <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />

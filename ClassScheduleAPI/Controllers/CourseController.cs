@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using ClassScheduleAPI.Common;
 using ClassScheduleAPI.Models;
 using ClassScheduleAPI.ModelsBusiness;
+using Newtonsoft.Json;
 
 namespace ClassScheduleAPI.Controllers
 {
@@ -184,12 +185,13 @@ namespace ClassScheduleAPI.Controllers
                             {
                                 msg.Status = false;
                                 //【每天这个时段】代表数据已经存在
-                                msg.Result = "801";
+                                msg.Result = "800";
                                 return Json(msg, JsonRequestBehavior.AllowGet);
                             }
-                            newCourseList.Add(model);
+                            var t = ObjectHelper.TransReflection<Course, Course>(model);
+                            newCourseList.Add(t);
                             int interval = 1;
-                            i = i + 1;
+                            i = i + interval;
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         }
@@ -200,10 +202,11 @@ namespace ClassScheduleAPI.Controllers
                             {
                                 msg.Status = false;
                                 //【每周这个时段】代表数据已经存在
-                                msg.Result = "802";
+                                msg.Result = "800";
                                 return Json(msg, JsonRequestBehavior.AllowGet);
                             }
-                            newCourseList.Add(model);
+                            var t = ObjectHelper.TransReflection<Course, Course>(model);
+                            newCourseList.Add(t);
                             int interval = 7;
                             i = i + interval;
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
@@ -226,8 +229,6 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Update(Course model)
         {
-            //周期。 循环天数。  【每天这个时段 / 每周这个时段】最多循环添加365天数据
-            int forDay = 365;
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -236,8 +237,7 @@ namespace ClassScheduleAPI.Controllers
                 try
                 {
                     var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
-
-                    for (int i = 0; i < forDay;)
+                    for (int i = 0; i < ApplicationConstant.forDay;)
                     {
                         if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
                         {
@@ -250,18 +250,18 @@ namespace ClassScheduleAPI.Controllers
                                 return Json(msg, JsonRequestBehavior.AllowGet);
                             }
                             newCourseList.Add(model);
-                            i = forDay;
+                            i = ApplicationConstant.forDay;
                         }
                         else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
                         {
-                            bool isExisted = CourseListRangeAny(courseList, model);
-                            if (isExisted)
-                            {
-                                msg.Status = false;
-                                //【每天这个时段】代表数据已经存在
-                                msg.Result = "801";
-                                return Json(msg, JsonRequestBehavior.AllowGet);
-                            }
+                            //bool isExisted = CourseListRangeAny(courseList, model);
+                            //if (isExisted)
+                            //{
+                            //    msg.Status = false;
+                            //    //【每天这个时段】代表数据已经存在
+                            //    msg.Result = "800";
+                            //    return Json(msg, JsonRequestBehavior.AllowGet);
+                            //}
                             newCourseList.Add(model);
                             int interval = 1;
                             i = i + 1;
@@ -270,14 +270,14 @@ namespace ClassScheduleAPI.Controllers
                         }
                         else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
                         {
-                            bool isExisted = CourseListRangeAny(courseList, model);
-                            if (isExisted)
-                            {
-                                msg.Status = false;
-                                //【每周这个时段】代表数据已经存在
-                                msg.Result = "802";
-                                return Json(msg, JsonRequestBehavior.AllowGet);
-                            }
+                            //bool isExisted = CourseListRangeAny(courseList, model);
+                            //if (isExisted)
+                            //{
+                            //    msg.Status = false;
+                            //    //【每周这个时段】代表数据已经存在
+                            //    msg.Result = "800";
+                            //    return Json(msg, JsonRequestBehavior.AllowGet);
+                            //}
                             newCourseList.Add(model);
                             int interval = 7;
                             i = i + interval;
@@ -285,7 +285,13 @@ namespace ClassScheduleAPI.Controllers
                             model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         }
                     }
-                    db.Database.ExecuteSqlCommand("delete Course where StartTime>= " + model.StartTime);
+
+                    //如果原先的频率不是仅今天，那么就需要把以前导入课程表自动生成的数据删掉重新添加
+                    if (model.PublicCourseInfoID != 0)
+                        db.Database.ExecuteSqlCommand("delete Course where PublicCourseInfoID= " + model.PublicCourseInfoID);
+                    else if (model.PublicCourseInfoID == 0)
+                        db.Database.ExecuteSqlCommand("delete Course where ID= " + model.ID);
+
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
@@ -349,7 +355,7 @@ namespace ClassScheduleAPI.Controllers
                         if (isExisted)
                         {
                             msg.Status = false;
-                            msg.Result = "900";
+                            msg.Result = "800";
                             return Json(msg, JsonRequestBehavior.AllowGet);
                         }
                         Course model = ObjectHelper.TransReflection<PublicCourse, Course>(item);
