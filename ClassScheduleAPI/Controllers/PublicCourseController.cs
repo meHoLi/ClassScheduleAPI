@@ -141,66 +141,12 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(PublicCourse model)
         {
-            //新加入的课程数据集合
-            List<PublicCourse> newPublicCourseList = new List<PublicCourse>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    //公共课程表时不应该判断时间重复的。 可能有两个孩子。两个孩子相同时间安排的课程不一样是很正常的。每一个公共课程表是相互独立的。
-                    //var PublicCourseList = db.PublicCourse.Where(p => p.ChildrenID == model.ChildrenID).ToList();
-                    for (int i = 0; i < ApplicationConstant.forDay;)
-                    {
-                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【仅今天】代表数据已经存在
-                            //    msg.Result = "800";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            i = ApplicationConstant.forDay;
-                        }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【每天这个时段】代表数据已经存在
-                            //    msg.Result = "801";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            int interval = 1;
-                            i = i + 1;
-                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                        }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【每周这个时段】代表数据已经存在
-                            //    msg.Result = "802";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            int interval = 7;
-                            i = i + interval;
-                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                        }
-                    }
-
-
-                    var entity = db.PublicCourse.AddRange(newPublicCourseList);
+                    var entity = db.PublicCourse.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -214,68 +160,13 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Update(PublicCourse model)
         {
-            //周期。 循环天数。  【每天这个时段 / 每周这个时段】最多循环添加365天数据
-            int forDay = 365;
-            //新加入的课程数据集合
-            List<PublicCourse> newPublicCourseList = new List<PublicCourse>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    //公共课程表时不应该判断时间重复的。 可能有两个孩子。两个孩子相同时间安排的课程不一样是很正常的。
-                    //var PublicCourseList = db.PublicCourse.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
-
-                    for (int i = 0; i < forDay;)
-                    {
-                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【仅今天】代表数据已经存在
-                            //    msg.Result = "800";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            i = forDay;
-                        }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【每天这个时段】代表数据已经存在
-                            //    msg.Result = "801";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            int interval = 1;
-                            i = i + 1;
-                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                        }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
-                        {
-                            //bool isExisted = PublicCourseListRangeAny(PublicCourseList, model);
-                            //if (isExisted)
-                            //{
-                            //    msg.Status = false;
-                            //    //【每周这个时段】代表数据已经存在
-                            //    msg.Result = "802";
-                            //    return Json(msg, JsonRequestBehavior.AllowGet);
-                            //}
-                            newPublicCourseList.Add(model);
-                            int interval = 7;
-                            i = i + interval;
-                            model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                            model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                        }
-                    }
-                    db.Database.ExecuteSqlCommand("delete PublicCourse where PublicCourseInfoID='" + model.PublicCourseInfoID + "' and StartTime>= " + model.StartTime);
-                    var entity = db.PublicCourse.AddRange(newPublicCourseList);
+                    db.PublicCourse.Attach(model);
+                    db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     msg.Status = true;
                 }

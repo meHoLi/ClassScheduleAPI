@@ -162,6 +162,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    model.BatchID = Guid.NewGuid();
                     var courseList = db.Course.Where(p => p.ChildrenID == model.ChildrenID).ToList();
                     for (int i = 0; i < ApplicationConstant.forDay;)
                     {
@@ -229,6 +230,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Update(Course model)
         {
+            string oldBatchID = model.BatchID.ToString();
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -236,6 +238,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    model.BatchID = Guid.NewGuid();
                     var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
                     for (int i = 0; i < ApplicationConstant.forDay;)
                     {
@@ -262,9 +265,10 @@ namespace ClassScheduleAPI.Controllers
                             //    msg.Result = "800";
                             //    return Json(msg, JsonRequestBehavior.AllowGet);
                             //}
-                            newCourseList.Add(model);
+                            var t = ObjectHelper.TransReflection<Course, Course>(model);
+                            newCourseList.Add(t);
                             int interval = 1;
-                            i = i + 1;
+                            i = i + interval;
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         }
@@ -278,7 +282,8 @@ namespace ClassScheduleAPI.Controllers
                             //    msg.Result = "800";
                             //    return Json(msg, JsonRequestBehavior.AllowGet);
                             //}
-                            newCourseList.Add(model);
+                            var t = ObjectHelper.TransReflection<Course, Course>(model);
+                            newCourseList.Add(t);
                             int interval = 7;
                             i = i + interval;
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
@@ -286,11 +291,11 @@ namespace ClassScheduleAPI.Controllers
                         }
                     }
 
-                    //如果原先的频率不是仅今天，那么就需要把以前导入课程表自动生成的数据删掉重新添加
-                    if (model.PublicCourseInfoID != 0)
-                        db.Database.ExecuteSqlCommand("delete Course where PublicCourseInfoID= " + model.PublicCourseInfoID);
-                    else if (model.PublicCourseInfoID == 0)
-                        db.Database.ExecuteSqlCommand("delete Course where ID= " + model.ID);
+                    ////导入的课程表先删除，然后重新添加
+                    //if (model.PublicCourseInfoID != 0)
+                    db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "'");
+                    //else if (model.PublicCourseInfoID == 0)//代表不是导入的
+                    //    db.Database.ExecuteSqlCommand("delete Course where ID= " + model.ID);
 
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
@@ -349,6 +354,7 @@ namespace ClassScheduleAPI.Controllers
                   && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                 .ToList();
 
+                    var batchID = Guid.NewGuid();
                     foreach (var item in list)
                     {
                         bool isExisted = CourseListRangeAny(clist, item);
@@ -359,6 +365,7 @@ namespace ClassScheduleAPI.Controllers
                             return Json(msg, JsonRequestBehavior.AllowGet);
                         }
                         Course model = ObjectHelper.TransReflection<PublicCourse, Course>(item);
+                        model.BatchID = batchID;
                         newCourseList.Add(model);
                     }
                     var entity = db.Course.AddRange(newCourseList);

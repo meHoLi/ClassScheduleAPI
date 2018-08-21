@@ -56,7 +56,7 @@ namespace ClassScheduleAPI.Controllers
                     if (isExisted)
                     {
                         msg.Status = false;
-                        msg.Result = "700";
+                        msg.Result = "800";
                         return Json(msg, JsonRequestBehavior.AllowGet);
                     }
                     var entity = db.PublicCourseInfo.Add(model);

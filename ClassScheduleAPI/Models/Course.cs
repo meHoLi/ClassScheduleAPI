@@ -30,5 +30,6 @@ namespace ClassScheduleAPI.Models
         public Nullable<int> PublicCourseTypeID { get; set; }
         public Nullable<int> PublicCourseInfoID { get; set; }
         public string OpenID { get; set; }
+        public Nullable<System.Guid> BatchID { get; set; }
     }
 }
