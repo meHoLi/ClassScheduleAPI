@@ -10,6 +10,8 @@ namespace ClassScheduleAPI.Controllers
     {
         public ActionResult Index()
         {
+          
+
             return View();
         }
 

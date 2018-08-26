@@ -12,6 +12,7 @@ namespace ClassScheduleAPI.Controllers
     public class ChildrenController : Controller
     {
         // GET: Children
+
         public ActionResult Index(string openID)
         {
             //LogHelper.Error("Children/Index");

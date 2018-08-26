@@ -179,7 +179,6 @@
     <Compile Include="Common\ResponseMessage.cs" />
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
-    <Compile Include="Controllers\PublicCourseController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\PublicCourseInfoController.cs" />
@@ -190,7 +189,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="ModelsBusiness\PublicCourseBusiness.cs" />
     <Compile Include="ModelsBusiness\CourseBusiness.cs" />
     <Compile Include="Models\Children.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
@@ -214,9 +212,6 @@
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Memorandum.cs">
-      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PublicCourse.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PublicCourseInfo.cs">

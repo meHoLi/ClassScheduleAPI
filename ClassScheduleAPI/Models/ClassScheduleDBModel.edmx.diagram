@@ -8,9 +8,8 @@
         <EntityTypeShape EntityType="ClassScheduleDBModel.Children" Width="1.5" PointX="0.75" PointY="0.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.Course" Width="1.5" PointX="2.75" PointY="0.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.Memorandum" Width="1.5" PointX="4.75" PointY="0.75" />
-        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourse" Width="1.5" PointX="4.75" PointY="3.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseInfo" Width="1.5" PointX="0.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseType" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseType" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

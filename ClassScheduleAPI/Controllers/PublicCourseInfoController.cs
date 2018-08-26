@@ -39,7 +39,8 @@ namespace ClassScheduleAPI.Controllers
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 var model = db.PublicCourseInfo.FirstOrDefault(p => p.LoginName == loginName && p.Password == password);
-                msg.Status = true;
+                if (model != null) msg.Status = true;
+                else msg.Status = false;
                 msg.Data = model;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }

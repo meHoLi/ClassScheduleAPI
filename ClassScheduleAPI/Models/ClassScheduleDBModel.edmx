@@ -50,26 +50,6 @@
           <Property Name="EndTime" Type="varchar" MaxLength="50" />
           <Property Name="RemindTime" Type="varchar" MaxLength="50" />
         </EntityType>
-        <EntityType Name="PublicCourse">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="PublicCourseTypeID" Type="int" />
-          <Property Name="PublicCourseInfoID" Type="int" />
-          <Property Name="OpenID" Type="varchar" MaxLength="50" />
-          <Property Name="CourseName" Type="nvarchar" MaxLength="50" />
-          <Property Name="StartTime" Type="varchar" MaxLength="50" />
-          <Property Name="EndTime" Type="varchar" MaxLength="50" />
-          <Property Name="Address" Type="nvarchar" MaxLength="500" />
-          <Property Name="Teacher" Type="nvarchar" MaxLength="50" />
-          <Property Name="Phone" Type="varchar" MaxLength="50" />
-          <Property Name="RemindTime" Type="varchar" MaxLength="50" />
-          <Property Name="Remarks" Type="nvarchar" MaxLength="500" />
-          <Property Name="SchoolName" Type="nvarchar" MaxLength="50" />
-          <Property Name="CourseType" Type="varchar" MaxLength="50" />
-          <Property Name="Frequency" Type="varchar" MaxLength="50" />
-        </EntityType>
         <EntityType Name="PublicCourseInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -93,7 +73,6 @@
           <EntitySet Name="Children" EntityType="Self.Children" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="PublicCourse" EntityType="Self.PublicCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseType" EntityType="Self.PublicCourseType" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -105,7 +84,6 @@
           <EntitySet Name="Children" EntityType="ClassScheduleDBModel.Children" />
           <EntitySet Name="Course" EntityType="ClassScheduleDBModel.Course" />
           <EntitySet Name="Memorandum" EntityType="ClassScheduleDBModel.Memorandum" />
-          <EntitySet Name="PublicCourse" EntityType="ClassScheduleDBModel.PublicCourse" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
         </EntityContainer>
@@ -153,26 +131,6 @@
           <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="RemindTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="PublicCourse">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="PublicCourseTypeID" Type="Int32" />
-          <Property Name="CourseName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="Teacher" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Phone" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="RemindTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Remarks" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
-          <Property Name="SchoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PublicCourseInfoID" Type="Int32" />
         </EntityType>
         <EntityType Name="PublicCourseInfo">
           <Key>
@@ -243,27 +201,6 @@
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
                 <ScalarProperty Name="MemorandumContent" ColumnName="MemorandumContent" />
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="PublicCourse">
-            <EntityTypeMapping TypeName="ClassScheduleDBModel.PublicCourse">
-              <MappingFragment StoreEntitySet="PublicCourse">
-                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
-                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
-                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
-                <ScalarProperty Name="CourseType" ColumnName="CourseType" />
-                <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
-                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
-                <ScalarProperty Name="RemindTime" ColumnName="RemindTime" />
-                <ScalarProperty Name="Phone" ColumnName="Phone" />
-                <ScalarProperty Name="Teacher" ColumnName="Teacher" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
-                <ScalarProperty Name="PublicCourseTypeID" ColumnName="PublicCourseTypeID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
