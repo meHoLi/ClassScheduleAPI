@@ -12,8 +12,10 @@ namespace ClassScheduleAPI.Controllers
     public class PublicPublicCourseController : Controller
     {
 
-
-        // GET: PublicPublicCourse
+        /***********************************************************************************************
+        弃用  ，统一使用 Course  表
+        ************************************************************************************************/
+        // GET: PublicPublicCourse    
 
 
         public ActionResult Index(int publicCourseTypeID, string openID, int page = 1, int pageSize = 7)

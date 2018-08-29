@@ -106,6 +106,7 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="RemindTime">提前提醒间隔（分钟）</param>
         public void SendMsgAsync(string accessToken, string data, string StartTime, int RemindTime)
         {
+            LogHelper.Debug("===============SendMsgAsync==============================");
             try
             {
                 DateTime st = DateTime.Parse(StartTime).AddMinutes(-RemindTime);

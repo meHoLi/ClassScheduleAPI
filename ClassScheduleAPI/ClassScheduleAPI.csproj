@@ -93,6 +93,7 @@
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -177,6 +178,7 @@
     <Compile Include="Common\LogHelper.cs" />
     <Compile Include="Common\ObjectHelper.cs" />
     <Compile Include="Common\ResponseMessage.cs" />
+    <Compile Include="Common\WebHelper.cs" />
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
@@ -239,6 +241,8 @@
       <DependentUpon>ClassScheduleDBModel.edmx</DependentUpon>
       <LastGenOutput>ClassScheduleDBModel.cs</LastGenOutput>
     </Content>
+    <Content Include="Pic\phantomjs.exe" />
+    <Content Include="Pic\screenshot.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">

@@ -7,6 +7,7 @@ using ClassScheduleAPI.Common;
 using ClassScheduleAPI.Models;
 using ClassScheduleAPI.ModelsBusiness;
 using Newtonsoft.Json;
+using System.Globalization;
 
 namespace ClassScheduleAPI.Controllers
 {
@@ -93,21 +94,24 @@ namespace ClassScheduleAPI.Controllers
                     foreach (var item in list)
                     {
                         CourseBusiness model = new CourseBusiness();
-                        model.Address = item.Address;
-                        model.ChildrenID = item.ChildrenID;
-                        model.CourseName = item.CourseName;
-                        model.EndTime = item.EndTime;
-                        model.ID = item.ID;
+
+                        model = ObjectHelper.TransReflection<Course, CourseBusiness>(item);
+                        //model.Address = item.Address;
+                        //model.ChildrenID = item.ChildrenID;
+                        //model.CourseName = item.CourseName;
+                        //model.EndTime = item.EndTime;
+                        //model.ID = item.ID;
                         if (string.IsNullOrWhiteSpace(item.RemindTime) || item.RemindTime == "-9999")
                             model.RemindDes = "未设置";
                         else
                             model.RemindDes = DateTime.Parse(item.StartTime).AddMinutes(int.Parse(item.RemindTime)) < DateTime.Now ? "已提醒" : "未提醒";
-                        model.RemindTime = item.RemindTime;
-                        model.Phone = item.Phone;
-                        model.Remarks = item.Remarks;
-                        model.SchoolName = item.SchoolName;
-                        model.StartTime = item.StartTime;
-                        model.Teacher = item.Teacher;
+                        //model.RemindTime = item.RemindTime;
+                        //model.Phone = item.Phone;
+                        //model.Remarks = item.Remarks;
+                        //model.SchoolName = item.SchoolName;
+                        //model.StartTime = item.StartTime;
+                        //model.Teacher = item.Teacher;
+                        model.DayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Parse(model.StartTime).DayOfWeek);
                         cbList.Add(model);
                     }
                     msg.Data = cbList;
@@ -440,22 +444,23 @@ namespace ClassScheduleAPI.Controllers
                     foreach (var item in list)
                     {
                         CourseBusiness model = new CourseBusiness();
-                        model.Address = item.Address;
-                        model.PublicCourseTypeID = item.PublicCourseTypeID;
-                        model.CourseName = item.CourseName;
-                        model.EndTime = item.EndTime;
-                        model.ID = item.ID;
+                        model = ObjectHelper.TransReflection<Course, CourseBusiness>(item);
+                        //model.Address = item.Address;
+                        //model.PublicCourseTypeID = item.PublicCourseTypeID;
+                        //model.CourseName = item.CourseName;
+                        //model.EndTime = item.EndTime;
+                        //model.ID = item.ID;
                         if (string.IsNullOrWhiteSpace(item.RemindTime) || item.RemindTime == "-9999")
                             model.RemindDes = "未设置";
                         else
                             model.RemindDes = "已设置";
                         //model.RemindDes = DateTime.Parse(item.StartTime).AddMinutes(int.Parse(item.RemindTime)) < DateTime.Now ? "已提醒" : "未提醒";
-                        model.RemindTime = item.RemindTime;
-                        model.Phone = item.Phone;
-                        model.Remarks = item.Remarks;
-                        model.SchoolName = item.SchoolName;
-                        model.StartTime = item.StartTime;
-                        model.Teacher = item.Teacher;
+                        //model.RemindTime = item.RemindTime;
+                        //model.Phone = item.Phone;
+                        //model.Remarks = item.Remarks;
+                        //model.SchoolName = item.SchoolName;
+                        //model.StartTime = item.StartTime;
+                        //model.Teacher = item.Teacher;
                         cbList.Add(model);
                     }
                     msg.Data = cbList;
