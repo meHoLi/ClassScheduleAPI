@@ -20,6 +20,7 @@ namespace ClassScheduleAPI.Controllers
         /// <returns></returns>
         public ActionResult HandleFileSave(string domainName = "https://www.xiaoshangbang.com", string saveImgSrc = "Iimg", string TenantId = "WX", string callback = "")
         {
+            LogHelper.Info("FileUploadController->HandleFileSave");
             ResponseMessage msg = new ResponseMessage();
             msg.Status = true;
 

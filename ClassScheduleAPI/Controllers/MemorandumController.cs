@@ -12,6 +12,7 @@ namespace ClassScheduleAPI.Controllers
     {
         public ActionResult Index(string openID, string startTime, string endTime)
         {
+            LogHelper.Info("MemorandumController->Index");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -26,6 +27,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetMemorandumByID(int id)
         {
+            LogHelper.Info("MemorandumController->GetMemorandumByID");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -38,6 +40,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(Memorandum model)
         {
+            LogHelper.Info("MemorandumController->Add");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -58,6 +61,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Update(Memorandum model)
         {
+            LogHelper.Info("MemorandumController->Update");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -78,6 +82,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Delete(int id)
         {
+            LogHelper.Info("MemorandumController->Delete");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();

@@ -12,6 +12,7 @@ namespace ClassScheduleAPI.Controllers
     {
         public ActionResult Index(string openID, int publicCourseTypeID)
         {
+            LogHelper.Info("PublicCourseInfoController->Index");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -24,6 +25,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetPublicCourseInfoByID(int id)
         {
+            LogHelper.Info("PublicCourseInfoController->GetPublicCourseInfoByID");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -35,6 +37,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult GetPublicCourseInfoByLoginNameAndPassword(string loginName, string password)
         {
+            LogHelper.Info("PublicCourseInfoController->GetPublicCourseInfoByLoginNameAndPassword");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -48,6 +51,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(PublicCourseInfo model)
         {
+            LogHelper.Info("PublicCourseInfoController->Add");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -75,6 +79,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Update(PublicCourseInfo model)
         {
+            LogHelper.Info("PublicCourseInfoController->Update");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -102,6 +107,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Delete(int id)
         {
+            LogHelper.Info("PublicCourseInfoController->Delete");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();

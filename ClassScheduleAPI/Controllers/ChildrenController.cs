@@ -15,7 +15,8 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Index(string openID)
         {
-            //LogHelper.Error("Children/Index");
+            LogHelper.Info("ChildrenController->Index");
+
 
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -35,6 +36,8 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult GetChildrenByID(int id)
         {
+            LogHelper.Info("ChildrenController->GetChildrenByID");
+
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -47,6 +50,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult AddList()
         {
+            LogHelper.Info("ChildrenController->AddList");
 
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -79,6 +83,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(Children model)
         {
+            LogHelper.Info("ChildrenController->Add");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -99,6 +104,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Update(Children model)
         {
+            LogHelper.Info("ChildrenController->Update");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -119,6 +125,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Delete(int id)
         {
+            LogHelper.Info("ChildrenController->Delete");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();

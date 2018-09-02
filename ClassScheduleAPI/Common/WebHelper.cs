@@ -67,7 +67,6 @@ namespace ClassScheduleAPI.Common
 
                 p.StartInfo.CreateNoWindow = true;
                 p.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-
                 p.Start();
                 return true;
             }

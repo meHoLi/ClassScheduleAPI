@@ -11,28 +11,28 @@ namespace ClassScheduleAPI.Common
     /// <summary>
     /// 处理微信小程序用户数据的签名验证和解密
     /// </summary>
-    public class WeChatAppDecrypt
+    public static class WeChatAppDecrypt
     {
-        private string appId;
-        private string appSecret;
+        private static string appId= "wx694ef3488ec1381b";
+        private static string appSecret= "67ed5d3fa3aa51f7d4ceb063d9caf457";
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="appId">应用程序的AppId</param>
         /// <param name="appSecret">应用程序的AppSecret</param>
-        public WeChatAppDecrypt(string appId= "wx694ef3488ec1381b", string appSecret= "67ed5d3fa3aa51f7d4ceb063d9caf457")
-        {
-            this.appId = appId;
-            this.appSecret = appSecret;
-            return;
-        }
+        //public WeChatAppDecrypt(string appId= "wx694ef3488ec1381b", string appSecret= "67ed5d3fa3aa51f7d4ceb063d9caf457")
+        //{
+        //    this.appId = appId;
+        //    this.appSecret = appSecret;
+        //    return;
+        //}
 
         /// <summary>
         /// 获取Token
         /// </summary>
         /// <returns>Json数据包</returns>
-        public string GetToken()
+        public static string GetToken()
         {
             string temp ="https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&" +
                 "appid=" + appId
@@ -47,8 +47,10 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="code">客户端发来的code</param>
         /// <returns>Json数据包</returns>
-        public string GetOpenIdAndSessionKeyString(string code)
+        public static string GetOpenIdAndSessionKeyString(string code)
         {
+            LogHelper.Info("WeChatAppDecrypt->GetOpenIdAndSessionKeyString");
+
             string temp = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + appId
                 + "&secret=" + appSecret
@@ -64,7 +66,7 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="code">Json数据包</param>
         /// <returns>包含OpenId和SessionKey的类</returns>
-        public OpenIdAndSessionKey DecodeOpenIdAndSessionKey(WechatLoginInfo loginInfo)
+        public static OpenIdAndSessionKey DecodeOpenIdAndSessionKey(WechatLoginInfo loginInfo)
         {
             OpenIdAndSessionKey oiask = JsonConvert.DeserializeObject<OpenIdAndSessionKey>(GetOpenIdAndSessionKeyString(loginInfo.code));
             if (!String.IsNullOrEmpty(oiask.errcode))
@@ -79,7 +81,7 @@ namespace ClassScheduleAPI.Common
         /// <param name="signature">公开资料携带的签名信息</param>
         /// <param name="sessionKey">从服务端获取的SessionKey</param>
         /// <returns>True：资料有效，False：资料无效</returns>
-        public bool VaildateUserInfo(string rawData, string signature, string sessionKey)
+        public static bool VaildateUserInfo(string rawData, string signature, string sessionKey)
         {
             //创建SHA1签名类
             SHA1 sha1 = new SHA1CryptoServiceProvider();
@@ -99,7 +101,7 @@ namespace ClassScheduleAPI.Common
         /// <param name="loginInfo">登陆信息</param>
         /// <param name="sessionKey">从服务端获取的SessionKey</param>
         /// <returns>True：资料有效，False：资料无效</returns>
-        public bool VaildateUserInfo(WechatLoginInfo loginInfo, string sessionKey)
+        public static bool VaildateUserInfo(WechatLoginInfo loginInfo, string sessionKey)
         {
             return VaildateUserInfo(loginInfo.rawData, loginInfo.signature, sessionKey);
         }
@@ -110,7 +112,7 @@ namespace ClassScheduleAPI.Common
         /// <param name="loginInfo">登陆信息</param>
         /// <param name="idAndKey">包含OpenId和SessionKey的类</param>
         /// <returns>True：资料有效，False：资料无效</returns>
-        public bool VaildateUserInfo(WechatLoginInfo loginInfo, OpenIdAndSessionKey idAndKey)
+        public static bool VaildateUserInfo(WechatLoginInfo loginInfo, OpenIdAndSessionKey idAndKey)
         {
             return VaildateUserInfo(loginInfo, idAndKey.session_key);
         }
@@ -122,7 +124,7 @@ namespace ClassScheduleAPI.Common
         /// <param name="iv">初始向量</param>
         /// <param name="sessionKey">从服务端获取的SessionKey</param>
         /// <returns></returns>
-        public WechatUserInfo Decrypt(string encryptedData, string iv, string sessionKey)
+        public static WechatUserInfo Decrypt(string encryptedData, string iv, string sessionKey)
         {
             WechatUserInfo userInfo;
             //创建解密器生成工具实例
@@ -159,7 +161,7 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="loginInfo">登陆信息</param>
         /// <returns>用户信息</returns>
-        public WechatUserInfo Decrypt(WechatLoginInfo loginInfo)
+        public static WechatUserInfo Decrypt(WechatLoginInfo loginInfo)
         {
             if (loginInfo == null)
                 return null;
@@ -185,8 +187,10 @@ namespace ClassScheduleAPI.Common
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public string GetResponse(string url)
+        public static string GetResponse(string url)
         {
+            LogHelper.Info("WeChatAppDecrypt->GetResponse");
+
             if (url.StartsWith("https"))
                 System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
 
@@ -194,7 +198,6 @@ namespace ClassScheduleAPI.Common
             httpClient.DefaultRequestHeaders.Accept.Add(
             new MediaTypeWithQualityHeaderValue("application/json"));
             HttpResponseMessage response = httpClient.GetAsync(url).Result;
-
             if (response.IsSuccessStatusCode)
             {
                 string result = response.Content.ReadAsStringAsync().Result;

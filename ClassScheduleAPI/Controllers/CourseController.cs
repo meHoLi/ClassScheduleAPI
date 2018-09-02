@@ -20,6 +20,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Index(int childrenID, int page = 1, int pageSize = 7)
         {
+            LogHelper.Info("CourseController->Index");
             ResponseMessage msg = new ResponseMessage();
             List<CourseBusiness> cbList = new List<CourseBusiness>();
             string startTime;
@@ -68,6 +69,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetCourseByID(int id)
         {
+            LogHelper.Info("CourseController->GetCourseByID");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -80,6 +82,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetChildrenCourseByDate(int childrenID, string startTime, string endTime)
         {
+            LogHelper.Info("CourseController->GetChildrenCourseByDate");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -132,6 +135,7 @@ namespace ClassScheduleAPI.Controllers
         /// <returns></returns>
         public bool CourseListRangeAny(List<Course> courseList, Course model)
         {
+            LogHelper.Info("CourseController->CourseListRangeAny");
             bool isExisted = courseList.Any(p =>
                           (string.Compare(p.StartTime, model.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(model.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
                            ||
@@ -144,6 +148,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(Course model)
         {
+            LogHelper.Info("CourseController->Add");
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -219,6 +224,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Update(Course model)
         {
+            LogHelper.Info("CourseController->Update");
             string oldBatchID = model.BatchID.ToString();
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
@@ -300,6 +306,7 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Delete(int id)
         {
+            LogHelper.Info("CourseController->Delete");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -324,6 +331,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult ImportCourse(int publicCourseInfoID, int childrenID)
         {
+            LogHelper.Info("CourseController->ImportCourse");
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -379,6 +387,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetPublicCourseIndex(int publicCourseInfoID, string openID, int page = 1, int pageSize = 7)
         {
+            LogHelper.Info("CourseController->GetPublicCourseIndex");
             ResponseMessage msg = new ResponseMessage();
             List<CourseBusiness> cbList = new List<CourseBusiness>();
             string startTime;
@@ -430,6 +439,7 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetPublicCourseByDate(int publicCourseInfoID, string startTime, string endTime)
         {
+            LogHelper.Info("CourseController->GetPublicCourseByDate");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -482,6 +492,7 @@ namespace ClassScheduleAPI.Controllers
         /// <returns></returns>
         public ActionResult Deletes(int publicCourseInfoID, string startTime, string endTime)
         {
+            LogHelper.Info("CourseController->Deletes");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
@@ -503,6 +514,17 @@ namespace ClassScheduleAPI.Controllers
 
         #endregion
 
+
+        #region 分享成图片
+        public ActionResult ShareImg()
+        {
+
+            return View();
+        }
+
+
+
+        #endregion
 
 
 

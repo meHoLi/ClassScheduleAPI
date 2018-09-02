@@ -7,8 +7,8 @@ if (system.args.length < 3 || system.args.length > 5) {
     output = system.args[2];
     //定义宽高
     page.viewportSize = {
-        width: 1000,
-        height: 800
+        width: 595,
+        height: 842
     };
     page.open(address, function (status) {
         var bb = page.evaluate(function () {

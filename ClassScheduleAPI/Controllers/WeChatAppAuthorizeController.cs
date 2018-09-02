@@ -27,13 +27,16 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Index()
         {
+            LogHelper.Info("WeChatAppAuthorizeController->Index");
             return View();
         }
 
         public ActionResult GetToken()
         {
+            LogHelper.Info("WeChatAppAuthorizeController->GetToken");
+
             ResponseMessage msg = new ResponseMessage();
-            var result = new WeChatAppDecrypt(APPID, AppSecret).GetToken();
+            var result =  WeChatAppDecrypt.GetToken();
             msg.Status = true;
             msg.Data = result;
             return Json(msg, JsonRequestBehavior.AllowGet);
@@ -41,13 +44,14 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult GetOpenIdAndSessionKeyString(string code)
         {
-            LogHelper.Error("GetOpenIdAndSessionKeyString");
+            LogHelper.Info("WeChatAppAuthorizeController->GetOpenIdAndSessionKeyString");
+
 
             ResponseMessage msg = new ResponseMessage();
             msg.Status = true;
             try
             {
-                string temp = new WeChatAppDecrypt(APPID, AppSecret).GetOpenIdAndSessionKeyString(code);
+                string temp =  WeChatAppDecrypt.GetOpenIdAndSessionKeyString(code);
                 msg.Data = temp;
             }
             catch (Exception e)
@@ -77,6 +81,7 @@ namespace ClassScheduleAPI.Controllers
 
         public string SendTemplateMsg(string accessToken, string data)
         {
+            LogHelper.Info("WeChatAppAuthorizeController->SendTemplateMsg");
             LogHelper.Debug("=============================================================");
             LogHelper.Debug("accessToken:" + accessToken);
             LogHelper.Debug("data:" + data);
@@ -106,7 +111,8 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="RemindTime">提前提醒间隔（分钟）</param>
         public void SendMsgAsync(string accessToken, string data, string StartTime, int RemindTime)
         {
-            LogHelper.Debug("===============SendMsgAsync==============================");
+            LogHelper.Info("WeChatAppAuthorizeController->SendMsgAsync");
+
             try
             {
                 DateTime st = DateTime.Parse(StartTime).AddMinutes(-RemindTime);
@@ -126,11 +132,12 @@ namespace ClassScheduleAPI.Controllers
 
         public async Task<int> ExecSendMsgAsync(string accessToken, string data, int s)
         {
+            LogHelper.Info("WeChatAppAuthorizeController->ExecSendMsgAsync");
             try
             {
                 var a = await ThreadSleepAsync(s);
 
-                accessToken = new WeChatAppDecrypt(APPID, AppSecret).GetToken();
+                accessToken =  WeChatAppDecrypt.GetToken();
                 //反序列化结果
                 WechatToken tokenModel = JsonConvert.DeserializeObject<WechatToken>(accessToken);
                 string url = string.Format("https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token={0}", tokenModel.access_token);
@@ -161,7 +168,8 @@ namespace ClassScheduleAPI.Controllers
         }
         public string WebResponseGet(HttpWebResponse webResponse)
         {
-            LogHelper.Debug("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+            LogHelper.Info("WeChatAppAuthorizeController->WebResponseGet");
+
             StreamReader responseReader = null;
             string responseData = "";
             try
@@ -187,6 +195,7 @@ namespace ClassScheduleAPI.Controllers
         /// </summary>
         public void ProcessRequest()
         {
+            LogHelper.Info("WeChatAppAuthorizeController->ProcessRequest");
             try
             {
                 var signature = Request.QueryString["signature"];
