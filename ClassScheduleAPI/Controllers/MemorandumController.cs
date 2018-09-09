@@ -19,7 +19,7 @@ namespace ClassScheduleAPI.Controllers
                 msg.Status = true;
                 var list = db.Memorandum.Where(p => p.OpenID == openID
                            && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
-                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0).ToList();
+                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0).OrderBy(p => p.StartTime).ToList();
                 msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
