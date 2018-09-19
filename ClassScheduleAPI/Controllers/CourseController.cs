@@ -145,7 +145,11 @@ namespace ClassScheduleAPI.Controllers
         }
 
 
-
+        /// <summary>
+        /// 添加课程   如果是公共课程表中的模板，频率传入进来的是每日重复
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         public ActionResult Add(Course model)
         {
             LogHelper.Info("CourseController->Add");
@@ -327,9 +331,11 @@ namespace ClassScheduleAPI.Controllers
         /// 导入课程表
         /// </summary>
         /// <param name="publicCourseInfoID"></param>
+        /// <param name="childrenID"></param>
+        /// <param name="isOverlap">是否覆盖，否给出提示，是删除后新增</param>
         /// <returns></returns>
 
-        public ActionResult ImportCourse(int publicCourseInfoID, int childrenID)
+        public ActionResult ImportCourse(int publicCourseInfoID, int childrenID, bool isOverlap = false)
         {
             LogHelper.Info("CourseController->ImportCourse");
             //新加入的课程数据集合
@@ -354,18 +360,24 @@ namespace ClassScheduleAPI.Controllers
                     var batchID = Guid.NewGuid();
                     foreach (var item in list)
                     {
-                        bool isExisted = CourseListRangeAny(clist, item);
-                        if (isExisted)
+                        //是否覆盖，如果否则return并给出提示。如果是则删除之后所有数据并重新添加
+                        if (!isOverlap)
                         {
-                            msg.Status = false;
-                            msg.Result = "800";
-                            return Json(msg, JsonRequestBehavior.AllowGet);
+                            bool isExisted = CourseListRangeAny(clist, item);
+                            if (isExisted)
+                            {
+                                msg.Status = false;
+                                msg.Result = "800";
+                                return Json(msg, JsonRequestBehavior.AllowGet);
+                            }
                         }
                         Course model = ObjectHelper.TransReflection<Course, Course>(item);
                         model.ChildrenID = childrenID;
                         model.BatchID = batchID;
                         newCourseList.Add(model);
                     }
+                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '"
+                        + startTime + "' and EndTime<='" + endTime + "'");
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
