@@ -357,24 +357,29 @@ namespace ClassScheduleAPI.Controllers
                   && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                 .ToList();
 
-                    var batchID = Guid.NewGuid();
-                    foreach (var item in list)
+                    foreach (var group in list.GroupBy(p => p.BatchID))
                     {
-                        //是否覆盖，如果否则return并给出提示。如果是则删除之后所有数据并重新添加
-                        if (!isOverlap)
+                        //导入的课程，没有总的guid，根据每日课程来生成guid，否则修改的时候用guid会出问题,若需要总guid 需要扩展字段
+                        var batchID = Guid.NewGuid();
+                        foreach (var item in group)
                         {
-                            bool isExisted = CourseListRangeAny(clist, item);
-                            if (isExisted)
+                            //是否覆盖，如果否则return并给出提示。如果是则删除之后所有数据并重新添加
+                            if (!isOverlap)
                             {
-                                msg.Status = false;
-                                msg.Result = "800";
-                                return Json(msg, JsonRequestBehavior.AllowGet);
+                                bool isExisted = CourseListRangeAny(clist, item);
+                                if (isExisted)
+                                {
+                                    msg.Status = false;
+                                    msg.Result = "800";
+                                    return Json(msg, JsonRequestBehavior.AllowGet);
+                                }
                             }
+                            Course model = ObjectHelper.TransReflection<Course, Course>(item);
+                            model.ChildrenID = childrenID;
+                            model.BatchID = batchID;
+                            newCourseList.Add(model);
                         }
-                        Course model = ObjectHelper.TransReflection<Course, Course>(item);
-                        model.ChildrenID = childrenID;
-                        model.BatchID = batchID;
-                        newCourseList.Add(model);
+
                     }
                     db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '"
                         + startTime + "' and EndTime<='" + endTime + "'");

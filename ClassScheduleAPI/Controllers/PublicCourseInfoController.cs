@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
+    //弃用++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public class PublicCourseInfoController : Controller
     {
         public ActionResult Index(string openID, int publicCourseTypeID)

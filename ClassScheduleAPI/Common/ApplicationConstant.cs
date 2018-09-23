@@ -10,6 +10,6 @@ namespace ClassScheduleAPI.Common
         /// <summary>
         /// 周期。 循环天数。  【每天这个时段 / 每周这个时段】最多循环添加365天数据
         /// </summary>
-        public const int forDay = 365;
+        public const int forDay = 30*4;
     }
 }
