@@ -14,5 +14,7 @@ namespace ClassScheduleAPI.ModelsBusiness
 
         public bool IsToday { get; set; }
         public string RemindDes { get; set; }
+
+        public string ShowDate { get; set; }
     }
 }

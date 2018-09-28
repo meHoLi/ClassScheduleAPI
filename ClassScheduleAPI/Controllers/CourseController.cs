@@ -80,6 +80,14 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="publicCourseInfoID">0 代表不是公共课程的数据</param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
         public ActionResult GetChildrenCourseByDate(int childrenID, string startTime, string endTime)
         {
             LogHelper.Info("CourseController->GetChildrenCourseByDate");
@@ -126,6 +134,99 @@ namespace ClassScheduleAPI.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 【本周】页面使用接口，数据经过了展示处理
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 55, string startTime = "2018-09-24", string endTime = "2018-09-30")
+        {
+            //上午下午晚上的时间划分间隔
+            int interval = 8;
+            //上午结束时间
+            int morningEndHour = 12;
+            //下午结束时间
+            int afternoonEndHour = 18;
+            //晚上结束时间
+            int NightEndHour = 4;
+
+
+            ResponseMessage msg = new ResponseMessage();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                msg.Status = true;
+                var list = db.Course.Where(p => p.ChildrenID == childrenID
+                           && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
+                          .OrderBy(p => p.StartTime).ToList();
+                List<CourseBusiness> rList = new List<CourseBusiness>();
+                var groupList = list.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
+                //【上午】先把数据按照每天分开，然后从4点开始顺序排列
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        CourseBusiness model = new CourseBusiness();
+                        model = ObjectHelper.TransReflection<Course, CourseBusiness>(item);
+                        //【上午】：初始化为当天4点。
+                        model.ShowDate = item.StartTime.Substring(0, 11) + "0" + NightEndHour.ToString() + ":00";
+                        model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                        rList.Add(model);
+                        i++;
+                    }
+                }
+                //【下午】把下午的数据showDate更正
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        DateTime dt = DateTime.Parse(item.StartTime);
+                        //时间大于morningEndHour的，从morningEndHour开始排序
+                        if (dt.Hour > morningEndHour)
+                        {
+                            CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
+                            //初始化为当天morningEndHour点。
+                            model.ShowDate = item.StartTime.Substring(0, 11) + morningEndHour.ToString() + ":00";
+                            model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                            i++;
+                        }
+                    }
+                }
+                //【晚上】加完时间之后变为第二天凌晨的需要减去1天
+                //【下午】把下午的数据showDate更正
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        DateTime dt = DateTime.Parse(item.StartTime);
+                        if (dt.Hour > afternoonEndHour || dt.Hour < NightEndHour)
+                        {
+                            CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
+                            //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
+                            //初始化为当天afternoonEndHour点。
+                            model.ShowDate = item.StartTime.Substring(0, 11) + afternoonEndHour.ToString() + ":00";
+                            model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                            //加完时间之后变为第二天凌晨的需要减去1天
+                            DateTime sdt = DateTime.Parse(model.ShowDate);
+                            if (sdt.Day != DateTime.Parse(model.StartTime).Day) model.ShowDate = sdt.AddDays(-1).ToString(FormatDateTime.LongDateTimeStr);
+                            i++;
+
+                        }
+                    }
+                }
+                msg.Data = rList;
+            }
+            return Json(msg, JsonRequestBehavior.AllowGet);
+        }
+
+
+
 
         /// <summary>
         /// 时间范围内是否已经存在数据
@@ -299,6 +400,7 @@ namespace ClassScheduleAPI.Controllers
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
+                    msg.Data = entity.LastOrDefault();
                 }
                 catch (Exception e)
                 {
@@ -348,7 +450,8 @@ namespace ClassScheduleAPI.Controllers
                 msg.Data = new { isExistence = false };
                 try
                 {
-                    var list = db.Course.Where(p => p.PublicCourseInfoID == publicCourseInfoID).ToList();
+                    //ChildrenID=0  代表的是公共课程表的数据
+                    var list = db.Course.Where(p => p.PublicCourseInfoID == publicCourseInfoID && p.ChildrenID == 0).ToList();
                     string startTime = list.Min(p => p.StartTime);
                     string endTime = list.Max(p => p.EndTime);
                     //校验导入课程表的时间段内是否有课程冲突
@@ -375,14 +478,17 @@ namespace ClassScheduleAPI.Controllers
                                 }
                             }
                             Course model = ObjectHelper.TransReflection<Course, Course>(item);
+                            //model.PublicCourseInfoID = 0;
+                            //model.PublicCourseTypeID = 0;
                             model.ChildrenID = childrenID;
                             model.BatchID = batchID;
                             newCourseList.Add(model);
                         }
 
                     }
-                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '"
-                        + startTime + "' and EndTime<='" + endTime + "'");
+                    //db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '"
+                    //    + startTime + "' and EndTime<='" + endTime + "'");
+                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID);
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;
