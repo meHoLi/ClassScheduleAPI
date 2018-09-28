@@ -220,7 +220,7 @@ namespace ClassScheduleAPI.Controllers
                         }
                     }
                 }
-                msg.Data = rList;
+                msg.Data = rList.OrderBy(p=>p.ShowDate).ToList();
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
