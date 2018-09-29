@@ -142,7 +142,7 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 55, string startTime = "2018-09-24", string endTime = "2018-09-30")
+        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 55, string startTime = "2018-09-29", string endTime = "2018-09-30")
         {
             //上午下午晚上的时间划分间隔
             int interval = 8;
@@ -175,6 +175,7 @@ namespace ClassScheduleAPI.Controllers
                         //【上午】：初始化为当天4点。
                         model.ShowDate = item.StartTime.Substring(0, 11) + "0" + NightEndHour.ToString() + ":00";
                         model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                        model.DayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Parse(model.StartTime).DayOfWeek);
                         rList.Add(model);
                         i++;
                     }
@@ -187,11 +188,13 @@ namespace ClassScheduleAPI.Controllers
                     {
                         DateTime dt = DateTime.Parse(item.StartTime);
                         //时间大于morningEndHour的，从morningEndHour开始排序
-                        if (dt.Hour > morningEndHour)
+                        int hour = dt.Hour;
+                        if (hour == morningEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (hour > morningEndHour)
                         {
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //初始化为当天morningEndHour点。
-                            model.ShowDate = item.StartTime.Substring(0, 11) + morningEndHour.ToString() + ":00";
+                            model.ShowDate = item.StartTime.Substring(0, 11) + (morningEndHour + 1).ToString() + ":00";
                             model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
                             i++;
                         }
@@ -205,12 +208,14 @@ namespace ClassScheduleAPI.Controllers
                     foreach (var item in group)
                     {
                         DateTime dt = DateTime.Parse(item.StartTime);
-                        if (dt.Hour > afternoonEndHour || dt.Hour < NightEndHour)
+                        int hour = dt.Hour;
+                        if (hour == afternoonEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (hour > afternoonEndHour || dt.Hour < NightEndHour)
                         {
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
                             //初始化为当天afternoonEndHour点。
-                            model.ShowDate = item.StartTime.Substring(0, 11) + afternoonEndHour.ToString() + ":00";
+                            model.ShowDate = item.StartTime.Substring(0, 11) + (afternoonEndHour + 1).ToString() + ":00";
                             model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
                             //加完时间之后变为第二天凌晨的需要减去1天
                             DateTime sdt = DateTime.Parse(model.ShowDate);
@@ -220,7 +225,7 @@ namespace ClassScheduleAPI.Controllers
                         }
                     }
                 }
-                msg.Data = rList.OrderBy(p=>p.ShowDate).ToList();
+                msg.Data = rList.OrderBy(p => p.ShowDate).ToList();
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
