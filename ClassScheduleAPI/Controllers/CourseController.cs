@@ -188,13 +188,13 @@ namespace ClassScheduleAPI.Controllers
                     {
                         DateTime dt = DateTime.Parse(item.StartTime);
                         //时间大于morningEndHour的，从morningEndHour开始排序
-                        int hour = dt.Hour;
-                        if (hour == morningEndHour && dt.Minute > 0) hour = hour + 1;
-                        if (hour > morningEndHour)
+                        //int hour = dt.Hour;
+                        //if (hour == morningEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (dt.Hour >= morningEndHour)
                         {
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //初始化为当天morningEndHour点。
-                            model.ShowDate = item.StartTime.Substring(0, 11) + (morningEndHour + 1).ToString() + ":00";
+                            model.ShowDate = item.StartTime.Substring(0, 11) + morningEndHour.ToString() + ":01";
                             model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
                             i++;
                         }
@@ -209,13 +209,13 @@ namespace ClassScheduleAPI.Controllers
                     {
                         DateTime dt = DateTime.Parse(item.StartTime);
                         int hour = dt.Hour;
-                        if (hour == afternoonEndHour && dt.Minute > 0) hour = hour + 1;
-                        if (hour > afternoonEndHour || dt.Hour < NightEndHour)
+                        //if (hour == afternoonEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (hour >= afternoonEndHour || dt.Hour < NightEndHour)
                         {
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
                             //初始化为当天afternoonEndHour点。
-                            model.ShowDate = item.StartTime.Substring(0, 11) + (afternoonEndHour + 1).ToString() + ":00";
+                            model.ShowDate = item.StartTime.Substring(0, 11) + (afternoonEndHour + 1).ToString() + ":01";
                             model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
                             //加完时间之后变为第二天凌晨的需要减去1天
                             DateTime sdt = DateTime.Parse(model.ShowDate);
