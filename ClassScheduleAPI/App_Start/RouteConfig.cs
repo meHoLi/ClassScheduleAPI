@@ -19,6 +19,11 @@ namespace ClassScheduleAPI
                 //defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
                 defaults: new { controller = "Hacker", action = "Out", id = UrlParameter.Optional }
             );
+            //虚拟目录，子站点路由
+            routes.MapRoute(
+            "HouseMovingAPI",
+            "HouseMovingAPI/{controller}/{action}/{id}",
+            defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
         }
     }
 }

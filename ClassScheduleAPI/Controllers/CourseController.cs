@@ -142,14 +142,14 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 55, string startTime = "2018-09-29", string endTime = "2018-09-30")
+        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 55, string startTime = "2018-10-04", string endTime = "2018-10-05")
         {
             //上午下午晚上的时间划分间隔
             int interval = 8;
             //上午结束时间
             int morningEndHour = 12;
             //下午结束时间
-            int afternoonEndHour = 18;
+            int afternoonEndHour = 20;
             //晚上结束时间
             int NightEndHour = 4;
 
@@ -215,7 +215,7 @@ namespace ClassScheduleAPI.Controllers
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
                             //初始化为当天afternoonEndHour点。
-                            model.ShowDate = item.StartTime.Substring(0, 11) + (afternoonEndHour + 1).ToString() + ":01";
+                            model.ShowDate = item.StartTime.Substring(0, 11) + afternoonEndHour.ToString() + ":01";
                             model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
                             //加完时间之后变为第二天凌晨的需要减去1天
                             DateTime sdt = DateTime.Parse(model.ShowDate);
@@ -611,6 +611,32 @@ namespace ClassScheduleAPI.Controllers
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
+
+        /// <summary>
+        /// 公共课程表 日程的删除  用 guid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult DeleteByGuid(string batchID)
+        {
+            LogHelper.Info("CourseController->DeleteByGuid");
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                try
+                {
+                    db.Database.ExecuteSqlCommand("delete Course where BatchID='" + batchID + "'");
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+
 
         /// <summary>
         /// 重置
