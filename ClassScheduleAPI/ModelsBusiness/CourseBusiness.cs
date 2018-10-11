@@ -16,5 +16,7 @@ namespace ClassScheduleAPI.ModelsBusiness
         public string RemindDes { get; set; }
 
         public string ShowDate { get; set; }
+
+        public int ShowNum { get; set; }
     }
 }

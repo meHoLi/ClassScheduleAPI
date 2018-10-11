@@ -142,7 +142,7 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 58, string startTime = "2018-10-04", string endTime = "2018-10-05")
+        public ActionResult GetChildrenCourseByDateFormatOfWeek(int childrenID = 58, string startTime = "2018-10-12", string endTime = "2018-10-13")
         {
             //上午下午晚上的时间划分间隔
             int interval = 8;
@@ -210,7 +210,7 @@ namespace ClassScheduleAPI.Controllers
                         DateTime dt = DateTime.Parse(item.StartTime);
                         int hour = dt.Hour;
                         //if (hour == afternoonEndHour && dt.Minute > 0) hour = hour + 1;
-                        if (hour >= afternoonEndHour )
+                        if (hour >= afternoonEndHour)
                         {
                             CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
                             //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
@@ -225,7 +225,49 @@ namespace ClassScheduleAPI.Controllers
                         }
                     }
                 }
-                msg.Data = rList.OrderBy(p => p.ShowDate).ToList();
+
+                //重新构造数据  每段时间最多给8节课
+                List<CourseBusiness> rList2 = new List<CourseBusiness>();
+                var gList = rList.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
+                foreach (var group in gList)
+                {
+                    //上午
+                    var mList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + morningEndHour.ToString(),
+                          StringComparison.Ordinal) < 0).ToList();
+                    mList = mList.Take(8).ToList();
+                    int showNum = 1;
+                    foreach (var item in mList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+                    //下午
+                    var aList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + morningEndHour.ToString(),
+                          StringComparison.Ordinal) >= 0 && string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + afternoonEndHour.ToString(),
+                          StringComparison.Ordinal) < 0).ToList();
+                    aList = aList.Take(8).ToList();
+                    showNum = 9;
+                    foreach (var item in aList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+                    //晚上
+                    var nList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + afternoonEndHour.ToString(),
+                          StringComparison.Ordinal) >= 0).ToList();
+                    nList = nList.Take(8).ToList();
+                    showNum = 17;
+                    foreach (var item in nList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+                    rList2.AddRange(mList);
+                    rList2.AddRange(aList);
+                    rList2.AddRange(nList);
+
+                }
+                msg.Data = rList2.OrderBy(p => p.ShowDate).ThenBy(p => p.ShowNum); //rList.OrderBy(p => p.ShowDate).ToList();
             }
             return Json(msg, JsonRequestBehavior.AllowGet);
         }
