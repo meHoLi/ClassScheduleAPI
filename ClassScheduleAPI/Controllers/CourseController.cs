@@ -377,6 +377,7 @@ namespace ClassScheduleAPI.Controllers
         public ActionResult Update(Course model)
         {
             LogHelper.Info("CourseController->Update");
+            string oldStartTime = model.StartTime;
             string oldBatchID = model.BatchID.ToString();
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
@@ -438,11 +439,9 @@ namespace ClassScheduleAPI.Controllers
                         }
                     }
 
-                    ////导入的课程表先删除，然后重新添加
-                    //if (model.PublicCourseInfoID != 0)
-                    db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "'");
-                    //else if (model.PublicCourseInfoID == 0)//代表不是导入的
-                    //    db.Database.ExecuteSqlCommand("delete Course where ID= " + model.ID);
+                    //以前数据需要留存，今天（包含）之后的数据删除重新添加。
+                    //db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "'" );
+                    db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "' and StartTime>='" + oldStartTime + "'");
 
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
