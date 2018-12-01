@@ -181,9 +181,12 @@
     <Compile Include="Common\WebHelper.cs" />
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
+    <Compile Include="Controllers\DefaultCourseTimeSettingController.cs" />
+    <Compile Include="Controllers\DefaultCourseSettingController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\PublicCourseInfoController.cs" />
+    <Compile Include="Controllers\ChildrenStandardCourseController.cs" />
     <Compile Include="Controllers\PublicCourseTypeController.cs" />
     <Compile Include="Controllers\MemorandumController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -193,6 +196,9 @@
     </Compile>
     <Compile Include="ModelsBusiness\CourseBusiness.cs" />
     <Compile Include="Models\Children.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ChildrenStandardCourse.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ClassScheduleDBModel.Context.cs">
@@ -211,6 +217,15 @@
       <DependentUpon>ClassScheduleDBModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Course.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DefaultCourse.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DefaultCourseSetting.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DefaultCourseTimeSetting.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Memorandum.cs">

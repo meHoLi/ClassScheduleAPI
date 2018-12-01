@@ -17,11 +17,23 @@
           <Property Name="HeadPortrait" Type="varchar" MaxLength="500" />
           <Property Name="OpenID" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="ChildrenStandardCourse">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CourseName" Type="varchar" MaxLength="50" />
+          <Property Name="ChildrenID" Type="int" />
+          <Property Name="Sort" Type="int" />
+        </EntityType>
         <EntityType Name="Course">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PublicCourseTypeID" Type="int" />
+          <Property Name="PublicCourseInfoID" Type="int" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
           <Property Name="ChildrenID" Type="int" />
           <Property Name="CourseName" Type="nvarchar" MaxLength="50" />
           <Property Name="StartTime" Type="varchar" MaxLength="50" />
@@ -34,10 +46,35 @@
           <Property Name="SchoolName" Type="nvarchar" MaxLength="50" />
           <Property Name="CourseType" Type="varchar" MaxLength="50" />
           <Property Name="Frequency" Type="varchar" MaxLength="50" />
-          <Property Name="PublicCourseTypeID" Type="int" />
-          <Property Name="PublicCourseInfoID" Type="int" />
-          <Property Name="OpenID" Type="varchar" MaxLength="50" />
           <Property Name="BatchID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="DefaultCourse">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CourseName" Type="varchar" MaxLength="50" />
+          <Property Name="Sort" Type="int" />
+        </EntityType>
+        <EntityType Name="DefaultCourseSetting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ChildrenID" Type="int" />
+          <Property Name="IsOpen" Type="bit" />
+          <Property Name="MorningNum" Type="int" />
+          <Property Name="AfternoonNum" Type="int" />
+          <Property Name="NightNum" Type="int" />
+          <Property Name="Frequency" Type="int" />
+          <Property Name="CourseType" Type="int" />
+        </EntityType>
+        <EntityType Name="DefaultCourseTimeSetting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChildrenID" Type="int" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -71,7 +108,11 @@
         </EntityType>
         <EntityContainer Name="ClassScheduleDBModelStoreContainer">
           <EntitySet Name="Children" EntityType="Self.Children" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ChildrenStandardCourse" EntityType="Self.ChildrenStandardCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Course" EntityType="Self.Course" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefaultCourse" EntityType="Self.DefaultCourse" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefaultCourseSetting" EntityType="Self.DefaultCourseSetting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DefaultCourseTimeSetting" EntityType="Self.DefaultCourseTimeSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseType" EntityType="Self.PublicCourseType" Schema="dbo" store:Type="Tables" />
@@ -82,7 +123,11 @@
       <Schema Namespace="ClassScheduleDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="ClassScheduleDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Children" EntityType="ClassScheduleDBModel.Children" />
+          <EntitySet Name="ChildrenStandardCourse" EntityType="ClassScheduleDBModel.ChildrenStandardCourse" />
           <EntitySet Name="Course" EntityType="ClassScheduleDBModel.Course" />
+          <EntitySet Name="DefaultCourse" EntityType="ClassScheduleDBModel.DefaultCourse" />
+          <EntitySet Name="DefaultCourseSetting" EntityType="ClassScheduleDBModel.DefaultCourseSetting" />
+          <EntitySet Name="DefaultCourseTimeSetting" EntityType="ClassScheduleDBModel.DefaultCourseTimeSetting" />
           <EntitySet Name="Memorandum" EntityType="ClassScheduleDBModel.Memorandum" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
@@ -99,11 +144,23 @@
           <Property Name="HeadPortrait" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="ChildrenStandardCourse">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="Sort" Type="Int32" />
+        </EntityType>
         <EntityType Name="Course">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PublicCourseTypeID" Type="Int32" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ChildrenID" Type="Int32" />
           <Property Name="CourseName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
@@ -116,10 +173,35 @@
           <Property Name="SchoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PublicCourseTypeID" Type="Int32" />
-          <Property Name="PublicCourseInfoID" Type="Int32" />
-          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="BatchID" Type="Guid" />
+        </EntityType>
+        <EntityType Name="DefaultCourse">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CourseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Sort" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DefaultCourseSetting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="IsOpen" Type="Boolean" />
+          <Property Name="MorningNum" Type="Int32" />
+          <Property Name="AfternoonNum" Type="Int32" />
+          <Property Name="NightNum" Type="Int32" />
+          <Property Name="Frequency" Type="Int32" />
+          <Property Name="CourseType" Type="Int32" />
+          <Property Name="ChildrenID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="DefaultCourseTimeSetting">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -170,13 +252,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ChildrenStandardCourse">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.ChildrenStandardCourse">
+              <MappingFragment StoreEntitySet="ChildrenStandardCourse">
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
+                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Course">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Course">
               <MappingFragment StoreEntitySet="Course">
                 <ScalarProperty Name="BatchID" ColumnName="BatchID" />
-                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
-                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
-                <ScalarProperty Name="PublicCourseTypeID" ColumnName="PublicCourseTypeID" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="CourseType" ColumnName="CourseType" />
                 <ScalarProperty Name="SchoolName" ColumnName="SchoolName" />
@@ -188,6 +277,40 @@
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
                 <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
+                <ScalarProperty Name="PublicCourseTypeID" ColumnName="PublicCourseTypeID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefaultCourse">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourse">
+              <MappingFragment StoreEntitySet="DefaultCourse">
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefaultCourseSetting">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseSetting">
+              <MappingFragment StoreEntitySet="DefaultCourseSetting">
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
+                <ScalarProperty Name="CourseType" ColumnName="CourseType" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="NightNum" ColumnName="NightNum" />
+                <ScalarProperty Name="AfternoonNum" ColumnName="AfternoonNum" />
+                <ScalarProperty Name="MorningNum" ColumnName="MorningNum" />
+                <ScalarProperty Name="IsOpen" ColumnName="IsOpen" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DefaultCourseTimeSetting">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseTimeSetting">
+              <MappingFragment StoreEntitySet="DefaultCourseTimeSetting">
                 <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

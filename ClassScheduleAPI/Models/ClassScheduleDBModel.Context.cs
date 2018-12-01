@@ -26,7 +26,11 @@ namespace ClassScheduleAPI.Models
         }
     
         public virtual DbSet<Children> Children { get; set; }
+        public virtual DbSet<ChildrenStandardCourse> ChildrenStandardCourse { get; set; }
         public virtual DbSet<Course> Course { get; set; }
+        public virtual DbSet<DefaultCourse> DefaultCourse { get; set; }
+        public virtual DbSet<DefaultCourseSetting> DefaultCourseSetting { get; set; }
+        public virtual DbSet<DefaultCourseTimeSetting> DefaultCourseTimeSetting { get; set; }
         public virtual DbSet<Memorandum> Memorandum { get; set; }
         public virtual DbSet<PublicCourseInfo> PublicCourseInfo { get; set; }
         public virtual DbSet<PublicCourseType> PublicCourseType { get; set; }
