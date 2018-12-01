@@ -15,12 +15,12 @@ namespace ClassScheduleAPI.Models
     public partial class DefaultCourseSetting
     {
         public int ID { get; set; }
+        public Nullable<int> ChildrenID { get; set; }
         public Nullable<bool> IsOpen { get; set; }
         public Nullable<int> MorningNum { get; set; }
         public Nullable<int> AfternoonNum { get; set; }
         public Nullable<int> NightNum { get; set; }
         public Nullable<int> Frequency { get; set; }
         public Nullable<int> CourseType { get; set; }
-        public Nullable<int> ChildrenID { get; set; }
     }
 }

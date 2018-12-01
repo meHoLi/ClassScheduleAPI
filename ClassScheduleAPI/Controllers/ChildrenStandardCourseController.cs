@@ -22,6 +22,17 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult GetChildrenStandardCourseByID(int id)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                var model = db.ChildrenStandardCourse.FirstOrDefault(p => p.ID == id);
+                msg.Status = true;
+                msg.Data = model;
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public ActionResult Add(ChildrenStandardCourse model)
         {

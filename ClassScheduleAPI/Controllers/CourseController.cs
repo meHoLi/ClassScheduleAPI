@@ -164,7 +164,7 @@ namespace ClassScheduleAPI.Controllers
                           .OrderBy(p => p.StartTime).ToList();
                 List<CourseBusiness> rList = new List<CourseBusiness>();
                 var groupList = list.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
-                //【上午】先把数据按照每天分开，然后从4点开始顺序排列
+                //【上午】先把数据按照每天分开
                 foreach (var group in groupList)
                 {
                     int i = 0;
@@ -708,6 +708,309 @@ namespace ClassScheduleAPI.Controllers
 
 
         #endregion
+
+        #region 便捷添加课（日）程页面 ，展示课（日）程接口
+
+        /// <summary>
+        /// 便捷添加课（日）程页面 ，展示课（日）程接口
+        /// 数据是基于==》【本周】页面使用接口，数据经过了展示处理  接口
+        /// 【**重要**】去掉了+++++++++++每段时间最多给8节课+++++++++++ 的限制
+        /// 在最后面做的格式化处理
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public ActionResult GetChildrenCourseByDateFormatOfEasy(int childrenID, string startTime, string endTime)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            CourseEasyBusiness ceb = new CourseEasyBusiness();
+            List<CourseBusiness> cbList = new List<CourseBusiness>();
+            //按照“本周” 格式化好了数据
+            cbList = GetChildrenCourseByDateFormatOfWeekCopy(childrenID, startTime, endTime);
+
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                var dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.ChildrenID == childrenID);
+                if (dcs == null || dcs?.IsOpen == false)
+                {
+                    int mListMaxCount = 0;
+                    int aListMaxCount = 0;
+                    int nListMaxCount = 0;
+                    DateTime currentDate = DateTime.Parse(startTime);
+                    //分别找出7天中，课次最多的
+                    for (int j = 0; j < 7; j++)
+                    {
+                        var mList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Morning).ToList();
+                        if (mList.Count > mListMaxCount) mListMaxCount = mList.Count;
+
+                        var aList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Afternoon).ToList();
+                        if (aList.Count > aListMaxCount) aListMaxCount = aList.Count;
+
+                        var nList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Night).ToList();
+                        if (nList.Count > nListMaxCount) nListMaxCount = nList.Count;
+
+                        currentDate = currentDate.AddDays(1);
+                    }
+                    int mNum = mListMaxCount >= 3 ? mListMaxCount : 3;
+                    int aNum = aListMaxCount >= 4 ? aListMaxCount : 4;
+                    int nNum = nListMaxCount >= 3 ? nListMaxCount : 3;
+                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
+                }
+                //进行了课程默认设置
+                else if (dcs.IsOpen == true)
+                {
+
+                    DateTime currentDate = DateTime.Parse(startTime);
+                    int mNum = (int)dcs.MorningNum;
+                    int aNum = (int)dcs.AfternoonNum;
+                    int nNum = (int)dcs.NightNum;
+                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
+                }
+            }
+            msg.Status = true;
+            msg.Data = ceb;
+            return Json(msg, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 【本周】Copy
+        /// 数据是基于==》【本周】页面使用接口，数据经过了展示处理  接口
+        /// 【**重要**】去掉了+++++++++++每段时间最多给8节课+++++++++++ 的限制
+        /// 【**重要**】增加了ID  StartTime   EndTime TimeType 属性
+        /// 在最后面做的格式化处理
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public List<CourseBusiness> GetChildrenCourseByDateFormatOfWeekCopy(int childrenID, string startTime, string endTime)
+        {
+            #region  
+            //【**重要**】去掉了+++++++++++每段时间最多给8节课+++++++++++ 的限制
+            // 【**重要**】增加了ID  StartTime   EndTime TimeType属性
+
+            //上午下午晚上的时间划分间隔
+            int interval = 8;
+            //上午结束时间
+            int morningEndHour = 12;
+            //下午结束时间
+            int afternoonEndHour = 18;
+            //晚上结束时间
+            int NightEndHour = 4;
+
+
+            ResponseMessage msg = new ResponseMessage();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                msg.Status = true;
+                var list = db.Course.Where(p => p.ChildrenID == childrenID
+                           && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
+                          .OrderBy(p => p.StartTime).ToList();
+                List<CourseBusiness> rList = new List<CourseBusiness>();
+                var groupList = list.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
+                //【上午】先把数据按照每天分开
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        CourseBusiness model = new CourseBusiness();
+                        model = ObjectHelper.TransReflection<Course, CourseBusiness>(item);
+                        //【上午】：初始化为当天0点。
+                        model.ShowDate = item.StartTime.Substring(0, 11) + "00:00";
+                        model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                        model.DayOfWeek = CultureInfo.CurrentCulture.DateTimeFormat.GetDayName(DateTime.Parse(model.StartTime).DayOfWeek);
+                        model.ID = item.ID;
+                        model.StartTime = item.StartTime;
+                        model.EndTime = item.EndTime;
+                        rList.Add(model);
+                        i++;
+                    }
+                }
+                //【下午】把下午的数据showDate更正
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        DateTime dt = DateTime.Parse(item.StartTime);
+                        //时间大于morningEndHour的，从morningEndHour开始排序
+                        //int hour = dt.Hour;
+                        //if (hour == morningEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (dt.Hour >= morningEndHour)
+                        {
+                            CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
+                            //初始化为当天morningEndHour点。
+                            model.ShowDate = item.StartTime.Substring(0, 11) + morningEndHour.ToString() + ":01";
+                            model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                            i++;
+                        }
+                    }
+                }
+                //【晚上】加完时间之后变为第二天凌晨的需要减去1天
+                //【下午】把下午的数据showDate更正
+                foreach (var group in groupList)
+                {
+                    int i = 0;
+                    foreach (var item in group)
+                    {
+                        DateTime dt = DateTime.Parse(item.StartTime);
+                        int hour = dt.Hour;
+                        //if (hour == afternoonEndHour && dt.Minute > 0) hour = hour + 1;
+                        if (hour >= afternoonEndHour)
+                        {
+                            CourseBusiness model = rList.FirstOrDefault(p => p.ID == item.ID);
+                            //model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(interval).ToString(FormatDateTime.LongDateTimeStr);
+                            //初始化为当天afternoonEndHour点。
+                            model.ShowDate = item.StartTime.Substring(0, 11) + afternoonEndHour.ToString() + ":01";
+                            model.ShowDate = DateTime.Parse(model.ShowDate).AddHours(i).ToString(FormatDateTime.LongDateTimeStr);
+                            //加完时间之后变为第二天凌晨的需要减去1天
+                            //DateTime sdt = DateTime.Parse(model.ShowDate);
+                            //if (sdt.Day != DateTime.Parse(model.StartTime).Day) model.ShowDate = sdt.AddDays(-1).ToString(FormatDateTime.LongDateTimeStr);
+                            i++;
+
+                        }
+                    }
+                }
+
+                //重新构造数据  每段时间最多给8节课
+                List<CourseBusiness> rList2 = new List<CourseBusiness>();
+                var gList = rList.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
+                foreach (var group in gList)
+                {
+                    //上午
+                    var mList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + morningEndHour.ToString(),
+                          StringComparison.Ordinal) < 0).ToList();
+                    //mList = mList.Take(8).ToList();
+                    int showNum = 1;
+                    foreach (var item in mList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+                    //下午
+                    var aList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + morningEndHour.ToString(),
+                          StringComparison.Ordinal) >= 0 && string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + afternoonEndHour.ToString(),
+                          StringComparison.Ordinal) < 0).ToList();
+                    //aList = aList.Take(8).ToList();
+                    showNum = 9;
+                    foreach (var item in aList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+                    //晚上
+                    var nList = group.Where(p => string.Compare(p.StartTime, p.StartTime.Substring(0, 11) + afternoonEndHour.ToString(),
+                          StringComparison.Ordinal) >= 0).ToList();
+                    //nList = nList.Take(8).ToList();
+                    showNum = 17;
+                    foreach (var item in nList)
+                    {
+                        item.ShowNum = showNum;
+                        showNum++;
+                    }
+
+                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning);
+                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon);
+                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Night);
+
+                    rList2.AddRange(mList);
+                    rList2.AddRange(aList);
+                    rList2.AddRange(nList);
+
+                }
+                return rList2.OrderBy(p => p.ShowDate).ThenBy(p => p.ShowNum).ToList();
+            }
+
+            #endregion
+        }
+
+        private CourseEasyBusiness GetCEB(string startTime, int mNum,int aNum , int nNum, List<CourseBusiness> cbList)
+        {
+            CourseEasyBusiness ceb = new CourseEasyBusiness();
+            DateTime currentDate = DateTime.Parse(startTime);
+
+            //上午
+            for (int i = 0; i < mNum; i++)
+            {
+                List<CourseBusiness> list = new List<CourseBusiness>();
+                for (int j = 0; j < 7; j++)
+                {
+                    var mList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                    && p.TimeType == (int)EnumUnit.TimeTypeEnum.Morning).ToList();
+                    if (mList.Count() > i)
+                    {
+                        list.Add(mList.Skip(i).FirstOrDefault());
+                    }
+                    else
+                    {
+                        list.Add(new CourseBusiness());
+                    }
+                    currentDate = currentDate.AddDays(1);
+                }
+                ceb.morningList.Add(list);
+
+            }
+            //下午
+            for (int i = 0; i < aNum; i++)
+            {
+                List<CourseBusiness> list = new List<CourseBusiness>();
+                for (int j = 0; j < 7; j++)
+                {
+                    var aList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                    && p.TimeType == (int)EnumUnit.TimeTypeEnum.Afternoon).ToList();
+                    if (aList.Count() > i)
+                    {
+                        list.Add(aList.Skip(i).FirstOrDefault());
+                    }
+                    else
+                    {
+                        list.Add(new CourseBusiness());
+                    }
+                    currentDate = currentDate.AddDays(1);
+                }
+                ceb.morningList.Add(list);
+
+            }
+            //晚上
+            for (int i = 0; i < nNum; i++)
+            {
+                List<CourseBusiness> list = new List<CourseBusiness>();
+                for (int j = 0; j < 7; j++)
+                {
+                    var nList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                    && p.TimeType == (int)EnumUnit.TimeTypeEnum.Night).ToList();
+                    if (nList.Count() > i)
+                    {
+                        list.Add(nList.Skip(i).FirstOrDefault());
+                    }
+                    else
+                    {
+                        list.Add(new CourseBusiness());
+                    }
+                    currentDate = currentDate.AddDays(1);
+                }
+                ceb.morningList.Add(list);
+
+            }
+            return ceb;
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
 
 
         #region 分享成图片

@@ -194,6 +194,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="ModelsBusiness\CourseEasyBusiness.cs" />
     <Compile Include="ModelsBusiness\CourseBusiness.cs" />
     <Compile Include="Models\Children.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>

@@ -60,7 +60,7 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ChildrenID" Type="int" />
           <Property Name="IsOpen" Type="bit" />
           <Property Name="MorningNum" Type="int" />
@@ -75,6 +75,9 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="ChildrenID" Type="int" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="StartTime" Type="varchar" MaxLength="50" />
+          <Property Name="EndTime" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -187,14 +190,14 @@
           <Key>
             <PropertyRef Name="ID" />
           </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
           <Property Name="IsOpen" Type="Boolean" />
           <Property Name="MorningNum" Type="Int32" />
           <Property Name="AfternoonNum" Type="Int32" />
           <Property Name="NightNum" Type="Int32" />
           <Property Name="Frequency" Type="Int32" />
           <Property Name="CourseType" Type="Int32" />
-          <Property Name="ChildrenID" Type="Int32" />
         </EntityType>
         <EntityType Name="DefaultCourseTimeSetting">
           <Key>
@@ -202,6 +205,9 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -297,13 +303,13 @@
           <EntitySetMapping Name="DefaultCourseSetting">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseSetting">
               <MappingFragment StoreEntitySet="DefaultCourseSetting">
-                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="CourseType" ColumnName="CourseType" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="NightNum" ColumnName="NightNum" />
                 <ScalarProperty Name="AfternoonNum" ColumnName="AfternoonNum" />
                 <ScalarProperty Name="MorningNum" ColumnName="MorningNum" />
                 <ScalarProperty Name="IsOpen" ColumnName="IsOpen" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -311,6 +317,9 @@
           <EntitySetMapping Name="DefaultCourseTimeSetting">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseTimeSetting">
               <MappingFragment StoreEntitySet="DefaultCourseTimeSetting">
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>

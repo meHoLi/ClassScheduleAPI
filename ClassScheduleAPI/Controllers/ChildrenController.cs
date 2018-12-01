@@ -24,8 +24,8 @@ namespace ClassScheduleAPI.Controllers
                 msg.Status = true;
                 //try
                 //{
-                    var list = db.Children.Where(p => p.OpenID == openID).ToList();
-                    msg.Data = list;
+                var list = db.Children.Where(p => p.OpenID == openID).ToList();
+                msg.Data = list;
                 //}
                 //catch (Exception e)
                 //{
@@ -67,6 +67,15 @@ namespace ClassScheduleAPI.Controllers
                             Children model = new Children();
                             var entity = db.Children.Add(item);
                             db.SaveChanges();
+                            //初始化课程
+                            var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                            db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
+                            {
+                                ChildrenID = entity.ID,
+                                CourseName = x.CourseName,
+                                Sort = x.Sort
+                            }));
+                            db.SaveChanges();
                         }
                         msg.Status = true;
                         scope.Commit();
@@ -87,18 +96,33 @@ namespace ClassScheduleAPI.Controllers
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
-                try
+
+                using (var scope = db.Database.BeginTransaction())
                 {
-                    var entity = db.Children.Add(model);
-                    db.SaveChanges();
-                    msg.Status = true;
+                    try
+                    {
+                        var entity = db.Children.Add(model);
+                        db.SaveChanges();
+                        //初始化课程
+                        var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                        db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
+                        {
+                            ChildrenID = entity.ID,
+                            CourseName = x.CourseName,
+                            Sort = x.Sort
+                        }));
+                        msg.Status = true;
+                        db.SaveChanges();
+                        scope.Commit();
+                    }
+                    catch (Exception e)
+                    {
+                        msg.Status = false;
+                        msg.Result = "500";
+                        scope.Rollback();
+                    }
+                    return Json(msg, JsonRequestBehavior.AllowGet);
                 }
-                catch (Exception e)
-                {
-                    msg.Status = false;
-                    msg.Result = "500";
-                }
-                return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 

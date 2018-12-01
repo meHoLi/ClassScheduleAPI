@@ -16,5 +16,8 @@ namespace ClassScheduleAPI.Models
     {
         public int ID { get; set; }
         public Nullable<int> ChildrenID { get; set; }
+        public string Name { get; set; }
+        public string StartTime { get; set; }
+        public string EndTime { get; set; }
     }
 }

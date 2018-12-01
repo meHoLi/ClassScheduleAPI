@@ -35,5 +35,15 @@ namespace ClassScheduleAPI.Common
             //其它
             Other = 3,
         }
+        //时间段
+        public enum TimeTypeEnum
+        {
+            //上午
+            Morning = 1,
+            //下午
+            Afternoon = 2,
+            //晚上
+            Night = 3,
+        }
     }
 }
