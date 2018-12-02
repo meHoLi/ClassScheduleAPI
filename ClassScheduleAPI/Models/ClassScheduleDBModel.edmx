@@ -68,8 +68,8 @@
           <Property Name="MorningNum" Type="int" />
           <Property Name="AfternoonNum" Type="int" />
           <Property Name="NightNum" Type="int" />
-          <Property Name="Frequency" Type="int" />
-          <Property Name="CourseType" Type="int" />
+          <Property Name="Frequency" Type="varchar" MaxLength="50" />
+          <Property Name="CourseType" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="DefaultCourseTimeSetting">
           <Key>
@@ -201,8 +201,8 @@
           <Property Name="MorningNum" Type="Int32" />
           <Property Name="AfternoonNum" Type="Int32" />
           <Property Name="NightNum" Type="Int32" />
-          <Property Name="Frequency" Type="Int32" />
-          <Property Name="CourseType" Type="Int32" />
+          <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="DefaultCourseTimeSetting">
           <Key>

@@ -711,6 +711,16 @@ namespace ClassScheduleAPI.Controllers
 
         #region 便捷添加课（日）程页面 ，展示课（日）程接口
 
+
+        public ActionResult AddRows(int childrenID, string startTime, string endTime)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime);
+            msg.Status = true;
+            msg.Data = ceb;
+            return Json(msg, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>
         /// 便捷添加课（日）程页面 ，展示课（日）程接口
         /// 在最后面做的格式化处理
@@ -722,83 +732,7 @@ namespace ClassScheduleAPI.Controllers
         public ActionResult GetChildrenCourseByDateFormatOfEasy(int childrenID, string startTime, string endTime)
         {
             ResponseMessage msg = new ResponseMessage();
-            CourseEasyBusiness ceb = new CourseEasyBusiness();
-            List<CourseBusiness> cbList = new List<CourseBusiness>();
-            //按照“本周” 格式化好了数据
-            cbList = GetChildrenCourseByDateFormatOfWeekCopy(childrenID, startTime, endTime);
-            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-            {
-                var dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.ChildrenID == childrenID);
-                if (dcs == null || dcs?.IsOpen == false)
-                {
-                    int mListMaxCount = 0;
-                    int aListMaxCount = 0;
-                    int nListMaxCount = 0;
-                    DateTime currentDate = DateTime.Parse(startTime);
-                    //分别找出7天中，课次最多的
-                    for (int j = 0; j < 7; j++)
-                    {
-                        var mList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
-                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Morning).ToList();
-                        if (mList.Count > mListMaxCount) mListMaxCount = mList.Count;
-
-                        var aList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
-                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Afternoon).ToList();
-                        if (aList.Count > aListMaxCount) aListMaxCount = aList.Count;
-
-                        var nList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
-                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Night).ToList();
-                        if (nList.Count > nListMaxCount) nListMaxCount = nList.Count;
-
-                        currentDate = currentDate.AddDays(1);
-                    }
-                    int mNum = mListMaxCount >= 4 ? mListMaxCount : 4;
-                    int aNum = aListMaxCount >= 3 ? aListMaxCount : 3;
-                    int nNum = nListMaxCount >= 4 ? nListMaxCount : 4;
-                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
-                }
-                //进行了课程默认设置
-                else if (dcs.IsOpen == true)
-                {
-                    DateTime currentDate = DateTime.Parse(startTime);
-                    int mNum = (int)dcs.MorningNum;
-                    int aNum = (int)dcs.AfternoonNum;
-                    int nNum = (int)dcs.NightNum;
-
-                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
-                    //获取时间设置
-                    var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
-                    #region 给空数据 设置时间
-                    foreach (var lists in ceb.morningList)
-                    {
-                        foreach (var item in lists.Where(p => p.IsReal == false))
-                        {
-                            var dcts = dctsList.FirstOrDefault(p => p.CourseIndex == item.CourseIndex);
-                            item.StartTime = item.StartTime + " " + dcts.StartTime;
-                            item.EndTime = item.EndTime + " " + dcts.EndTime;
-                        }
-                    }
-                    foreach (var lists in ceb.afternoonList)
-                    {
-                        foreach (var item in lists.Where(p => p.IsReal == false))
-                        {
-                            var dcts = dctsList.FirstOrDefault(p => p.CourseIndex == item.CourseIndex);
-                            item.StartTime = item.StartTime + " " + dcts.StartTime;
-                            item.EndTime = item.EndTime + " " + dcts.EndTime;
-                        }
-                    }
-                    foreach (var lists in ceb.nightList)
-                    {
-                        foreach (var item in lists.Where(p => p.IsReal == false))
-                        {
-                            var dcts = dctsList.FirstOrDefault(p => p.CourseIndex == item.CourseIndex);
-                            item.StartTime = item.StartTime + " " + dcts.StartTime;
-                            item.EndTime = item.EndTime + " " + dcts.EndTime;
-                        }
-                    }
-                    #endregion
-                }
-            }
+            CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime);
             msg.Status = true;
             msg.Data = ceb;
             return Json(msg, JsonRequestBehavior.AllowGet);
@@ -944,8 +878,8 @@ namespace ClassScheduleAPI.Controllers
                     }
 
                     mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning);
-                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon);
-                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Night);
+                    aList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon);
+                    nList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Night);
 
                     rList2.AddRange(mList);
                     rList2.AddRange(aList);
@@ -966,6 +900,7 @@ namespace ClassScheduleAPI.Controllers
             //上午
             for (int i = 1; i <= mNum; i++)
             {
+                currentDate = DateTime.Parse(startTime);
                 List<CourseBusiness> list = new List<CourseBusiness>();
                 for (int j = 0; j < 7; j++)
                 {
@@ -978,7 +913,7 @@ namespace ClassScheduleAPI.Controllers
                     }
                     else//没有数据的用空数据补位
                     {
-                        list.Add(new CourseBusiness() { CourseIndex = i, IsReal = false, StartTime = currentDateStr, EndTime = currentDateStr });
+                        list.Add(new CourseBusiness() { CourseIndex = i, StartTime = currentDateStr, EndTime = currentDateStr });
                     }
                     currentDate = currentDate.AddDays(1);
                 }
@@ -988,10 +923,11 @@ namespace ClassScheduleAPI.Controllers
             //下午
             for (int i = mNum + 1; i <= mNum + aNum; i++)
             {
+                currentDate = DateTime.Parse(startTime);
                 List<CourseBusiness> list = new List<CourseBusiness>();
                 for (int j = 0; j < 7; j++)
                 {
-                    string currentDateStr = currentDate.ToString(FormatDateTime.ShortDateTimeStr);
+                    string currentDateStr = DateTime.Parse(startTime).ToString(FormatDateTime.ShortDateTimeStr);
                     var aList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDateStr
                     && p.TimeType == (int)EnumUnit.TimeTypeEnum.Afternoon).ToList();
                     if (aList.Any(p => p.CourseIndex == i))
@@ -1000,7 +936,7 @@ namespace ClassScheduleAPI.Controllers
                     }
                     else//没有数据的用空数据补位
                     {
-                        list.Add(new CourseBusiness() { CourseIndex = i, IsReal = false, StartTime = currentDateStr, EndTime = currentDateStr });
+                        list.Add(new CourseBusiness() { CourseIndex = i, StartTime = currentDateStr, EndTime = currentDateStr });
                     }
                     currentDate = currentDate.AddDays(1);
                 }
@@ -1010,10 +946,11 @@ namespace ClassScheduleAPI.Controllers
             //晚上
             for (int i = mNum + aNum + 1; i <= mNum + aNum + nNum; i++)
             {
+                currentDate = DateTime.Parse(startTime);
                 List<CourseBusiness> list = new List<CourseBusiness>();
                 for (int j = 0; j < 7; j++)
                 {
-                    string currentDateStr = currentDate.ToString(FormatDateTime.ShortDateTimeStr);
+                    string currentDateStr = DateTime.Parse(startTime).ToString(FormatDateTime.ShortDateTimeStr);
                     var nList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDateStr
                     && p.TimeType == (int)EnumUnit.TimeTypeEnum.Night).ToList();
                     if (nList.Any(p => p.CourseIndex == i))
@@ -1022,7 +959,7 @@ namespace ClassScheduleAPI.Controllers
                     }
                     else//没有数据的用空数据补位
                     {
-                        list.Add(new CourseBusiness() { CourseIndex = i, IsReal = false, StartTime = currentDateStr, EndTime = currentDateStr });
+                        list.Add(new CourseBusiness() { CourseIndex = i, StartTime = currentDateStr, EndTime = currentDateStr });
                     }
                     currentDate = currentDate.AddDays(1);
                 }
@@ -1031,6 +968,95 @@ namespace ClassScheduleAPI.Controllers
             }
             return ceb;
         }
+
+        private CourseEasyBusiness FormatCEB(int childrenID, string startTime, string endTime)
+        {
+            CourseEasyBusiness ceb = new CourseEasyBusiness();
+            List<CourseBusiness> cbList = new List<CourseBusiness>();
+            //按照“本周” 格式化好了数据
+            cbList = GetChildrenCourseByDateFormatOfWeekCopy(childrenID, startTime, endTime);
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                var dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.ChildrenID == childrenID);
+                //没有进行课程默认设置
+                if (dcs == null || dcs?.IsOpen == false)
+                {
+                    int mListMaxCount = 0;
+                    int aListMaxCount = 0;
+                    int nListMaxCount = 0;
+                    DateTime currentDate = DateTime.Parse(startTime);
+                    //分别找出7天中，课次最多的
+                    for (int j = 0; j < 7; j++)
+                    {
+                        var mList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Morning).ToList();
+                        if (mList.Count > mListMaxCount) mListMaxCount = mList.Count;
+
+                        var aList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Afternoon).ToList();
+                        if (aList.Count > aListMaxCount) aListMaxCount = aList.Count;
+
+                        var nList = cbList.Where(p => p.StartTime.Substring(0, 10) == currentDate.ToString(FormatDateTime.ShortDateTimeStr)
+                        && p.TimeType == (int)EnumUnit.TimeTypeEnum.Night).ToList();
+                        if (nList.Count > nListMaxCount) nListMaxCount = nList.Count;
+
+                        currentDate = currentDate.AddDays(1);
+                    }
+                    int mNum = mListMaxCount >= 4 ? mListMaxCount : 4;
+                    int aNum = aListMaxCount >= 3 ? aListMaxCount : 3;
+                    int nNum = nListMaxCount >= 4 ? nListMaxCount : 4;
+                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
+
+                    //获取时间设置
+                    var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
+                    #region 给空数据 设置时间
+
+                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID);
+                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID);
+                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID);
+
+                    #endregion
+                }
+                //进行了课程默认设置
+                else if (dcs.IsOpen == true)
+                {
+                    DateTime currentDate = DateTime.Parse(startTime);
+                    int mNum = (int)dcs.MorningNum;
+                    int aNum = (int)dcs.AfternoonNum;
+                    int nNum = (int)dcs.NightNum;
+
+                    ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
+                    //获取时间设置
+                    var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
+                    #region 给空数据 设置时间
+
+                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID);
+                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID);
+                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID);
+
+                    #endregion
+                }
+            }
+            return ceb;
+        }
+
+        private List<List<CourseBusiness>> FormatNullData(List<List<CourseBusiness>> dataSource, List<DefaultCourseTimeSetting> dctsList, DefaultCourseSetting dcs, int childrenID)
+        {
+            foreach (var lists in dataSource)
+            {
+                foreach (var item in lists.Where(p => string.IsNullOrEmpty(p.CourseName)))
+                {
+                    var dcts = dctsList.FirstOrDefault(p => p.CourseIndex == item.CourseIndex);
+                    item.StartTime = item.StartTime + " " + dcts?.StartTime;
+                    item.EndTime = item.EndTime + " " + dcts?.EndTime;
+                    item.CourseType = dcs==null?((int)EnumUnit.CourseTypeEnum.Other).ToString():dcs.CourseType;
+                    item.Frequency = dcs == null ? ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString() : dcs.CourseType;
+                    item.ChildrenID = childrenID;
+                }
+            }
+            return dataSource;
+        }
+
 
         #endregion
 
@@ -1043,14 +1069,16 @@ namespace ClassScheduleAPI.Controllers
             {
                 try
                 {
+                    var childrenID = Request.Form["childrenID"];
                     var modelList = Request.Form["modelList"];
-                    var list = JsonConvert.DeserializeObject<List<Course>>(modelList);
+                    var tempList = JsonConvert.DeserializeObject<List<CourseBusiness>>(modelList);
+                    var list = tempList.Where(p => !string.IsNullOrWhiteSpace(p.CourseName)).ToList();
+                    //新加入的课程数据集合
+                    List<Course> newCourseList = new List<Course>();
                     foreach (var model in list)
                     {
                         string oldStartTime = model.StartTime;
                         string oldBatchID = model.BatchID.ToString();
-                        //新加入的课程数据集合
-                        List<Course> newCourseList = new List<Course>();
                         model.BatchID = Guid.NewGuid();
                         var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
                         for (int i = 0; i < ApplicationConstant.forDay;)
@@ -1065,7 +1093,7 @@ namespace ClassScheduleAPI.Controllers
                                 //    msg.Result = "800";
                                 //    return Json(msg, JsonRequestBehavior.AllowGet);
                                 //}
-                                if (DateTime.Parse(oldStartTime) > DateTime.Now) newCourseList.Add(model);
+                                newCourseList.Add(model);
                                 i = ApplicationConstant.forDay;
                             }
                             else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
@@ -1079,7 +1107,7 @@ namespace ClassScheduleAPI.Controllers
                                 //    return Json(msg, JsonRequestBehavior.AllowGet);
                                 //}
                                 var t = ObjectHelper.TransReflection<Course, Course>(model);
-                                if (DateTime.Parse(oldStartTime) > DateTime.Now) newCourseList.Add(t);
+                                newCourseList.Add(t);
                                 int interval = 1;
                                 i = i + interval;
                                 model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
@@ -1096,24 +1124,141 @@ namespace ClassScheduleAPI.Controllers
                                 //    return Json(msg, JsonRequestBehavior.AllowGet);
                                 //}
                                 var t = ObjectHelper.TransReflection<Course, Course>(model);
-                                if (DateTime.Parse(oldStartTime) > DateTime.Now) newCourseList.Add(t);
+                                newCourseList.Add(t);
                                 int interval = 7;
                                 i = i + interval;
                                 model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                                 model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             }
                         }
+                    }
 
-                        //以前数据需要留存，今天（包含）之后的数据删除重新添加。
-                        //修改的逻辑的删除
-                        //db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "' and StartTime>='" + oldStartTime + "'");
-                        //本方法的逻辑的删除
-                        db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "' and StartTime>='" + DateTime.Now + "'");
+                    //以前数据需要留存，今天（包含）之后的数据删除重新添加。
+                    //修改的逻辑的删除
+                    //db.Database.ExecuteSqlCommand("delete Course where BatchID= '" + oldBatchID + "' and StartTime>='" + oldStartTime + "'");
+                    //本方法的逻辑的删除
+                    var weekIndex = (int)DateTime.Now.DayOfWeek;
+                    if (weekIndex == 0) weekIndex = 7;
+                    var delStartTime = DateTime.Now.AddDays(-weekIndex).ToString(FormatDateTime.ShortDateTimeStr);
+                    db.Database.ExecuteSqlCommand("delete Course where childrenID=" + childrenID + " and StartTime>='" + delStartTime + "'");
 
-                        var entity = db.Course.AddRange(newCourseList);
-                        db.SaveChanges();
-                        msg.Status = true;
-                        //msg.Data = entity.LastOrDefault();
+                    var entity = db.Course.AddRange(newCourseList);
+                    db.SaveChanges();
+                    msg.Status = true;
+                    //msg.Data = entity.LastOrDefault();
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        #endregion
+
+
+
+
+
+
+
+
+
+        #region 分享成图片
+        public ActionResult ShareImg()
+        {
+
+            return View();
+        }
+
+
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        /// <summary>
+        /// 和上周一样(可灵活设置时间段，和间隔)
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="startTime">开始时间</param>
+        /// <param name="endTime">结束时间</param>
+        /// <returns></returns>
+        public ActionResult AddCourseList(int childrenID, string startTime, string endTime, int interval = 7)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
+                //isExistence 是否有重复数据
+                msg.Data = new { isExistence = false };
+                try
+                {
+                    //上周开始时间
+                    string st = DateTime.Parse(startTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
+                    //上周结束时间
+                    string et = DateTime.Parse(endTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
+
+                    ////上周课程数据
+                    //var list = db.Course.Where(p => p.ChildrenID == childrenID
+                    //  && (
+                    //      (string.Compare(p.StartTime, et, StringComparison.Ordinal) <= 0 && string.Compare(et, p.EndTime, StringComparison.Ordinal) <= 0)
+                    //       ||
+                    //       (string.Compare(p.StartTime, st, StringComparison.Ordinal) <= 0 && string.Compare(st, p.EndTime, StringComparison.Ordinal) <= 0)
+                    //       ))
+                    //.ToList();
+
+                    //上周课程数据
+                    var list = db.Course.Where(p => p.ChildrenID == childrenID
+                && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
+                && string.Compare(p.EndTime, et, StringComparison.Ordinal) <= 0)
+                .ToList();
+
+                    //当前周课程数据
+                    var clist = db.Course.Where(p => p.ChildrenID == childrenID
+                  && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                  && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
+                .ToList();
+                    foreach (var item in list)
+                    {
+                        item.StartTime = DateTime.Parse(item.StartTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        item.EndTime = DateTime.Parse(item.EndTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
+                        bool isExistence = clist.Any(p => p.ChildrenID == childrenID
+                        && (
+                          (string.Compare(p.StartTime, item.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(item.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ||
+                           (string.Compare(p.StartTime, item.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(item.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
+                           ));
+                        if (!isExistence)
+                        {
+                            var entity = db.Course.Add(item);
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            //有冲突的数据，标识并提示
+                            msg.Msg += item.StartTime + ",";
+                            msg.Data = new { isExistence = true };
+                        }
                     }
                 }
                 catch (Exception e)
@@ -1125,144 +1270,30 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-    #endregion
-
-
-
-
-
-
-
-
-
-    #region 分享成图片
-    public ActionResult ShareImg()
-    {
-
-        return View();
-    }
-
-
-
-    #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /// <summary>
-    /// 和上周一样(可灵活设置时间段，和间隔)
-    /// </summary>
-    /// <param name="childrenID"></param>
-    /// <param name="startTime">开始时间</param>
-    /// <param name="endTime">结束时间</param>
-    /// <returns></returns>
-    public ActionResult AddCourseList(int childrenID, string startTime, string endTime, int interval = 7)
-    {
-        using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+        /// <summary>
+        /// 本周新加课程（清空本周课程）
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <param name="endTime"></param>
+        /// <returns></returns>
+        public ActionResult Deletes2(int childrenID, string startTime, string endTime)
         {
-            ResponseMessage msg = new ResponseMessage();
-            msg.Status = true;
-            //isExistence 是否有重复数据
-            msg.Data = new { isExistence = false };
-            try
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                //上周开始时间
-                string st = DateTime.Parse(startTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
-                //上周结束时间
-                string et = DateTime.Parse(endTime).AddDays(-interval).ToString(FormatDateTime.LongDateTimeStr);
-
-                ////上周课程数据
-                //var list = db.Course.Where(p => p.ChildrenID == childrenID
-                //  && (
-                //      (string.Compare(p.StartTime, et, StringComparison.Ordinal) <= 0 && string.Compare(et, p.EndTime, StringComparison.Ordinal) <= 0)
-                //       ||
-                //       (string.Compare(p.StartTime, st, StringComparison.Ordinal) <= 0 && string.Compare(st, p.EndTime, StringComparison.Ordinal) <= 0)
-                //       ))
-                //.ToList();
-
-                //上周课程数据
-                var list = db.Course.Where(p => p.ChildrenID == childrenID
-            && string.Compare(p.StartTime, st, StringComparison.Ordinal) >= 0
-            && string.Compare(p.EndTime, et, StringComparison.Ordinal) <= 0)
-            .ToList();
-
-                //当前周课程数据
-                var clist = db.Course.Where(p => p.ChildrenID == childrenID
-              && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
-              && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
-            .ToList();
-                foreach (var item in list)
+                ResponseMessage msg = new ResponseMessage();
+                try
                 {
-                    item.StartTime = DateTime.Parse(item.StartTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                    item.EndTime = DateTime.Parse(item.EndTime).AddDays(interval).ToString(FormatDateTime.LongDateTimeNoSecondStr);
-                    bool isExistence = clist.Any(p => p.ChildrenID == childrenID
-                    && (
-                      (string.Compare(p.StartTime, item.EndTime, StringComparison.Ordinal) <= 0 && string.Compare(item.EndTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                       ||
-                       (string.Compare(p.StartTime, item.StartTime, StringComparison.Ordinal) <= 0 && string.Compare(item.StartTime, p.EndTime, StringComparison.Ordinal) <= 0)
-                       ));
-                    if (!isExistence)
-                    {
-                        var entity = db.Course.Add(item);
-                        db.SaveChanges();
-                    }
-                    else
-                    {
-                        //有冲突的数据，标识并提示
-                        msg.Msg += item.StartTime + ",";
-                        msg.Data = new { isExistence = true };
-                    }
+                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
+                    msg.Status = true;
                 }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
             }
-            catch (Exception e)
-            {
-                msg.Status = false;
-                msg.Result = "500";
-            }
-            return Json(msg, JsonRequestBehavior.AllowGet);
         }
-    }
 
-    /// <summary>
-    /// 本周新加课程（清空本周课程）
-    /// </summary>
-    /// <param name="startTime"></param>
-    /// <param name="endTime"></param>
-    /// <returns></returns>
-    public ActionResult Deletes2(int childrenID, string startTime, string endTime)
-    {
-        using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-        {
-            ResponseMessage msg = new ResponseMessage();
-            try
-            {
-                db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '" + startTime + "' and EndTime<='" + endTime + "'");
-                msg.Status = true;
-            }
-            catch (Exception e)
-            {
-                msg.Status = false;
-                msg.Result = "500";
-            }
-            return Json(msg, JsonRequestBehavior.AllowGet);
-        }
     }
-
-}
 }
