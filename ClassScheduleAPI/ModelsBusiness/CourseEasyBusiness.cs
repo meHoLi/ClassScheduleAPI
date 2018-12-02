@@ -12,18 +12,18 @@ namespace ClassScheduleAPI.ModelsBusiness
         {
 
             morningList = new List<List<CourseBusiness>>();
-            afternoon = new List<List<CourseBusiness>>();
-            night = new List<List<CourseBusiness>>();
+            afternoonList = new List<List<CourseBusiness>>();
+            nightList = new List<List<CourseBusiness>>();
         }
         public List<List<CourseBusiness>> morningList
         {
             get; set;
         }
-        public List<List<CourseBusiness>> afternoon
+        public List<List<CourseBusiness>> afternoonList
         {
             get; set;
         }
-        public List<List<CourseBusiness>> night
+        public List<List<CourseBusiness>> nightList
         {
             get; set;
         }

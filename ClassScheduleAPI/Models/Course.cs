@@ -31,5 +31,7 @@ namespace ClassScheduleAPI.Models
         public string CourseType { get; set; }
         public string Frequency { get; set; }
         public Nullable<System.Guid> BatchID { get; set; }
+        public Nullable<int> CourseIndex { get; set; }
+        public Nullable<bool> IsReal { get; set; }
     }
 }

@@ -47,6 +47,8 @@
           <Property Name="CourseType" Type="varchar" MaxLength="50" />
           <Property Name="Frequency" Type="varchar" MaxLength="50" />
           <Property Name="BatchID" Type="uniqueidentifier" />
+          <Property Name="CourseIndex" Type="int" />
+          <Property Name="IsReal" Type="bit" />
         </EntityType>
         <EntityType Name="DefaultCourse">
           <Key>
@@ -78,6 +80,7 @@
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="StartTime" Type="varchar" MaxLength="50" />
           <Property Name="EndTime" Type="varchar" MaxLength="50" />
+          <Property Name="CourseIndex" Type="int" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -177,6 +180,8 @@
           <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="BatchID" Type="Guid" />
+          <Property Name="CourseIndex" Type="Int32" />
+          <Property Name="IsReal" Type="Boolean" />
         </EntityType>
         <EntityType Name="DefaultCourse">
           <Key>
@@ -208,6 +213,7 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CourseIndex" Type="Int32" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -271,6 +277,8 @@
           <EntitySetMapping Name="Course">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Course">
               <MappingFragment StoreEntitySet="Course">
+                <ScalarProperty Name="IsReal" ColumnName="IsReal" />
+                <ScalarProperty Name="CourseIndex" ColumnName="CourseIndex" />
                 <ScalarProperty Name="BatchID" ColumnName="BatchID" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="CourseType" ColumnName="CourseType" />
@@ -317,6 +325,7 @@
           <EntitySetMapping Name="DefaultCourseTimeSetting">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseTimeSetting">
               <MappingFragment StoreEntitySet="DefaultCourseTimeSetting">
+                <ScalarProperty Name="CourseIndex" ColumnName="CourseIndex" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />
                 <ScalarProperty Name="Name" ColumnName="Name" />

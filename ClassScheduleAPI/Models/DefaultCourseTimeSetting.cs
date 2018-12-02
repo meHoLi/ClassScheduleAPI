@@ -19,5 +19,6 @@ namespace ClassScheduleAPI.Models
         public string Name { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public Nullable<int> CourseIndex { get; set; }
     }
 }
