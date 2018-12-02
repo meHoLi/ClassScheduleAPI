@@ -755,9 +755,9 @@ namespace ClassScheduleAPI.Controllers
 
                         currentDate = currentDate.AddDays(1);
                     }
-                    int mNum = mListMaxCount >= 3 ? mListMaxCount : 3;
-                    int aNum = aListMaxCount >= 4 ? aListMaxCount : 4;
-                    int nNum = nListMaxCount >= 3 ? nListMaxCount : 3;
+                    int mNum = mListMaxCount >= 4 ? mListMaxCount : 4;
+                    int aNum = aListMaxCount >= 3 ? aListMaxCount : 3;
+                    int nNum = nListMaxCount >= 4 ? nListMaxCount : 4;
                     ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
                 }
                 //进行了课程默认设置
