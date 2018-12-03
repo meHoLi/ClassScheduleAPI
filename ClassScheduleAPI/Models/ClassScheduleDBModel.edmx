@@ -25,6 +25,7 @@
           <Property Name="CourseName" Type="varchar" MaxLength="50" />
           <Property Name="ChildrenID" Type="int" />
           <Property Name="Sort" Type="int" />
+          <Property Name="PublicCourseInfoID" Type="int" />
         </EntityType>
         <EntityType Name="Course">
           <Key>
@@ -70,6 +71,7 @@
           <Property Name="NightNum" Type="int" />
           <Property Name="Frequency" Type="varchar" MaxLength="50" />
           <Property Name="CourseType" Type="varchar" MaxLength="50" />
+          <Property Name="PublicCourseInfoID" Type="int" />
         </EntityType>
         <EntityType Name="DefaultCourseTimeSetting">
           <Key>
@@ -81,6 +83,7 @@
           <Property Name="StartTime" Type="varchar" MaxLength="50" />
           <Property Name="EndTime" Type="varchar" MaxLength="50" />
           <Property Name="CourseIndex" Type="int" />
+          <Property Name="PublicCourseInfoID" Type="int" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -170,6 +173,7 @@
           <Property Name="CourseName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="ChildrenID" Type="Int32" />
           <Property Name="Sort" Type="Int32" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
         </EntityType>
         <EntityType Name="Course">
           <Key>
@@ -215,6 +219,7 @@
           <Property Name="NightNum" Type="Int32" />
           <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CourseType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
         </EntityType>
         <EntityType Name="DefaultCourseTimeSetting">
           <Key>
@@ -226,6 +231,7 @@
           <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CourseIndex" Type="Int32" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -289,6 +295,7 @@
           <EntitySetMapping Name="ChildrenStandardCourse">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.ChildrenStandardCourse">
               <MappingFragment StoreEntitySet="ChildrenStandardCourse">
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
                 <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="CourseName" ColumnName="CourseName" />
@@ -333,6 +340,7 @@
           <EntitySetMapping Name="DefaultCourseSetting">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseSetting">
               <MappingFragment StoreEntitySet="DefaultCourseSetting">
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
                 <ScalarProperty Name="CourseType" ColumnName="CourseType" />
                 <ScalarProperty Name="Frequency" ColumnName="Frequency" />
                 <ScalarProperty Name="NightNum" ColumnName="NightNum" />
@@ -347,6 +355,7 @@
           <EntitySetMapping Name="DefaultCourseTimeSetting">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourseTimeSetting">
               <MappingFragment StoreEntitySet="DefaultCourseTimeSetting">
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
                 <ScalarProperty Name="CourseIndex" ColumnName="CourseIndex" />
                 <ScalarProperty Name="EndTime" ColumnName="EndTime" />
                 <ScalarProperty Name="StartTime" ColumnName="StartTime" />

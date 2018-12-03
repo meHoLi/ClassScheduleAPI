@@ -23,6 +23,17 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult GetDefaultCourseSettingByPublicCourseInfoID(int publicCourseInfoID)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
+                var model = db.DefaultCourseSetting.Where(p => p.PublicCourseInfoID == publicCourseInfoID).FirstOrDefault();
+                msg.Data = model;
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         public ActionResult SetModel()
         {
@@ -33,10 +44,10 @@ namespace ClassScheduleAPI.Controllers
                 {
                     //添加默认时间
                     var modelStr = Request.Form["model"];
+                    int courseClassType = int.Parse(Request.Form["courseClassType"]);
                     var model = JsonConvert.DeserializeObject<DefaultCourseSetting>(modelStr);
-                    //var isExist= db.DefaultCourseSetting.FirstOrDefault(p => p.ID == model.ID);
                     //代表添加
-                    if (model.ID==0)
+                    if (model.ID == 0)
                     {
                         var entity = db.DefaultCourseSetting.Add(model);
                     }
@@ -46,7 +57,14 @@ namespace ClassScheduleAPI.Controllers
                         db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     }
                     //删除默认时间设置
-                    db.Database.ExecuteSqlCommand("delete DefaultCourseTimeSetting where ChildrenID= " + model.ChildrenID);
+                    if (courseClassType == (int)EnumUnit.CourseClassEnum.PrivateCourse)
+                    {
+                        db.Database.ExecuteSqlCommand("delete DefaultCourseTimeSetting where ChildrenID= " + model.ChildrenID);
+                    }
+                    else
+                    {
+                        db.Database.ExecuteSqlCommand("delete DefaultCourseTimeSetting where PublicCourseInfoID= " + model.PublicCourseInfoID);
+                    }
                     //添加默认时间
                     var timeModelList = Request.Form["timeModelList"];
                     var list = JsonConvert.DeserializeObject<List<DefaultCourseTimeSetting>>(timeModelList);

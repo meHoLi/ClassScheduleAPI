@@ -10,7 +10,9 @@ namespace ClassScheduleAPI.Common
         //课程（日程）类型
         public enum CourseClassEnum
         {
-            //自己的课程表
+            /// <summary>
+            ///自己的课程表
+            /// </summary>
             PrivateCourse = 1,
             //公共课程表
             PublicCourse = 2,

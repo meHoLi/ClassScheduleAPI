@@ -712,14 +712,14 @@ namespace ClassScheduleAPI.Controllers
         #region 便捷添加课（日）程页面 ，展示课（日）程接口
 
 
-        public ActionResult AddRows(int childrenID, string startTime, string endTime)
-        {
-            ResponseMessage msg = new ResponseMessage();
-            CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime);
-            msg.Status = true;
-            msg.Data = ceb;
-            return Json(msg, JsonRequestBehavior.AllowGet);
-        }
+        //public ActionResult AddRows(int childrenID, string startTime, string endTime)
+        //{
+        //    ResponseMessage msg = new ResponseMessage();
+        //    CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime);
+        //    msg.Status = true;
+        //    msg.Data = ceb;
+        //    return Json(msg, JsonRequestBehavior.AllowGet);
+        //}
 
         /// <summary>
         /// 便捷添加课（日）程页面 ，展示课（日）程接口
@@ -729,10 +729,11 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
         /// <returns></returns>
-        public ActionResult GetChildrenCourseByDateFormatOfEasy(int childrenID, string startTime, string endTime)
+        public ActionResult GetChildrenCourseByDateFormatOfEasy(int childrenID, string startTime, string endTime,
+            int publicCourseInfoID, EnumUnit.CourseClassEnum courseClassType)
         {
             ResponseMessage msg = new ResponseMessage();
-            CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime);
+            CourseEasyBusiness ceb = FormatCEB(childrenID, startTime, endTime, publicCourseInfoID, courseClassType);
             msg.Status = true;
             msg.Data = ceb;
             return Json(msg, JsonRequestBehavior.AllowGet);
@@ -745,11 +746,14 @@ namespace ClassScheduleAPI.Controllers
         /// 【**重要**】增加了ID  StartTime   EndTime TimeType 属性
         /// 在最后面做的格式化处理
         /// </summary>
-        /// <param name="childrenID"></param>
+        /// <param name="childrenID">私有课程用，公共课程传0，历史遗留问题，以前的一些接口会有childrenID等于0的逻辑</param>
         /// <param name="startTime"></param>
         /// <param name="endTime"></param>
+        /// <param name="publicCourseInfoID">私有课程不用，公共课程用</param>
+        /// <param name="type">1是私有课程，2是公共课程</param>
         /// <returns></returns>
-        public List<CourseBusiness> GetChildrenCourseByDateFormatOfWeekCopy(int childrenID, string startTime, string endTime)
+        public List<CourseBusiness> GetChildrenCourseByDateFormatOfWeekCopy(int childrenID, string startTime, string endTime,
+            int publicCourseInfoID, EnumUnit.CourseClassEnum courseClassType)
         {
             #region  
             //【**重要**】去掉了+++++++++++每段时间最多给8节课+++++++++++ 的限制
@@ -769,10 +773,18 @@ namespace ClassScheduleAPI.Controllers
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 msg.Status = true;
-                var list = db.Course.Where(p => p.ChildrenID == childrenID
-                           && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
-                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
+                var list = new List<Course>();
+                if (courseClassType == EnumUnit.CourseClassEnum.PrivateCourse)
+                {
+                    list = db.Course.Where(p => p.ChildrenID == childrenID
+                             && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                             && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                           .OrderBy(p => p.StartTime).ToList();
+                }
+                else
+                {
+                    list = db.Course.Where(p => p.PublicCourseInfoID == publicCourseInfoID && p.ChildrenID == 0).ToList();
+                }
                 List<CourseBusiness> rList = new List<CourseBusiness>();
                 var groupList = list.GroupBy(p => p.StartTime.Substring(0, 10)).ToList();
                 //【上午】先把数据按照每天分开
@@ -877,15 +889,22 @@ namespace ClassScheduleAPI.Controllers
                         showNum++;
                     }
 
-                    mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning);
-                    aList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon);
-                    nList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Night);
+                    //mList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning);
+                    //aList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon);
+                    //nList.ForEach(x => x.TimeType = (int)EnumUnit.TimeTypeEnum.Night);
 
                     rList2.AddRange(mList);
                     rList2.AddRange(aList);
                     rList2.AddRange(nList);
 
                 }
+                //暂时按照434去划分上午下午晚上
+                rList2.ForEach(x =>
+                {
+                    if (x.CourseIndex <= 4) x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning;
+                    if (x.CourseIndex > 4 && x.CourseIndex <= 7) x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon;
+                    if (x.CourseIndex > 7) x.TimeType = (int)EnumUnit.TimeTypeEnum.Night;
+                });
                 return rList2.OrderBy(p => p.ShowDate).ThenBy(p => p.ShowNum).ToList();
             }
 
@@ -969,15 +988,38 @@ namespace ClassScheduleAPI.Controllers
             return ceb;
         }
 
-        private CourseEasyBusiness FormatCEB(int childrenID, string startTime, string endTime)
+        private CourseEasyBusiness FormatCEB(int childrenID, string startTime, string endTime, int publicCourseInfoID, EnumUnit.CourseClassEnum courseClassType)
         {
             CourseEasyBusiness ceb = new CourseEasyBusiness();
             List<CourseBusiness> cbList = new List<CourseBusiness>();
+
             //按照“本周” 格式化好了数据
-            cbList = GetChildrenCourseByDateFormatOfWeekCopy(childrenID, startTime, endTime);
+            cbList = GetChildrenCourseByDateFormatOfWeekCopy(childrenID, startTime, endTime, publicCourseInfoID, courseClassType);
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.ChildrenID == childrenID);
+                var dcs = new DefaultCourseSetting();
+
+                //获取默认设置
+                if (courseClassType == EnumUnit.CourseClassEnum.PrivateCourse)
+                {
+                    dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.ChildrenID == childrenID);
+                }
+                else
+                {
+                    dcs = db.DefaultCourseSetting.FirstOrDefault(p => p.PublicCourseInfoID == publicCourseInfoID);
+                }
+
+                //获取时间设置
+                var dctsList = new List<DefaultCourseTimeSetting>();
+                if (courseClassType == EnumUnit.CourseClassEnum.PrivateCourse)
+                {
+                    dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
+                }
+                else
+                {
+                    dctsList = db.DefaultCourseTimeSetting.Where(p => p.PublicCourseInfoID == publicCourseInfoID).ToList();
+                }
+
                 //没有进行课程默认设置
                 if (dcs == null || dcs?.IsOpen == false)
                 {
@@ -1008,12 +1050,12 @@ namespace ClassScheduleAPI.Controllers
                     ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
 
                     //获取时间设置
-                    var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
+                    //var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
                     #region 给空数据 设置时间
 
-                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID);
-                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID);
-                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID);
+                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
+                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
+                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
 
                     #endregion
                 }
@@ -1026,13 +1068,12 @@ namespace ClassScheduleAPI.Controllers
                     int nNum = (int)dcs.NightNum;
 
                     ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
-                    //获取时间设置
-                    var dctsList = db.DefaultCourseTimeSetting.Where(p => p.ChildrenID == childrenID).ToList();
+
                     #region 给空数据 设置时间
 
-                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID);
-                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID);
-                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID);
+                    ceb.morningList = FormatNullData(ceb.morningList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
+                    ceb.afternoonList = FormatNullData(ceb.afternoonList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
+                    ceb.nightList = FormatNullData(ceb.nightList, dctsList, dcs, childrenID, publicCourseInfoID, courseClassType);
 
                     #endregion
                 }
@@ -1040,7 +1081,7 @@ namespace ClassScheduleAPI.Controllers
             return ceb;
         }
 
-        private List<List<CourseBusiness>> FormatNullData(List<List<CourseBusiness>> dataSource, List<DefaultCourseTimeSetting> dctsList, DefaultCourseSetting dcs, int childrenID)
+        private List<List<CourseBusiness>> FormatNullData(List<List<CourseBusiness>> dataSource, List<DefaultCourseTimeSetting> dctsList, DefaultCourseSetting dcs, int childrenID, int publicCourseInfoID, EnumUnit.CourseClassEnum courseClassType)
         {
             foreach (var lists in dataSource)
             {
@@ -1049,9 +1090,18 @@ namespace ClassScheduleAPI.Controllers
                     var dcts = dctsList.FirstOrDefault(p => p.CourseIndex == item.CourseIndex);
                     item.StartTime = item.StartTime + " " + dcts?.StartTime;
                     item.EndTime = item.EndTime + " " + dcts?.EndTime;
-                    item.CourseType = dcs==null?((int)EnumUnit.CourseTypeEnum.Other).ToString():dcs.CourseType;
-                    item.Frequency = dcs == null ? ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString() : dcs.CourseType;
-                    item.ChildrenID = childrenID;
+                    item.CourseType = dcs == null ? ((int)EnumUnit.CourseTypeEnum.Other).ToString() : dcs.CourseType;
+                    if (courseClassType == EnumUnit.CourseClassEnum.PrivateCourse)
+                    {
+                        item.Frequency = dcs == null ? ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString() : dcs.CourseType;
+                        item.ChildrenID = childrenID;
+                    }
+                    else
+                    {
+                        item.Frequency = ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString();
+                        item.PublicCourseInfoID = publicCourseInfoID;
+                    }
+
                 }
             }
             return dataSource;
@@ -1069,6 +1119,8 @@ namespace ClassScheduleAPI.Controllers
             {
                 try
                 {
+                    int courseClassType = int.Parse(Request.Form["courseClassType"]);
+                    var publicCourseInfoID = Request.Form["publicCourseInfoID"];
                     var childrenID = Request.Form["childrenID"];
                     var modelList = Request.Form["modelList"];
                     var tempList = JsonConvert.DeserializeObject<List<CourseBusiness>>(modelList);
@@ -1080,7 +1132,6 @@ namespace ClassScheduleAPI.Controllers
                         string oldStartTime = model.StartTime;
                         string oldBatchID = model.BatchID.ToString();
                         model.BatchID = Guid.NewGuid();
-                        var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
                         for (int i = 0; i < ApplicationConstant.forDay;)
                         {
                             if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
@@ -1140,8 +1191,14 @@ namespace ClassScheduleAPI.Controllers
                     var weekIndex = (int)DateTime.Now.DayOfWeek;
                     if (weekIndex == 0) weekIndex = 7;
                     var delStartTime = DateTime.Now.AddDays(-weekIndex).ToString(FormatDateTime.ShortDateTimeStr);
-                    db.Database.ExecuteSqlCommand("delete Course where childrenID=" + childrenID + " and StartTime>='" + delStartTime + "'");
-
+                    if (courseClassType == (int)EnumUnit.CourseClassEnum.PrivateCourse)
+                    {
+                        db.Database.ExecuteSqlCommand("delete Course where childrenID=" + childrenID + " and StartTime>='" + delStartTime + "'");
+                    }
+                    else
+                    {
+                        db.Database.ExecuteSqlCommand("delete Course where PublicCourseInfoID=" + publicCourseInfoID + " and StartTime>='" + delStartTime + "'");
+                    }
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;

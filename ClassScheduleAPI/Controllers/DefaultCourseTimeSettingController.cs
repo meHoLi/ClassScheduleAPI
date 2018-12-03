@@ -23,7 +23,23 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult IndexByPublicCourseInfoID(int publicCourseInfoID)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
+                var list = db.DefaultCourseTimeSetting.Where(p => p.PublicCourseInfoID == publicCourseInfoID).ToList();
+                msg.Data = list;
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
 
+        /// <summary>
+        /// 未使用，时间是在DefaultCourseSetting/SetModel 里先删除后添加的
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <returns></returns>
         public ActionResult Update(int childrenID)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -33,6 +49,7 @@ namespace ClassScheduleAPI.Controllers
                     ResponseMessage msg = new ResponseMessage();
                     try
                     {
+                        int courseClassType = int.Parse(Request.Form["courseClassType"]);
                         db.Database.ExecuteSqlCommand("delete DefaultCourseTimeSetting where ChildrenID= " + childrenID);
                         var modelList = Request.Form["modelList"];
                         var list = JsonConvert.DeserializeObject<List<DefaultCourseTimeSetting>>(modelList);

@@ -8,7 +8,6 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    //弃用++++++++++++++++++++++++++++++++++++++++++++++++++++++
     public class PublicCourseInfoController : Controller
     {
         public ActionResult Index(string openID, int publicCourseTypeID)
@@ -67,6 +66,16 @@ namespace ClassScheduleAPI.Controllers
                     }
                     var entity = db.PublicCourseInfo.Add(model);
                     db.SaveChanges();
+                    //初始化课程
+                    var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                    db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
+                    {
+                        PublicCourseInfoID = entity.ID,
+                        CourseName = x.CourseName,
+                        Sort = x.Sort
+                    }));
+                    db.SaveChanges();
+
                     msg.Status = true;
                 }
                 catch (Exception e)

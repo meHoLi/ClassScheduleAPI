@@ -8,7 +8,7 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    public class MemorandumGroupGroupController : Controller
+    public class MemorandumGroupController : Controller
     {
         //MemorandumGroupGroup
         public ActionResult Index(string openID)

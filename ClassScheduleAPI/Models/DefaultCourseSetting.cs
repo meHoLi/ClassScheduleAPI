@@ -22,5 +22,6 @@ namespace ClassScheduleAPI.Models
         public Nullable<int> NightNum { get; set; }
         public string Frequency { get; set; }
         public string CourseType { get; set; }
+        public Nullable<int> PublicCourseInfoID { get; set; }
     }
 }

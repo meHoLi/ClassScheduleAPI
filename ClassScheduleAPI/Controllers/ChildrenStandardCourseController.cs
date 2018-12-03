@@ -22,6 +22,19 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public ActionResult IndexByPublicCourseInfoID(int publicCourseInfoID)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                msg.Status = true;
+                var list = db.ChildrenStandardCourse.Where(p => p.PublicCourseInfoID == publicCourseInfoID).OrderBy(p => p.Sort).ToList();
+                msg.Data = list;
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult GetChildrenStandardCourseByID(int id)
         {
             ResponseMessage msg = new ResponseMessage();
