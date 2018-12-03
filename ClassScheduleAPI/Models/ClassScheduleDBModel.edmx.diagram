@@ -14,6 +14,7 @@
         <EntityTypeShape EntityType="ClassScheduleDBModel.Memorandum" Width="1.5" PointX="6.75" PointY="3.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseInfo" Width="1.5" PointX="6.75" PointY="6.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseType" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.MemorandumGroup" Width="1.5" PointX="0.75" PointY="9.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

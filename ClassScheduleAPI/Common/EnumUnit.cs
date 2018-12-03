@@ -45,5 +45,14 @@ namespace ClassScheduleAPI.Common
             //晚上
             Night = 3,
         }
+
+        //备忘类型
+        public enum MemorandumTypeEnum
+        {
+            //本周备忘
+            SingleMemorandum = 1,
+            //备忘清单
+            GroupMemorandum = 2
+        }
     }
 }

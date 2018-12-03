@@ -8,65 +8,40 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    public class MemorandumController : Controller
+    public class MemorandumGroupGroupController : Controller
     {
-        //Memorandum
-        public ActionResult Index(string openID ,string startTime, string endTime)
-        {
-            LogHelper.Info("MemorandumController->Index");
-            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-            {
-                ResponseMessage msg = new ResponseMessage();
-                msg.Status = true;
-                var list = db.Memorandum.Where(p => p.OpenID == openID
-                           && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
-                           && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0
-                           && p.Type == (int)EnumUnit.MemorandumTypeEnum.SingleMemorandum).OrderBy(p => p.StartTime).ToList();
-                msg.Data = list;
-                return Json(msg, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        /// <summary>
-        /// 根据外出清单ID获取备忘列表
-        /// </summary>
-        /// <param name="groupID"></param>
-        /// <returns></returns>
-        public ActionResult GetListByGroupID( int groupID)
+        //MemorandumGroupGroup
+        public ActionResult Index(string openID)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var list = db.Memorandum.Where(p => p.GroupID == groupID
-                           && p.Type == (int)EnumUnit.MemorandumTypeEnum.GroupMemorandum).OrderBy(p => p.StartTime).ToList();
+                var list = db.MemorandumGroup.Where(p => p.OpenID == openID).OrderBy(p => p.ID).ToList();
                 msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult GetMemorandumByID(int id)
+        public ActionResult GetMemorandumGroupByID(int id)
         {
-            LogHelper.Info("MemorandumController->GetMemorandumByID");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var model = db.Memorandum.FirstOrDefault(p => p.ID == id);
+                var model = db.MemorandumGroup.FirstOrDefault(p => p.ID == id);
                 msg.Status = true;
                 msg.Data = model;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-
-        public ActionResult Add(Memorandum model)
+        public ActionResult Add(MemorandumGroup model)
         {
-            LogHelper.Info("MemorandumController->Add");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    var entity = db.Memorandum.Add(model);
+                    var entity = db.MemorandumGroup.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -79,15 +54,14 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-        public ActionResult Update(Memorandum model)
+        public ActionResult Update(MemorandumGroup model)
         {
-            LogHelper.Info("MemorandumController->Update");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Memorandum.Attach(model);
+                    db.MemorandumGroup.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     msg.Status = true;
@@ -102,13 +76,12 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult Delete(int id)
         {
-            LogHelper.Info("MemorandumController->Delete");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete Memorandum where id= " + id);
+                    db.Database.ExecuteSqlCommand("delete MemorandumGroup where id= " + id);
                     msg.Status = true;
                 }
                 catch (Exception e)
