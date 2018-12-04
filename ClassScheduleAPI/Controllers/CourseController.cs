@@ -13,7 +13,18 @@ namespace ClassScheduleAPI.Controllers
 {
     public class CourseController : Controller
     {
-
+        /// <summary>
+        /// 上午课次
+        /// </summary>
+        public const int mCourseNum = 8;
+        /// <summary>
+        /// 下午课次
+        /// </summary>
+        public const int aCourseNum = 8;
+        /// <summary>
+        /// 晚上课次
+        /// </summary>
+        public const int nCourseNum = 8;
 
         // GET: Course
         #region 私有课程表的一些操作
@@ -901,9 +912,9 @@ namespace ClassScheduleAPI.Controllers
                 //暂时按照434去划分上午下午晚上
                 rList2.ForEach(x =>
                 {
-                    if (x.CourseIndex <= 4) x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning;
-                    if (x.CourseIndex > 4 && x.CourseIndex <= 7) x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon;
-                    if (x.CourseIndex > 7) x.TimeType = (int)EnumUnit.TimeTypeEnum.Night;
+                    if (x.CourseIndex <= mCourseNum) x.TimeType = (int)EnumUnit.TimeTypeEnum.Morning;
+                    if (x.CourseIndex > mCourseNum && x.CourseIndex <= mCourseNum + aCourseNum) x.TimeType = (int)EnumUnit.TimeTypeEnum.Afternoon;
+                    if (x.CourseIndex > mCourseNum + aCourseNum) x.TimeType = (int)EnumUnit.TimeTypeEnum.Night;
                 });
                 return rList2.OrderBy(p => p.ShowDate).ThenBy(p => p.ShowNum).ToList();
             }
@@ -1044,9 +1055,9 @@ namespace ClassScheduleAPI.Controllers
 
                         currentDate = currentDate.AddDays(1);
                     }
-                    int mNum = mListMaxCount >= 4 ? mListMaxCount : 4;
-                    int aNum = aListMaxCount >= 3 ? aListMaxCount : 3;
-                    int nNum = nListMaxCount >= 4 ? nListMaxCount : 4;
+                    int mNum = mListMaxCount >= mCourseNum ? mListMaxCount : mCourseNum;
+                    int aNum = aListMaxCount >= aCourseNum ? aListMaxCount : aCourseNum;
+                    int nNum = nListMaxCount >= nCourseNum ? nListMaxCount : nCourseNum;
                     ceb = GetCEB(startTime, mNum, aNum, nNum, cbList);
 
                     //获取时间设置

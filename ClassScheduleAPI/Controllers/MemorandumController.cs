@@ -11,7 +11,7 @@ namespace ClassScheduleAPI.Controllers
     public class MemorandumController : Controller
     {
         //Memorandum
-        public ActionResult Index(string openID ,string startTime, string endTime)
+        public ActionResult Index(string openID, string startTime, string endTime)
         {
             LogHelper.Info("MemorandumController->Index");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -21,8 +21,16 @@ namespace ClassScheduleAPI.Controllers
                 var list = db.Memorandum.Where(p => p.OpenID == openID
                            && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
                            && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0
-                           && p.Type == (int)EnumUnit.MemorandumTypeEnum.SingleMemorandum).OrderBy(p => p.StartTime).ToList();
-                msg.Data = list;
+                           && p.Type == (int)EnumUnit.MemorandumTypeEnum.SingleMemorandum).ToList();
+                //, string orderBy
+                //if (orderBy == "desc")
+                //{
+                //    msg.Data = list.OrderByDescending(p => p.StartTime).ToList();
+                //}
+                //else
+                //{
+                msg.Data = list.OrderBy(p => p.StartTime).ToList();
+                //}
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
@@ -32,7 +40,7 @@ namespace ClassScheduleAPI.Controllers
         /// </summary>
         /// <param name="groupID"></param>
         /// <returns></returns>
-        public ActionResult GetListByGroupID( int groupID)
+        public ActionResult GetListByGroupID(int groupID)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
