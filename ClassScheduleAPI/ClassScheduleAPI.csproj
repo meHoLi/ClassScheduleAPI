@@ -188,6 +188,7 @@
     <Compile Include="Controllers\MemorandumGroupController.cs" />
     <Compile Include="Controllers\PublicCourseInfoController.cs" />
     <Compile Include="Controllers\ChildrenStandardCourseController.cs" />
+    <Compile Include="Controllers\GrowthDiaryController.cs" />
     <Compile Include="Controllers\PublicCourseTypeController.cs" />
     <Compile Include="Controllers\MemorandumController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -228,6 +229,9 @@
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DefaultCourseTimeSetting.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\GrowthDiary.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Memorandum.cs">

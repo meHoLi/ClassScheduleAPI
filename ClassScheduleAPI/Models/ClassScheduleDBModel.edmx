@@ -85,6 +85,24 @@
           <Property Name="CourseIndex" Type="int" />
           <Property Name="PublicCourseInfoID" Type="int" />
         </EntityType>
+        <EntityType Name="GrowthDiary">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
+          <Property Name="PublicCourseInfoID" Type="int" />
+          <Property Name="Mood" Type="varchar" MaxLength="50" />
+          <Property Name="Weather" Type="varchar" MaxLength="50" />
+          <Property Name="Content" Type="varchar" MaxLength="50" />
+          <Property Name="Img" Type="varchar" MaxLength="500" />
+          <Property Name="IsPublic" Type="bit" />
+          <Property Name="CreateName" Type="varchar" MaxLength="50" />
+          <Property Name="CreateTime" Type="varchar" MaxLength="50" />
+          <Property Name="UpdateName" Type="varchar" MaxLength="50" />
+          <Property Name="UpdateTime" Type="varchar" MaxLength="50" />
+          <Property Name="SharePublicCourseInfoID" Type="varchar" MaxLength="500" />
+        </EntityType>
         <EntityType Name="Memorandum">
           <Key>
             <PropertyRef Name="ID" />
@@ -132,6 +150,7 @@
           <EntitySet Name="DefaultCourse" EntityType="Self.DefaultCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefaultCourseSetting" EntityType="Self.DefaultCourseSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefaultCourseTimeSetting" EntityType="Self.DefaultCourseTimeSetting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GrowthDiary" EntityType="Self.GrowthDiary" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemorandumGroup" EntityType="Self.MemorandumGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
@@ -152,6 +171,7 @@
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
           <EntitySet Name="MemorandumGroup" EntityType="ClassScheduleDBModel.MemorandumGroup" />
+          <EntitySet Name="GrowthDiary" EntityType="ClassScheduleDBModel.GrowthDiary" />
         </EntityContainer>
         <EntityType Name="Children">
           <Key>
@@ -272,6 +292,24 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="GrowthDiary">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PublicCourseInfoID" Type="Int32" />
+          <Property Name="Mood" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Weather" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Content" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Img" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="IsPublic" Type="Boolean" />
+          <Property Name="CreateName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SharePublicCourseInfoID" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -405,6 +443,25 @@
               <MappingFragment StoreEntitySet="MemorandumGroup">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GrowthDiary">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.GrowthDiary">
+              <MappingFragment StoreEntitySet="GrowthDiary">
+                <ScalarProperty Name="SharePublicCourseInfoID" ColumnName="SharePublicCourseInfoID" />
+                <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
+                <ScalarProperty Name="UpdateName" ColumnName="UpdateName" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="CreateName" ColumnName="CreateName" />
+                <ScalarProperty Name="IsPublic" ColumnName="IsPublic" />
+                <ScalarProperty Name="Img" ColumnName="Img" />
+                <ScalarProperty Name="Content" ColumnName="Content" />
+                <ScalarProperty Name="Weather" ColumnName="Weather" />
+                <ScalarProperty Name="Mood" ColumnName="Mood" />
+                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
