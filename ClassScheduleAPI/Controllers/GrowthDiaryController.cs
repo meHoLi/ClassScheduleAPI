@@ -43,6 +43,8 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    model.CreateTime = DateTime.Now.ToString(FormatDateTime.LongDateTimeStr);
+                    model.UpdateTime = model.CreateTime;
                     var entity = db.GrowthDiary.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
@@ -62,6 +64,8 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+
+                    model.UpdateTime = DateTime.Now.ToString(FormatDateTime.LongDateTimeStr);
                     db.GrowthDiary.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
