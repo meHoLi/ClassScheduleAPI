@@ -13,11 +13,11 @@ namespace ClassScheduleAPI.Controllers
         {
             LogHelper.Info("HomeController->Index");
 
-            string basePath = AppDomain.CurrentDomain.BaseDirectory;
-            //https截图会有问题，但是截图百度的https就没问题。 小商帮需要用http访问页面进行截图。
-            string url = "http://www.xiaoshangbang.com/Log/index/index.html"; // @"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=WebHelper%20phantomjs&oq=c%2523%2520%25E5%2590%258E%25E5%258F%25B0%25E6%2588%25AA%25E5%258F%2596%25E9%25A1%25B5%25E9%259D%25A2&rsv_pq=96e5792a00085000&rsv_t=9987Rrvcz1cofOUpQgrDqfvssP6rAjybxcQsTEX%2F5uVjg2tNEdc7fBNtSms&rqlang=cn&rsv_enter=1&inputT=13942&rsv_n=2&rsv_sug3=46&bs=c%23%20%E5%90%8E%E5%8F%B0%E6%88%AA%E5%8F%96%E9%A1%B5%E9%9D%A2";//
-            var web = new WebHelper(url, $@"{basePath}Pic\Img\{Guid.NewGuid()}.png", $"{basePath}Pic");
-            web.GetImg();
+            //string basePath = AppDomain.CurrentDomain.BaseDirectory;
+            ////https截图会有问题，但是截图百度的https就没问题。 小商帮需要用http访问页面进行截图。
+            //string url = "http://www.xiaoshangbang.com/Log/index/index.html"; // @"https://www.baidu.com/s?ie=utf-8&f=8&rsv_bp=1&rsv_idx=1&tn=baidu&wd=WebHelper%20phantomjs&oq=c%2523%2520%25E5%2590%258E%25E5%258F%25B0%25E6%2588%25AA%25E5%258F%2596%25E9%25A1%25B5%25E9%259D%25A2&rsv_pq=96e5792a00085000&rsv_t=9987Rrvcz1cofOUpQgrDqfvssP6rAjybxcQsTEX%2F5uVjg2tNEdc7fBNtSms&rqlang=cn&rsv_enter=1&inputT=13942&rsv_n=2&rsv_sug3=46&bs=c%23%20%E5%90%8E%E5%8F%B0%E6%88%AA%E5%8F%96%E9%A1%B5%E9%9D%A2";//
+            //var web = new WebHelper(url, $@"{basePath}Pic\Img\{Guid.NewGuid()}.png", $"{basePath}Pic");
+            //web.GetImg();
             return View();
         }
 

@@ -20,16 +20,16 @@ namespace ClassScheduleAPI
                 defaults: new { controller = "Hacker", action = "Out", id = UrlParameter.Optional }
             );
 
-            //虚拟目录，子站点路由
+            //【搬家】虚拟目录，子站点路由
             routes.MapRoute(
             "HouseMovingAPI",
             "HouseMovingAPI/{controller}/{action}/{id}",
             defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
 
-            //虚拟目录，子站点路由
+            //【测试】虚拟目录，子站点路由，配置文件Key【ClassScheduleDBEntities】相同。
             routes.MapRoute(
-            "ClassScheduleAPIV3",
-            "ClassScheduleAPIV3/{controller}/{action}/{id}",
+            "ClassScheduleAPIVTest",
+            "ClassScheduleAPIVTest/{controller}/{action}/{id}",
             defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional });
         }
     }
