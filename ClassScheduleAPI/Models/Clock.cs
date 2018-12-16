@@ -12,15 +12,20 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Memorandum
+    public partial class Clock
     {
         public int ID { get; set; }
-        public Nullable<int> GroupID { get; set; }
-        public string OpenID { get; set; }
-        public string MemorandumContent { get; set; }
+        public Nullable<int> ChildrenID { get; set; }
+        public string Name { get; set; }
+        public string Frequency { get; set; }
+        public Nullable<int> ExecuteNum { get; set; }
+        public Nullable<int> ExecutedNum { get; set; }
         public string StartTime { get; set; }
         public string EndTime { get; set; }
+        public Nullable<bool> IsLimit { get; set; }
+        public Nullable<int> LimitedTime { get; set; }
         public string RemindTime { get; set; }
-        public Nullable<int> Type { get; set; }
+        public Nullable<int> ClockType { get; set; }
+        public Nullable<int> RewardPoints { get; set; }
     }
 }

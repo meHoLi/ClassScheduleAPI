@@ -68,12 +68,22 @@ namespace ClassScheduleAPI.Controllers
                             var entity = db.Children.Add(item);
                             db.SaveChanges();
                             //初始化课程
-                            var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                            var defaultCourseList = db.DefaultCourse.Where(p=>p.AppClass== ApplicationConstant.Course).OrderBy(p => p.Sort).ToList();
                             db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
                             {
                                 ChildrenID = entity.ID,
                                 CourseName = x.CourseName,
                                 Sort = x.Sort
+                            }));
+                            db.SaveChanges();
+                            //初始化打卡
+                            var clockProjectList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Clock).OrderBy(p => p.Sort).ToList();
+                            db.ClockProject.AddRange(clockProjectList.Select(x => new ClockProject()
+                            {
+                                ChildrenID = entity.ID,
+                                Name = x.CourseName,
+                                Sort = x.Sort,
+                                Type = x.Type
                             }));
                             db.SaveChanges();
                         }
@@ -104,16 +114,26 @@ namespace ClassScheduleAPI.Controllers
                         var entity = db.Children.Add(model);
                         db.SaveChanges();
                         //初始化课程
-                        var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                        var defaultCourseList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Course).OrderBy(p => p.Sort).ToList();
                         db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
                         {
                             ChildrenID = entity.ID,
                             CourseName = x.CourseName,
                             Sort = x.Sort
                         }));
-                        msg.Status = true;
+                        db.SaveChanges();
+                        //初始化打卡
+                        var clockProjectList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Clock).OrderBy(p => p.Sort).ToList();
+                        db.ClockProject.AddRange(clockProjectList.Select(x => new ClockProject()
+                        {
+                            ChildrenID = entity.ID,
+                            Name = x.CourseName,
+                            Sort = x.Sort,
+                            Type = x.Type
+                        }));
                         db.SaveChanges();
                         scope.Commit();
+                        msg.Status = true;
                     }
                     catch (Exception e)
                     {

@@ -17,5 +17,7 @@ namespace ClassScheduleAPI.Models
         public int ID { get; set; }
         public string CourseName { get; set; }
         public Nullable<int> Sort { get; set; }
+        public string AppClass { get; set; }
+        public Nullable<int> Type { get; set; }
     }
 }

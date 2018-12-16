@@ -56,5 +56,17 @@ namespace ClassScheduleAPI.Common
             //备忘清单
             GroupMemorandum = 2
         }
+
+        //推荐打卡项目类型
+        public enum ClockProjectTypeEnum
+        {
+            //习惯养成
+            Habit = 1,
+            //学习打卡
+            Study = 2,
+            //其他打卡
+            Other = 3
+
+        }
     }
 }

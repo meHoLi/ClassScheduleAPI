@@ -181,10 +181,12 @@
     <Compile Include="Common\WebHelper.cs" />
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
+    <Compile Include="Controllers\ClockController.cs" />
     <Compile Include="Controllers\DefaultCourseTimeSettingController.cs" />
     <Compile Include="Controllers\DefaultCourseSettingController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
+    <Compile Include="Controllers\ClockProjectController.cs" />
     <Compile Include="Controllers\MemorandumGroupController.cs" />
     <Compile Include="Controllers\PublicCourseInfoController.cs" />
     <Compile Include="Controllers\ChildrenStandardCourseController.cs" />
@@ -218,6 +220,12 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>ClassScheduleDBModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Clock.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ClockProject.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Course.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>

@@ -67,7 +67,7 @@ namespace ClassScheduleAPI.Controllers
                     var entity = db.PublicCourseInfo.Add(model);
                     db.SaveChanges();
                     //初始化课程
-                    var defaultCourseList = db.DefaultCourse.OrderBy(p => p.Sort).ToList();
+                    var defaultCourseList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Course).OrderBy(p => p.Sort).ToList();
                     db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
                     {
                         PublicCourseInfoID = entity.ID,
