@@ -18,7 +18,7 @@ namespace ClassScheduleAPI.Common
             PublicCourse = 2,
         }
         //课程（日程）频率
-        public enum FrequencyEnum
+        public enum CourseFrequencyEnum
         {
             //仅今天
             TodayOnly = 1,
@@ -67,6 +67,16 @@ namespace ClassScheduleAPI.Common
             //其他打卡
             Other = 3
 
+        }
+        //打卡项目频率
+        public enum ClockFrequencyEnum
+        {
+            //固定
+            Fixed = 1,
+            //按周
+            EveryWeek = 2,
+            //按月
+            EveryMouth = 3
         }
     }
 }

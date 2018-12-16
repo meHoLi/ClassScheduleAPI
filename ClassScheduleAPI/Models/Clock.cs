@@ -20,12 +20,15 @@ namespace ClassScheduleAPI.Models
         public string Frequency { get; set; }
         public Nullable<int> ExecuteNum { get; set; }
         public Nullable<int> ExecutedNum { get; set; }
-        public string StartTime { get; set; }
-        public string EndTime { get; set; }
         public Nullable<bool> IsLimit { get; set; }
         public Nullable<int> LimitedTime { get; set; }
         public string RemindTime { get; set; }
         public Nullable<int> ClockType { get; set; }
         public Nullable<int> RewardPoints { get; set; }
+        public string KeepStartTime { get; set; }
+        public string KeepEndTime { get; set; }
+        public Nullable<System.Guid> BatchID { get; set; }
+        public string ClockDate { get; set; }
+        public string DayOfWeek { get; set; }
     }
 }

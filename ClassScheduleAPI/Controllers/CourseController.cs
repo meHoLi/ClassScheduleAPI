@@ -323,7 +323,7 @@ namespace ClassScheduleAPI.Controllers
                     var courseList = db.Course.Where(p => p.ChildrenID == model.ChildrenID && model.ChildrenID != 0).ToList();
                     for (int i = 0; i < ApplicationConstant.forDay;)
                     {
-                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
+                        if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.TodayOnly).ToString())
                         {
                             bool isExisted = CourseListRangeAny(courseList, model);
                             if (isExisted)
@@ -336,7 +336,7 @@ namespace ClassScheduleAPI.Controllers
                             newCourseList.Add(model);
                             i = ApplicationConstant.forDay;
                         }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
+                        else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryDay).ToString())
                         {
                             bool isExisted = CourseListRangeAny(courseList, model);
                             if (isExisted)
@@ -353,7 +353,7 @@ namespace ClassScheduleAPI.Controllers
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
+                        else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryWeek).ToString())
                         {
                             bool isExisted = CourseListRangeAny(courseList, model);
                             if (isExisted)
@@ -401,7 +401,7 @@ namespace ClassScheduleAPI.Controllers
                     var courseList = db.Course.Where(p => p.ID != model.ID && p.ChildrenID == model.ChildrenID).ToList();
                     for (int i = 0; i < ApplicationConstant.forDay;)
                     {
-                        if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
+                        if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.TodayOnly).ToString())
                         {
                             bool isExisted = CourseListRangeAny(courseList, model);
                             if (isExisted)
@@ -414,7 +414,7 @@ namespace ClassScheduleAPI.Controllers
                             newCourseList.Add(model);
                             i = ApplicationConstant.forDay;
                         }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
+                        else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryDay).ToString())
                         {
                             //bool isExisted = CourseListRangeAny(courseList, model);
                             //if (isExisted)
@@ -431,7 +431,7 @@ namespace ClassScheduleAPI.Controllers
                             model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                         }
-                        else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
+                        else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryWeek).ToString())
                         {
                             //bool isExisted = CourseListRangeAny(courseList, model);
                             //if (isExisted)
@@ -1113,7 +1113,7 @@ namespace ClassScheduleAPI.Controllers
                     else
                     {
                         item.CourseType = ((int)EnumUnit.CourseTypeEnum.Other).ToString();
-                        item.Frequency = ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString();
+                        item.Frequency = ((int)EnumUnit.CourseFrequencyEnum.EveryWeek).ToString();
                     } 
                     if (courseClassType == EnumUnit.CourseClassEnum.PrivateCourse)
                     {
@@ -1121,7 +1121,7 @@ namespace ClassScheduleAPI.Controllers
                     }
                     else
                     {
-                        item.Frequency = ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString();
+                        item.Frequency = ((int)EnumUnit.CourseFrequencyEnum.EveryWeek).ToString();
                         item.PublicCourseInfoID = publicCourseInfoID;
                     }
 
@@ -1180,7 +1180,7 @@ namespace ClassScheduleAPI.Controllers
                         model.BatchID = Guid.NewGuid();
                         for (int i = 0; i < ApplicationConstant.forDay;)
                         {
-                            if (model.Frequency == ((int)EnumUnit.FrequencyEnum.TodayOnly).ToString())
+                            if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.TodayOnly).ToString())
                             {
                                 //bool isExisted = CourseListRangeAny(courseList, model);
                                 //if (isExisted)
@@ -1194,7 +1194,7 @@ namespace ClassScheduleAPI.Controllers
                                 newCourseList.Add(t);
                                 i = ApplicationConstant.forDay;
                             }
-                            else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryDay).ToString())
+                            else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryDay).ToString())
                             {
                                 //bool isExisted = CourseListRangeAny(courseList, model);
                                 //if (isExisted)
@@ -1211,7 +1211,7 @@ namespace ClassScheduleAPI.Controllers
                                 model.StartTime = (DateTime.Parse(model.StartTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                                 model.EndTime = (DateTime.Parse(model.EndTime).AddDays(interval)).ToString(FormatDateTime.LongDateTimeNoSecondStr);
                             }
-                            else if (model.Frequency == ((int)EnumUnit.FrequencyEnum.EveryWeek).ToString())
+                            else if (model.Frequency == ((int)EnumUnit.CourseFrequencyEnum.EveryWeek).ToString())
                             {
                                 //bool isExisted = CourseListRangeAny(courseList, model);
                                 //if (isExisted)

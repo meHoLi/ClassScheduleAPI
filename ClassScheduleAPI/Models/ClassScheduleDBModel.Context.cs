@@ -27,6 +27,7 @@ namespace ClassScheduleAPI.Models
     
         public virtual DbSet<Children> Children { get; set; }
         public virtual DbSet<ChildrenStandardCourse> ChildrenStandardCourse { get; set; }
+        public virtual DbSet<Clock> Clock { get; set; }
         public virtual DbSet<ClockProject> ClockProject { get; set; }
         public virtual DbSet<Course> Course { get; set; }
         public virtual DbSet<DefaultCourse> DefaultCourse { get; set; }
@@ -37,6 +38,5 @@ namespace ClassScheduleAPI.Models
         public virtual DbSet<MemorandumGroup> MemorandumGroup { get; set; }
         public virtual DbSet<PublicCourseInfo> PublicCourseInfo { get; set; }
         public virtual DbSet<PublicCourseType> PublicCourseType { get; set; }
-        public virtual DbSet<Clock> Clock { get; set; }
     }
 }

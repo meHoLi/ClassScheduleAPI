@@ -37,13 +37,16 @@
           <Property Name="Frequency" Type="varchar" MaxLength="50" />
           <Property Name="ExecuteNum" Type="int" />
           <Property Name="ExecutedNum" Type="int" />
-          <Property Name="StartTime" Type="varchar" MaxLength="50" />
-          <Property Name="EndTime" Type="varchar" MaxLength="50" />
           <Property Name="IsLimit" Type="bit" />
           <Property Name="LimitedTime" Type="int" />
           <Property Name="RemindTime" Type="varchar" MaxLength="50" />
           <Property Name="ClockType" Type="int" />
           <Property Name="RewardPoints" Type="int" />
+          <Property Name="KeepStartTime" Type="varchar" MaxLength="50" />
+          <Property Name="KeepEndTime" Type="varchar" MaxLength="50" />
+          <Property Name="BatchID" Type="uniqueidentifier" />
+          <Property Name="ClockDate" Type="varchar" MaxLength="50" />
+          <Property Name="DayOfWeek" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="ClockProject">
           <Key>
@@ -195,6 +198,7 @@
         <EntityContainer Name="ClassScheduleDBEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Children" EntityType="ClassScheduleDBModel.Children" />
           <EntitySet Name="ChildrenStandardCourse" EntityType="ClassScheduleDBModel.ChildrenStandardCourse" />
+          <EntitySet Name="Clock" EntityType="ClassScheduleDBModel.Clock" />
           <EntitySet Name="ClockProject" EntityType="ClassScheduleDBModel.ClockProject" />
           <EntitySet Name="Course" EntityType="ClassScheduleDBModel.Course" />
           <EntitySet Name="DefaultCourse" EntityType="ClassScheduleDBModel.DefaultCourse" />
@@ -205,7 +209,6 @@
           <EntitySet Name="MemorandumGroup" EntityType="ClassScheduleDBModel.MemorandumGroup" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
-          <EntitySet Name="Clock" EntityType="ClassScheduleDBModel.Clock" />
         </EntityContainer>
         <EntityType Name="Children">
           <Key>
@@ -228,6 +231,27 @@
           <Property Name="ChildrenID" Type="Int32" />
           <Property Name="Sort" Type="Int32" />
           <Property Name="PublicCourseInfoID" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Clock">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ExecuteNum" Type="Int32" />
+          <Property Name="ExecutedNum" Type="Int32" />
+          <Property Name="IsLimit" Type="Boolean" />
+          <Property Name="LimitedTime" Type="Int32" />
+          <Property Name="RemindTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClockType" Type="Int32" />
+          <Property Name="RewardPoints" Type="Int32" />
+          <Property Name="KeepStartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="KeepEndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="BatchID" Type="Guid" />
+          <Property Name="ClockDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DayOfWeek" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="ClockProject">
           <Key>
@@ -357,24 +381,6 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
-        <EntityType Name="Clock">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ChildrenID" Type="Int32" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Frequency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ExecuteNum" Type="Int32" />
-          <Property Name="ExecutedNum" Type="Int32" />
-          <Property Name="StartTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="EndTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="IsLimit" Type="Boolean" />
-          <Property Name="LimitedTime" Type="Int32" />
-          <Property Name="RemindTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="ClockType" Type="Int32" />
-          <Property Name="RewardPoints" Type="Int32" />
-        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -401,6 +407,28 @@
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
                 <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="CourseName" ColumnName="CourseName" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clock">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.Clock">
+              <MappingFragment StoreEntitySet="Clock">
+                <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
+                <ScalarProperty Name="ClockDate" ColumnName="ClockDate" />
+                <ScalarProperty Name="BatchID" ColumnName="BatchID" />
+                <ScalarProperty Name="KeepEndTime" ColumnName="KeepEndTime" />
+                <ScalarProperty Name="KeepStartTime" ColumnName="KeepStartTime" />
+                <ScalarProperty Name="RewardPoints" ColumnName="RewardPoints" />
+                <ScalarProperty Name="ClockType" ColumnName="ClockType" />
+                <ScalarProperty Name="RemindTime" ColumnName="RemindTime" />
+                <ScalarProperty Name="LimitedTime" ColumnName="LimitedTime" />
+                <ScalarProperty Name="IsLimit" ColumnName="IsLimit" />
+                <ScalarProperty Name="ExecutedNum" ColumnName="ExecutedNum" />
+                <ScalarProperty Name="ExecuteNum" ColumnName="ExecuteNum" />
+                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -539,25 +567,6 @@
               <MappingFragment StoreEntitySet="PublicCourseType">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Clock">
-            <EntityTypeMapping TypeName="ClassScheduleDBModel.Clock">
-              <MappingFragment StoreEntitySet="Clock">
-                <ScalarProperty Name="RewardPoints" ColumnName="RewardPoints" />
-                <ScalarProperty Name="ClockType" ColumnName="ClockType" />
-                <ScalarProperty Name="RemindTime" ColumnName="RemindTime" />
-                <ScalarProperty Name="LimitedTime" ColumnName="LimitedTime" />
-                <ScalarProperty Name="IsLimit" ColumnName="IsLimit" />
-                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
-                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
-                <ScalarProperty Name="ExecutedNum" ColumnName="ExecutedNum" />
-                <ScalarProperty Name="ExecuteNum" ColumnName="ExecuteNum" />
-                <ScalarProperty Name="Frequency" ColumnName="Frequency" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
