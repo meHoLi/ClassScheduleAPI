@@ -38,5 +38,6 @@ namespace ClassScheduleAPI.Models
         public virtual DbSet<MemorandumGroup> MemorandumGroup { get; set; }
         public virtual DbSet<PublicCourseInfo> PublicCourseInfo { get; set; }
         public virtual DbSet<PublicCourseType> PublicCourseType { get; set; }
+        public virtual DbSet<IntegralRecord> IntegralRecord { get; set; }
     }
 }

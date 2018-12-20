@@ -47,6 +47,7 @@
           <Property Name="BatchID" Type="uniqueidentifier" />
           <Property Name="ClockDate" Type="varchar" MaxLength="50" />
           <Property Name="DayOfWeek" Type="varchar" MaxLength="50" />
+          <Property Name="IsComplated" Type="bit" />
         </EntityType>
         <EntityType Name="ClockProject">
           <Key>
@@ -136,6 +137,18 @@
           <Property Name="UpdateTime" Type="varchar" MaxLength="50" />
           <Property Name="SharePublicCourseInfoID" Type="varchar" MaxLength="500" />
         </EntityType>
+        <EntityType Name="IntegralRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChildrenID" Type="int" />
+          <Property Name="CalcType" Type="int" />
+          <Property Name="Number" Type="int" />
+          <Property Name="Name" Type="varchar" MaxLength="100" />
+          <Property Name="CreateTime" Type="varchar" MaxLength="50" />
+          <Property Name="TotalNumber" Type="int" />
+        </EntityType>
         <EntityType Name="Memorandum">
           <Key>
             <PropertyRef Name="ID" />
@@ -186,6 +199,7 @@
           <EntitySet Name="DefaultCourseSetting" EntityType="Self.DefaultCourseSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefaultCourseTimeSetting" EntityType="Self.DefaultCourseTimeSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GrowthDiary" EntityType="Self.GrowthDiary" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IntegralRecord" EntityType="Self.IntegralRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemorandumGroup" EntityType="Self.MemorandumGroup" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
@@ -209,6 +223,7 @@
           <EntitySet Name="MemorandumGroup" EntityType="ClassScheduleDBModel.MemorandumGroup" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
+          <EntitySet Name="IntegralRecord" EntityType="ClassScheduleDBModel.IntegralRecord" />
         </EntityContainer>
         <EntityType Name="Children">
           <Key>
@@ -252,6 +267,7 @@
           <Property Name="BatchID" Type="Guid" />
           <Property Name="ClockDate" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="DayOfWeek" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsComplated" Type="Boolean" />
         </EntityType>
         <EntityType Name="ClockProject">
           <Key>
@@ -381,6 +397,18 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="IntegralRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="CalcType" Type="Int32" />
+          <Property Name="Number" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TotalNumber" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -414,6 +442,7 @@
           <EntitySetMapping Name="Clock">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Clock">
               <MappingFragment StoreEntitySet="Clock">
+                <ScalarProperty Name="IsComplated" ColumnName="IsComplated" />
                 <ScalarProperty Name="DayOfWeek" ColumnName="DayOfWeek" />
                 <ScalarProperty Name="ClockDate" ColumnName="ClockDate" />
                 <ScalarProperty Name="BatchID" ColumnName="BatchID" />
@@ -567,6 +596,19 @@
               <MappingFragment StoreEntitySet="PublicCourseType">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IntegralRecord">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.IntegralRecord">
+              <MappingFragment StoreEntitySet="IntegralRecord">
+                <ScalarProperty Name="TotalNumber" ColumnName="TotalNumber" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="CalcType" ColumnName="CalcType" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -30,5 +30,6 @@ namespace ClassScheduleAPI.Models
         public Nullable<System.Guid> BatchID { get; set; }
         public string ClockDate { get; set; }
         public string DayOfWeek { get; set; }
+        public Nullable<bool> IsComplated { get; set; }
     }
 }

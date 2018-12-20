@@ -22,43 +22,8 @@ namespace ClassScheduleAPI.Controllers
         /// <returns></returns>
         public ActionResult Index(int childrenID)
         {
-            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
-            {
-                ResponseMessage msg = new ResponseMessage();
-                msg.Status = true;
-                DateTime now = DateTime.Now;
-                var today = now.ToString(FormatDateTime.ShortDateTimeStr);
-                //今日是周几
-                int weekIndex = (int)now.DayOfWeek;
-                if (weekIndex == 0) weekIndex = 7;
-                //本周开始时间
-                string weekStartStr = now.AddDays(-weekIndex).ToString(FormatDateTime.ShortDateTimeStr);
-                //本周结束时间
-                string weekEndStr = now.AddDays(-weekIndex).AddDays(7).ToString(FormatDateTime.ShortDateTimeStr);
-                //本月开始时间
-                string mouthStartStr = new DateTime(now.Year, now.Month, 1).ToString(FormatDateTime.ShortDateTimeStr);
-                //本月结束时间
-                string mouthEndStr = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1).ToString(FormatDateTime.ShortDateTimeStr);
-
-                var list = db.Clock.Where(p => p.ChildrenID == childrenID).OrderBy(p => p.ID).ToList();
-                msg.Data = new
-                {
-                    //今日打卡任务
-                    todayClockList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.Fixed).ToString()
-                    && p.ClockDate == today).ToList(),
-                    //本周打卡任务
-                    weekList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.EveryWeek).ToString()
-                    && string.Compare(p.ClockDate, weekStartStr, StringComparison.Ordinal) >= 0
-                    && string.Compare(p.ClockDate, weekEndStr, StringComparison.Ordinal) <= 0).ToList(),
-                    //本月打卡任务
-                    mouthClockList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.EveryMouth).ToString()
-                    && string.Compare(p.ClockDate, mouthStartStr, StringComparison.Ordinal) >= 0
-                    && string.Compare(p.ClockDate, mouthEndStr, StringComparison.Ordinal) <= 0).ToList(),
-                    //历史打卡任务
-                    historyClockList = list.Where(p => string.Compare(p.ClockDate, today, StringComparison.Ordinal) <= 0).ToList()
-                };
-                return Json(msg, JsonRequestBehavior.AllowGet);
-            }
+            var msg = GetClockAndTomatoList(childrenID, false);
+            return Json(msg, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetClockByID(int id)
@@ -198,17 +163,60 @@ namespace ClassScheduleAPI.Controllers
         /// <returns></returns>
         public ActionResult GetTomatoHabit(int childrenID)
         {
+            var msg = GetClockAndTomatoList(childrenID, true);
+            return Json(msg, JsonRequestBehavior.AllowGet);
+        }
+
+        /// <summary>
+        /// 获取打卡列表和番茄钟列表的公共方法
+        /// </summary>
+        /// <param name="childrenID"></param>
+        /// <param name="isTomato"></param>
+        /// <returns></returns>
+        private ResponseMessage GetClockAndTomatoList(int childrenID, bool isTomato)
+        {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
                 DateTime now = DateTime.Now;
                 var today = now.ToString(FormatDateTime.ShortDateTimeStr);
+                //今日是周几
+                int weekIndex = (int)now.DayOfWeek;
+                if (weekIndex == 0) weekIndex = 7;
+                //本周开始时间
+                string weekStartStr = now.AddDays(-weekIndex).ToString(FormatDateTime.ShortDateTimeStr);
+                //本周结束时间
+                string weekEndStr = now.AddDays(-weekIndex).AddDays(7).ToString(FormatDateTime.ShortDateTimeStr);
+                //本月开始时间
+                string mouthStartStr = new DateTime(now.Year, now.Month, 1).ToString(FormatDateTime.ShortDateTimeStr);
+                //本月结束时间
+                string mouthEndStr = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1).ToString(FormatDateTime.ShortDateTimeStr);
 
-                var list = db.Clock.Where(p => p.ChildrenID == childrenID && p.IsLimit == true 
-                && p.ClockDate == today).OrderBy(p => p.ID).ToList();
-                msg.Data = list;
-                return Json(msg, JsonRequestBehavior.AllowGet);
+                var query = db.Clock.Where(p => p.ChildrenID == childrenID);
+
+                if (isTomato)
+                {
+                    query = query.Where(p => p.IsLimit == true);
+                }
+                var list = query.OrderBy(p => p.ID).ToList();
+                msg.Data = new
+                {
+                    //今日打卡任务
+                    todayClockList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.Fixed).ToString()
+                    && p.ClockDate == today).ToList(),
+                    //本周打卡任务
+                    weekList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.EveryWeek).ToString()
+                    && string.Compare(p.ClockDate, weekStartStr, StringComparison.Ordinal) >= 0
+                    && string.Compare(p.ClockDate, weekEndStr, StringComparison.Ordinal) <= 0).ToList(),
+                    //本月打卡任务
+                    mouthClockList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.EveryMouth).ToString()
+                    && string.Compare(p.ClockDate, mouthStartStr, StringComparison.Ordinal) >= 0
+                    && string.Compare(p.ClockDate, mouthEndStr, StringComparison.Ordinal) <= 0).ToList(),
+                    //历史打卡任务
+                    historyClockList = list.Where(p => string.Compare(p.ClockDate, today, StringComparison.Ordinal) <= 0).ToList()
+                };
+                return msg;
             }
         }
 

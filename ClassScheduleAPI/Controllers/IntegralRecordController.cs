@@ -8,40 +8,57 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    public class ClockProjectController : Controller
+    public class IntegralRecordController : Controller
     {
-        //ClockProject
+        //IntegralRecord
         public ActionResult Index(int childrenID)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var list = db.ClockProject.Where(p => p.ChildrenID == childrenID).OrderBy(p => p.ID).ToList();
+                var list = db.IntegralRecord.Where(p => p.ChildrenID == childrenID).OrderByDescending(p => p.ID).ToList();
                 msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult GetClockProjectByID(int id)
+        public ActionResult GetIntegralRecordByID(int id)
         {
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var model = db.ClockProject.FirstOrDefault(p => p.ID == id);
+                var model = db.IntegralRecord.FirstOrDefault(p => p.ID == id);
                 msg.Status = true;
                 msg.Data = model;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult Add(ClockProject model)
+        public ActionResult Add(IntegralRecord model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    var entity = db.ClockProject.Add(model);
+                    int totalNumber = db.IntegralRecord.Where(p => p.ChildrenID == model.ChildrenID).OrderByDescending(p => p.ID).LastOrDefault()?.TotalNumber ?? 0;
+                    model.CreateTime = DateTime.Now.ToString(FormatDateTime.LongDateTimeStr);
+                    if (model.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Plus)
+                    {
+                        model.TotalNumber += totalNumber;
+                    }
+                    else if(model.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Reduce)
+                    {
+                        if (model.TotalNumber >= totalNumber)
+                        {
+                            msg.Status = false;
+                            msg.Result = "800";
+                            msg.Msg = "兑换积分超过剩余积分";
+                            return Json(msg, JsonRequestBehavior.AllowGet);
+                        }
+                        model.TotalNumber -= totalNumber;
+                    }
+                    var entity = db.IntegralRecord.Add(model);
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -54,14 +71,14 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-        public ActionResult Update(ClockProject model)
+        public ActionResult Update(IntegralRecord model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.ClockProject.Attach(model);
+                    db.IntegralRecord.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     msg.Status = true;
@@ -81,7 +98,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete ClockProject where id= " + id);
+                    db.Database.ExecuteSqlCommand("delete IntegralRecord where id= " + id);
                     msg.Status = true;
                 }
                 catch (Exception e)

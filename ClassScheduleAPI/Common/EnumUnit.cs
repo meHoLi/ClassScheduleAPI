@@ -78,5 +78,15 @@ namespace ClassScheduleAPI.Common
             //按月
             EveryMouth = 3
         }
+
+        //积分记录变更方式
+        public enum IntegralRecordCalcTypeEnum
+        {
+            //加
+            Plus = 1,
+            //减
+            Reduce = 2
+        }
+        
     }
 }
