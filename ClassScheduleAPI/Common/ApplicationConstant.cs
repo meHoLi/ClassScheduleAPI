@@ -21,5 +21,11 @@ namespace ClassScheduleAPI.Common
         /// 打卡
         /// </summary>
         public const string Clock = "Clock";
+
+        /// <summary>
+        /// 时间后缀，用于拼接结束时间
+        /// </summary>
+        public const string EndTimeSuffix = " 23:59:59";
+
     }
 }

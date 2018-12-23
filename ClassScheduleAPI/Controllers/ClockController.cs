@@ -37,6 +37,56 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+
+        /// <summary>
+        /// 打卡
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ExecuteClock(int id, EnumUnit.ClockExecuteTypeEnum executeType)
+        {
+            ResponseMessage msg = new ResponseMessage();
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                try
+                {
+                    var model = db.Clock.FirstOrDefault(p => p.ID == id);
+                    //打卡
+                    if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
+                    {
+                        model.ExecutedNum++;
+                    }//取消打卡
+                    else if (executeType == EnumUnit.ClockExecuteTypeEnum.Cancel)
+                    {
+                        model.ExecutedNum--;
+                    }
+                    //校验是否完成本周期打卡任务
+                    if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
+                    {
+                        IntegralRecord irModel = new IntegralRecord();
+                        irModel.CalcType = (int)EnumUnit.IntegralRecordCalcTypeEnum.Plus;
+                        irModel.ChildrenID = model.ChildrenID;
+                        irModel.CreateTime = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
+                        irModel.Name = model.Name;
+                        irModel.Number = model.RewardPoints;
+                        irModel.TotalNumber = irModel.TotalNumber + irModel.Number;
+                        db.IntegralRecord.Add(irModel);
+                    }
+                    db.Entry(model).State = System.Data.Entity.EntityState.Modified;
+                    db.SaveChanges();
+                    msg.Status = true;
+                    msg.Data = model;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+
+
+        }
+
         public ActionResult Add(Clock model)
         {
             var msg = ExecAddData(model);
@@ -187,11 +237,12 @@ namespace ClassScheduleAPI.Controllers
                 //本周开始时间
                 string weekStartStr = now.AddDays(-weekIndex).ToString(FormatDateTime.ShortDateTimeStr);
                 //本周结束时间
-                string weekEndStr = now.AddDays(-weekIndex).AddDays(7).ToString(FormatDateTime.ShortDateTimeStr);
+                string weekEndStr = now.AddDays(-weekIndex).AddDays(7).ToString(FormatDateTime.ShortDateTimeStr) + ApplicationConstant.EndTimeSuffix;
                 //本月开始时间
                 string mouthStartStr = new DateTime(now.Year, now.Month, 1).ToString(FormatDateTime.ShortDateTimeStr);
                 //本月结束时间
-                string mouthEndStr = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1).ToString(FormatDateTime.ShortDateTimeStr);
+                string mouthEndStr = new DateTime(now.Year, now.Month, 1).AddMonths(1).AddDays(-1)
+                    .ToString(FormatDateTime.ShortDateTimeStr) + ApplicationConstant.EndTimeSuffix;
 
                 var query = db.Clock.Where(p => p.ChildrenID == childrenID);
 

@@ -79,6 +79,15 @@ namespace ClassScheduleAPI.Common
             EveryMouth = 3
         }
 
+        //操作类型
+        public enum ClockExecuteTypeEnum
+        {
+            //打卡
+            Punch = 1,
+            //取消打卡
+            Cancel = 2
+        }
+
         //积分记录变更方式
         public enum IntegralRecordCalcTypeEnum
         {
