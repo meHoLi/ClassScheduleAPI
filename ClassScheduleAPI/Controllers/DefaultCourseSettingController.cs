@@ -69,6 +69,10 @@ namespace ClassScheduleAPI.Controllers
                     var timeModelList = Request.Form["timeModelList"];
                     var list = JsonConvert.DeserializeObject<List<DefaultCourseTimeSetting>>(timeModelList);
                     db.DefaultCourseTimeSetting.AddRange(list);
+                    //更改课程时间  不管是默认设置，还是“新增课程（日程）”里面的手动设置，时间设置上都应该是以最后修改的那个时间为准。 
+                    //string sql =UpdateCourseTime(model.ChildrenID, model.PublicCourseInfoID, courseClassType);
+                    //db.Database.ExecuteSqlCommand(sql);
+
                     db.SaveChanges();
                     msg.Status = true;
                 }
@@ -79,6 +83,66 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+
+        public string UpdateCourseTime(int? childrenID, int? publicCourseInfoID, int courseClassType)
+        {
+            string whereSql = " ChildrenID = @ChildrenID";
+            if (courseClassType == (int)EnumUnit.CourseClassEnum.PrivateCourse)
+            {
+                whereSql = " ChildrenID = @ChildrenID";
+            }
+            else
+            {
+                whereSql = " PublicCourseInfoID = @publicCourseInfoID";
+            }
+                string sql = @"
+            --游标
+            -- 声明变量
+            DECLARE
+                @ID AS INT,
+                @StartTime AS NVARCHAR(50),
+                @EndTime AS NVARCHAR(50),
+                @CourseIndex AS INT,
+                @ChildrenID AS INT,
+                @PublicCourseInfoID AS INT,
+                @DCTSStartTime AS NVARCHAR(50),--DefaultCourseTimeSetting中的时间
+                @DCTSEndTime AS NVARCHAR(50); --DefaultCourseTimeSetting中的时间
+                set @ChildrenID = "+ childrenID + @"
+                set @PublicCourseInfoID = " + publicCourseInfoID + @"
+            -- 声明游标
+            DECLARE C_Course CURSOR FAST_FORWARD FOR
+                SELECT ID, CourseIndex, StartTime, EndTime
+                FROM Course
+                where "+ whereSql + @" 
+                ORDER BY ID;
+
+                        OPEN C_Course;
+
+                        --取第一条记录
+            FETCH NEXT FROM C_Course INTO @ID, @CourseIndex, @StartTime, @EndTime;
+
+
+                        WHILE @@FETCH_STATUS = 0
+            BEGIN
+
+                -- 操作
+                --读取DefaultCourseTimeSetting
+                select @DCTSStartTime = StartTime,@DCTSEndTime = EndTime from DefaultCourseTimeSetting where " + whereSql + @"  and CourseIndex = @CourseIndex
+                      --更新Course
+                      UPDATE Course SET StartTime = LEFT(@StartTime, 11) + @DCTSStartTime,EndTime = LEFT(@EndTime, 11) + @DCTSEndTime WHERE ID = @ID;
+
+                        --取下一条记录
+                FETCH NEXT FROM C_Course INTO @ID, @CourseIndex, @StartTime, @EndTime;
+                        END
+
+                        -- 关闭游标
+                        CLOSE C_Course;
+
+                        --释放游标
+            DEALLOCATE C_Course; ";
+            return sql;
+        }
+
         public ActionResult Delete(int id)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
