@@ -58,10 +58,12 @@ namespace ClassScheduleAPI.Controllers
                     else if (executeType == EnumUnit.ClockExecuteTypeEnum.Cancel)
                     {
                         model.ExecutedNum--;
+                        model.IsComplated = false;
                     }
                     //校验是否完成本周期打卡任务
                     if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
                     {
+                        model.IsComplated = true;
                         IntegralRecord irModel = new IntegralRecord();
                         irModel.CalcType = (int)EnumUnit.IntegralRecordCalcTypeEnum.Plus;
                         irModel.ChildrenID = model.ChildrenID;
