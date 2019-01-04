@@ -19,7 +19,7 @@
       <publishTime>07/08/2018 15:48:43</publishTime>
     </File>
     <File Include="bin/ClassScheduleAPI.dll">
-      <publishTime>12/10/2018 23:25:45</publishTime>
+      <publishTime>01/04/2019 21:54:16</publishTime>
     </File>
     <File Include="bin/EntityFramework.dll">
       <publishTime>01/04/2017 00:44:16</publishTime>
@@ -229,7 +229,7 @@
       <publishTime>07/22/2018 11:43:58</publishTime>
     </File>
     <File Include="Models/ClassScheduleDBModel.edmx.diagram">
-      <publishTime>12/16/2018 21:24:08</publishTime>
+      <publishTime>12/20/2018 21:54:40</publishTime>
     </File>
     <File Include="Pic/phantomjs.exe">
       <publishTime>01/25/2016 06:21:58</publishTime>

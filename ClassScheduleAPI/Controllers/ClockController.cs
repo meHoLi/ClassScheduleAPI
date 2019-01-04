@@ -49,10 +49,17 @@ namespace ClassScheduleAPI.Controllers
             {
                 try
                 {
-                    var model = db.Clock.FirstOrDefault(p => p.ID == id);
+                    var model = db.Clock.FirstOrDefault(p => p.ID == id);                    
                     //打卡
                     if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
                     {
+                        //已经完成打卡
+                        if (model.ExecutedNum >=model.ExecuteNum)
+                        {
+                            msg.Status = false;
+                            msg.Result = "800";
+                            return Json(msg, JsonRequestBehavior.AllowGet);
+                        }
                         model.ExecutedNum++;
                     }//取消打卡
                     else if (executeType == EnumUnit.ClockExecuteTypeEnum.Cancel)
@@ -185,7 +192,7 @@ namespace ClassScheduleAPI.Controllers
         /// </summary>
         /// <param name="batchID"></param>
         /// <returns></returns>
-        public ActionResult Delete(int batchID)
+        public ActionResult Delete(string batchID)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
