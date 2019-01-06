@@ -1,5 +1,6 @@
 ﻿using ClassScheduleAPI.Common;
 using ClassScheduleAPI.Models;
+using ClassScheduleAPI.ModelsBusiness;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,8 +18,28 @@ namespace ClassScheduleAPI.Controllers
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var list = db.IntegralRecord.Where(p => p.ChildrenID == childrenID).OrderByDescending(p => p.ID).ToList();
-                msg.Data = list;
+                var tempList = db.IntegralRecord.Where(p => p.ChildrenID == childrenID).OrderByDescending(p => p.ID).ToList();
+                var totalNumber = tempList.FirstOrDefault()?.TotalNumber ?? 0;
+                List<IntegralRecordBusiness> list = new List<IntegralRecordBusiness>();
+                foreach (var item in tempList)
+                {
+                    var bitem = ObjectHelper.TransReflection<IntegralRecord, IntegralRecordBusiness>(item);
+                    string calcStr = "获得";
+                    string prefix = "完成";
+                    if (item.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Reduce)
+                    {
+                        calcStr = "减少";
+                        prefix = "取消";
+                    }
+                    if (item.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Consum)
+                    {
+                        calcStr = "减少";
+                        prefix = "兑换";
+                    }
+                    bitem.ShowName = bitem.CreateTime + prefix + bitem.Name + calcStr + bitem.Number + "个积分";
+                    list.Add(bitem);
+                }
+                msg.Data = new { list, totalNumber };
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
@@ -34,30 +55,28 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult Add(IntegralRecord model)
+        /// <summary>
+        /// 消费积分
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult ConsumIntegralReclrd(IntegralRecord model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    int totalNumber = db.IntegralRecord.Where(p => p.ChildrenID == model.ChildrenID).OrderByDescending(p => p.ID).LastOrDefault()?.TotalNumber ?? 0;
-                    model.CreateTime = DateTime.Now.ToString(FormatDateTime.LongDateTimeStr);
-                    if (model.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Plus)
+                    var totalNumber = db.IntegralRecord.Where(p => p.ChildrenID == model.ChildrenID).OrderByDescending(p => p.ID).FirstOrDefault()?.TotalNumber ?? 0;
+                    model.CreateTime = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
+                    if (model.Number > totalNumber)
                     {
-                        model.TotalNumber += totalNumber;
+                        msg.Status = false;
+                        msg.Result = "800";
+                        msg.Msg = "兑换积分超过剩余积分";
+                        return Json(msg, JsonRequestBehavior.AllowGet);
                     }
-                    else if(model.CalcType == (int)EnumUnit.IntegralRecordCalcTypeEnum.Reduce)
-                    {
-                        if (model.TotalNumber >= totalNumber)
-                        {
-                            msg.Status = false;
-                            msg.Result = "800";
-                            msg.Msg = "兑换积分超过剩余积分";
-                            return Json(msg, JsonRequestBehavior.AllowGet);
-                        }
-                        model.TotalNumber -= totalNumber;
-                    }
+                    model.TotalNumber = totalNumber - model.Number;
                     var entity = db.IntegralRecord.Add(model);
                     db.SaveChanges();
                     msg.Status = true;

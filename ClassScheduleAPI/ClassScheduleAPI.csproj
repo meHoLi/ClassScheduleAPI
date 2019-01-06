@@ -200,6 +200,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="ModelsBusiness\ClockBusiness.cs" />
+    <Compile Include="ModelsBusiness\IntegralRecordBusiness.cs" />
     <Compile Include="ModelsBusiness\CourseEasyBusiness.cs" />
     <Compile Include="ModelsBusiness\CourseBusiness.cs" />
     <Compile Include="Models\Children.cs">

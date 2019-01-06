@@ -76,7 +76,10 @@ namespace ClassScheduleAPI.Common
             //按周
             EveryWeek = 2,
             //按月
-            EveryMouth = 3
+            EveryMouth = 3,
+            //今日新增
+            TodayAdd = 4
+
         }
 
         //操作类型
@@ -91,11 +94,13 @@ namespace ClassScheduleAPI.Common
         //积分记录变更方式
         public enum IntegralRecordCalcTypeEnum
         {
-            //加
+            //完成打卡
             Plus = 1,
-            //减
-            Reduce = 2
+            //取消完成打卡
+            Reduce = 2,
+            //兑换
+            Consum = 3
         }
-        
+
     }
 }

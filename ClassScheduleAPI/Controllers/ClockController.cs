@@ -49,12 +49,12 @@ namespace ClassScheduleAPI.Controllers
             {
                 try
                 {
-                    var model = db.Clock.FirstOrDefault(p => p.ID == id);                    
+                    var model = db.Clock.FirstOrDefault(p => p.ID == id);
                     //打卡
                     if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
                     {
                         //已经完成打卡
-                        if (model.ExecutedNum >=model.ExecuteNum)
+                        if (model.ExecutedNum >= model.ExecuteNum)
                         {
                             msg.Status = false;
                             msg.Result = "800";
@@ -66,19 +66,13 @@ namespace ClassScheduleAPI.Controllers
                     {
                         model.ExecutedNum--;
                         model.IsComplated = false;
+                        if (model.ExecutedNum == 0 && model.RewardPoints > 0) AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
                     }
                     //校验是否完成本周期打卡任务
                     if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
                     {
                         model.IsComplated = true;
-                        IntegralRecord irModel = new IntegralRecord();
-                        irModel.CalcType = (int)EnumUnit.IntegralRecordCalcTypeEnum.Plus;
-                        irModel.ChildrenID = model.ChildrenID;
-                        irModel.CreateTime = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
-                        irModel.Name = model.Name;
-                        irModel.Number = model.RewardPoints;
-                        irModel.TotalNumber = irModel.TotalNumber + irModel.Number;
-                        db.IntegralRecord.Add(irModel);
+                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
                     }
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
@@ -92,8 +86,42 @@ namespace ClassScheduleAPI.Controllers
                 }
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
+        }
 
-
+        /// <summary>
+        /// 添加积分变动
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="calcType"></param>
+        private void AddIntegralRecord(Clock model, EnumUnit.IntegralRecordCalcTypeEnum calcType)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                try
+                {
+                    var totalNumber = db.IntegralRecord.Where(p => p.ChildrenID == model.ChildrenID).OrderByDescending(p => p.ID).FirstOrDefault()?.TotalNumber ?? 0;
+                    model.IsComplated = true;
+                    IntegralRecord irModel = new IntegralRecord();
+                    irModel.CalcType = (int)calcType;
+                    irModel.ChildrenID = model.ChildrenID;
+                    irModel.CreateTime = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
+                    irModel.Number = model.RewardPoints;
+                    irModel.Name = model.Name;
+                    if (calcType == EnumUnit.IntegralRecordCalcTypeEnum.Plus)
+                    {
+                        irModel.TotalNumber = totalNumber + irModel.Number;
+                    }
+                    else
+                    {
+                        irModel.TotalNumber = totalNumber - irModel.Number;
+                    }
+                    db.IntegralRecord.Add(irModel);
+                    db.SaveChanges();
+                }
+                catch (Exception e)
+                {
+                }
+            }
         }
 
         public ActionResult Add(Clock model)
@@ -227,6 +255,34 @@ namespace ClassScheduleAPI.Controllers
         }
 
         /// <summary>
+        /// 单独添加番茄钟
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public ActionResult AddTomato(Clock model)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                try
+                {
+                    model.Frequency = ((int)EnumUnit.ClockFrequencyEnum.TodayAdd).ToString();
+                    model.ClockDate = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
+                    model.KeepStartTime = model.ClockDate;
+                    model.KeepEndTime = model.ClockDate;
+                    var entity = db.Clock.Add(model);
+                    db.SaveChanges();
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
+        /// <summary>
         /// 获取打卡列表和番茄钟列表的公共方法
         /// </summary>
         /// <param name="childrenID"></param>
@@ -274,7 +330,10 @@ namespace ClassScheduleAPI.Controllers
                     && string.Compare(p.ClockDate, mouthStartStr, StringComparison.Ordinal) >= 0
                     && string.Compare(p.ClockDate, mouthEndStr, StringComparison.Ordinal) <= 0).ToList(),
                     //历史打卡任务
-                    historyClockList = list.Where(p => string.Compare(p.ClockDate, today, StringComparison.Ordinal) <= 0).ToList()
+                    historyClockList = list.Where(p => string.Compare(p.ClockDate, today, StringComparison.Ordinal) <= 0).ToList(),
+                    //今日自定义打卡任务
+                    todayAddList = list.Where(p => p.Frequency == ((int)EnumUnit.ClockFrequencyEnum.TodayAdd).ToString()
+                    && p.ClockDate == today).ToList(),
                 };
                 return msg;
             }
