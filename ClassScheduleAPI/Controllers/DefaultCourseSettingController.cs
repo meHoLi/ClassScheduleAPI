@@ -69,11 +69,11 @@ namespace ClassScheduleAPI.Controllers
                     var timeModelList = Request.Form["timeModelList"];
                     var list = JsonConvert.DeserializeObject<List<DefaultCourseTimeSetting>>(timeModelList);
                     db.DefaultCourseTimeSetting.AddRange(list);
-                    //更改课程时间  不管是默认设置，还是“新增课程（日程）”里面的手动设置，时间设置上都应该是以最后修改的那个时间为准。 
-                    //string sql =UpdateCourseTime(model.ChildrenID, model.PublicCourseInfoID, courseClassType);
-                    //db.Database.ExecuteSqlCommand(sql);
-
                     db.SaveChanges();
+                    //上面的时间加上之后再修改下面的时间
+                    //更改课程时间  不管是默认设置，还是“新增课程（日程）”里面的手动设置，时间设置上都应该是以最后修改的那个时间为准。 
+                    string sql = UpdateCourseTime(model.ChildrenID, model.PublicCourseInfoID, courseClassType);
+                    db.Database.ExecuteSqlCommand(sql);
                     msg.Status = true;
                 }
                 catch (Exception e)
@@ -87,15 +87,18 @@ namespace ClassScheduleAPI.Controllers
         public string UpdateCourseTime(int? childrenID, int? publicCourseInfoID, int courseClassType)
         {
             string whereSql = " ChildrenID = @ChildrenID";
+            string setDeclare = "set @ChildrenID = " + childrenID;
             if (courseClassType == (int)EnumUnit.CourseClassEnum.PrivateCourse)
             {
                 whereSql = " ChildrenID = @ChildrenID";
+                setDeclare = " @ChildrenID = " + childrenID;
             }
             else
             {
                 whereSql = " PublicCourseInfoID = @publicCourseInfoID";
+                setDeclare = " @PublicCourseInfoID = " + publicCourseInfoID;
             }
-                string sql = @"
+            string sql = @"
             --游标
             -- 声明变量
             DECLARE
@@ -107,13 +110,12 @@ namespace ClassScheduleAPI.Controllers
                 @PublicCourseInfoID AS INT,
                 @DCTSStartTime AS NVARCHAR(50),--DefaultCourseTimeSetting中的时间
                 @DCTSEndTime AS NVARCHAR(50); --DefaultCourseTimeSetting中的时间
-                set @ChildrenID = "+ childrenID + @"
-                set @PublicCourseInfoID = " + publicCourseInfoID + @"
+                set " + setDeclare + @"
             -- 声明游标
             DECLARE C_Course CURSOR FAST_FORWARD FOR
                 SELECT ID, CourseIndex, StartTime, EndTime
                 FROM Course
-                where "+ whereSql + @" 
+                where " + whereSql + @" 
                 ORDER BY ID;
 
                         OPEN C_Course;
