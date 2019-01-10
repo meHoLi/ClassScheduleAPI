@@ -53,6 +53,8 @@ namespace ClassScheduleAPI.Controllers
                     //打卡
                     if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
                     {
+                        //增加积分
+                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
                         //已经完成打卡
                         if (model.ExecutedNum >= model.ExecuteNum)
                         {
@@ -64,15 +66,23 @@ namespace ClassScheduleAPI.Controllers
                     }//取消打卡
                     else if (executeType == EnumUnit.ClockExecuteTypeEnum.Cancel)
                     {
+                        //已取消完所有打卡
+                        if (model.ExecutedNum == 0)
+                        {
+                            msg.Status = false;
+                            msg.Result = "801";
+                            return Json(msg, JsonRequestBehavior.AllowGet);
+                        }
                         model.ExecutedNum--;
                         model.IsComplated = false;
-                        if (model.ExecutedNum == 0 && model.RewardPoints > 0) AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
+
+                        //减少积分
+                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
                     }
                     //校验是否完成本周期打卡任务
                     if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
                     {
                         model.IsComplated = true;
-                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
                     }
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
