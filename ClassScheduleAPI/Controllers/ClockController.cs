@@ -54,7 +54,10 @@ namespace ClassScheduleAPI.Controllers
                     if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
                     {
                         //增加积分
-                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
+                        if (model.RewardPoints > 0)
+                        {
+                            AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
+                        }
                         //已经完成打卡
                         if (model.ExecutedNum >= model.ExecuteNum)
                         {
@@ -77,10 +80,13 @@ namespace ClassScheduleAPI.Controllers
                         model.IsComplated = false;
 
                         //减少积分
-                        AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
+                        if (model.RewardPoints > 0)
+                        {
+                            AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
+                        }
                     }
                     //校验是否完成本周期打卡任务
-                    if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
+                    if (model.ExecutedNum == model.ExecuteNum)
                     {
                         model.IsComplated = true;
                     }
