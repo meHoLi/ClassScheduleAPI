@@ -18,6 +18,15 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
                 var list = db.PublicCourseInfo.Where(p => p.OpenID == openID && p.PublicCourseTypeID == publicCourseTypeID).ToList();
+                ////如果没有"家庭日记"默认增加
+                //if (!list.Any(p=>p.PublicCourseTypeID==(int)EnumUnit.PublicCourseTypeIDDefaultEnum.Diary))
+                //{
+                //    PublicCourseInfo model = new PublicCourseInfo();
+                //    model.Name = "家庭日记";
+                //    model.OpenID = openID;
+                //    model.PublicCourseTypeID = (int)EnumUnit.PublicCourseTypeIDDefaultEnum.Diary;
+                //    Add(model);
+                //}
                 msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
@@ -25,7 +34,6 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult GetPublicCourseInfoByID(int id)
         {
-            LogHelper.Info("PublicCourseInfoController->GetPublicCourseInfoByID");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -37,7 +45,6 @@ namespace ClassScheduleAPI.Controllers
         }
         public ActionResult GetPublicCourseInfoByLoginNameAndPassword(string loginName, string password)
         {
-            LogHelper.Info("PublicCourseInfoController->GetPublicCourseInfoByLoginNameAndPassword");
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
@@ -51,7 +58,6 @@ namespace ClassScheduleAPI.Controllers
 
         public ActionResult Add(PublicCourseInfo model)
         {
-            LogHelper.Info("PublicCourseInfoController->Add");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();

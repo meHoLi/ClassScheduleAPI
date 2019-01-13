@@ -102,5 +102,19 @@ namespace ClassScheduleAPI.Common
             Consum = 3
         }
 
+        ///// <summary>
+        ///// 默认公共账户类别
+        ///// </summary>
+        //public enum PublicCourseTypeIDDefaultEnum
+        //{
+        //    //家庭账户
+        //    Family=-1,
+        //    //班级账户
+        //    Class=-2,
+        //    //家庭日记
+        //    Diary=-3,
+        //    //家庭课（日）程表
+        //    FamilyCurriculum = -4
+        //}
     }
 }

@@ -130,6 +130,8 @@ namespace ClassScheduleAPI.Controllers
                     else
                     {
                         irModel.TotalNumber = totalNumber - irModel.Number;
+                        //减到0就不再减了
+                        if (irModel.TotalNumber < 0) irModel.TotalNumber = 0;
                     }
                     db.IntegralRecord.Add(irModel);
                     db.SaveChanges();
