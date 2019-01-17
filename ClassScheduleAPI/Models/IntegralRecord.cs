@@ -21,5 +21,6 @@ namespace ClassScheduleAPI.Models
         public string Name { get; set; }
         public string CreateTime { get; set; }
         public Nullable<int> TotalNumber { get; set; }
+        public Nullable<int> CreateType { get; set; }
     }
 }

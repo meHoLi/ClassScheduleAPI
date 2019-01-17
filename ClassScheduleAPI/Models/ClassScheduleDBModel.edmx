@@ -148,6 +148,7 @@
           <Property Name="Name" Type="varchar" MaxLength="100" />
           <Property Name="CreateTime" Type="varchar" MaxLength="50" />
           <Property Name="TotalNumber" Type="int" />
+          <Property Name="CreateType" Type="int" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -170,6 +171,17 @@
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="OpenID" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="PublicBox">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="LoginName" Type="varchar" MaxLength="50" />
+          <Property Name="Password" Type="varchar" MaxLength="50" />
+          <Property Name="PublicBoxType" Type="int" />
+        </EntityType>
         <EntityType Name="PublicCourseInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -180,6 +192,8 @@
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
           <Property Name="LoginName" Type="varchar" MaxLength="50" />
           <Property Name="Password" Type="varchar" MaxLength="50" />
+          <Property Name="PublicBoxID" Type="int" />
+          <Property Name="DefaultType" Type="int" />
         </EntityType>
         <EntityType Name="PublicCourseType">
           <Key>
@@ -202,6 +216,7 @@
           <EntitySet Name="IntegralRecord" EntityType="Self.IntegralRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemorandumGroup" EntityType="Self.MemorandumGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PublicBox" EntityType="Self.PublicBox" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseType" EntityType="Self.PublicCourseType" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
@@ -219,11 +234,12 @@
           <EntitySet Name="DefaultCourseSetting" EntityType="ClassScheduleDBModel.DefaultCourseSetting" />
           <EntitySet Name="DefaultCourseTimeSetting" EntityType="ClassScheduleDBModel.DefaultCourseTimeSetting" />
           <EntitySet Name="GrowthDiary" EntityType="ClassScheduleDBModel.GrowthDiary" />
+          <EntitySet Name="IntegralRecord" EntityType="ClassScheduleDBModel.IntegralRecord" />
           <EntitySet Name="Memorandum" EntityType="ClassScheduleDBModel.Memorandum" />
           <EntitySet Name="MemorandumGroup" EntityType="ClassScheduleDBModel.MemorandumGroup" />
+          <EntitySet Name="PublicBox" EntityType="ClassScheduleDBModel.PublicBox" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
-          <EntitySet Name="IntegralRecord" EntityType="ClassScheduleDBModel.IntegralRecord" />
         </EntityContainer>
         <EntityType Name="Children">
           <Key>
@@ -357,6 +373,19 @@
           <Property Name="UpdateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="SharePublicCourseInfoID" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="IntegralRecord">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="CalcType" Type="Int32" />
+          <Property Name="Number" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TotalNumber" Type="Int32" />
+          <Property Name="CreateType" Type="Int32" />
+        </EntityType>
         <EntityType Name="Memorandum">
           <Key>
             <PropertyRef Name="ID" />
@@ -378,6 +407,17 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="PublicBox">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PublicBoxType" Type="Int32" />
+        </EntityType>
         <EntityType Name="PublicCourseInfo">
           <Key>
             <PropertyRef Name="ID" />
@@ -388,6 +428,8 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="LoginName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PublicBoxID" Type="Int32" />
+          <Property Name="DefaultType" Type="Int32" />
         </EntityType>
         <EntityType Name="PublicCourseType">
           <Key>
@@ -396,18 +438,6 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="IntegralRecord">
-          <Key>
-            <PropertyRef Name="ID" />
-          </Key>
-          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ChildrenID" Type="Int32" />
-          <Property Name="CalcType" Type="Int32" />
-          <Property Name="Number" Type="Int32" />
-          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
-          <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="TotalNumber" Type="Int32" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -556,6 +586,20 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="IntegralRecord">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.IntegralRecord">
+              <MappingFragment StoreEntitySet="IntegralRecord">
+                <ScalarProperty Name="CreateType" ColumnName="CreateType" />
+                <ScalarProperty Name="TotalNumber" ColumnName="TotalNumber" />
+                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="CalcType" ColumnName="CalcType" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="Memorandum">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.Memorandum">
               <MappingFragment StoreEntitySet="Memorandum">
@@ -579,9 +623,23 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="PublicBox">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.PublicBox">
+              <MappingFragment StoreEntitySet="PublicBox">
+                <ScalarProperty Name="PublicBoxType" ColumnName="PublicBoxType" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="LoginName" ColumnName="LoginName" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PublicCourseInfo">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.PublicCourseInfo">
               <MappingFragment StoreEntitySet="PublicCourseInfo">
+                <ScalarProperty Name="DefaultType" ColumnName="DefaultType" />
+                <ScalarProperty Name="PublicBoxID" ColumnName="PublicBoxID" />
                 <ScalarProperty Name="Password" ColumnName="Password" />
                 <ScalarProperty Name="LoginName" ColumnName="LoginName" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -596,19 +654,6 @@
               <MappingFragment StoreEntitySet="PublicCourseType">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="ID" ColumnName="ID" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="IntegralRecord">
-            <EntityTypeMapping TypeName="ClassScheduleDBModel.IntegralRecord">
-              <MappingFragment StoreEntitySet="IntegralRecord">
-                <ScalarProperty Name="TotalNumber" ColumnName="TotalNumber" />
-                <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Number" ColumnName="Number" />
-                <ScalarProperty Name="CalcType" ColumnName="CalcType" />
-                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

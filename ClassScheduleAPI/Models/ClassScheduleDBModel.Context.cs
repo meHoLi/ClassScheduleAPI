@@ -34,10 +34,11 @@ namespace ClassScheduleAPI.Models
         public virtual DbSet<DefaultCourseSetting> DefaultCourseSetting { get; set; }
         public virtual DbSet<DefaultCourseTimeSetting> DefaultCourseTimeSetting { get; set; }
         public virtual DbSet<GrowthDiary> GrowthDiary { get; set; }
+        public virtual DbSet<IntegralRecord> IntegralRecord { get; set; }
         public virtual DbSet<Memorandum> Memorandum { get; set; }
         public virtual DbSet<MemorandumGroup> MemorandumGroup { get; set; }
+        public virtual DbSet<PublicBox> PublicBox { get; set; }
         public virtual DbSet<PublicCourseInfo> PublicCourseInfo { get; set; }
         public virtual DbSet<PublicCourseType> PublicCourseType { get; set; }
-        public virtual DbSet<IntegralRecord> IntegralRecord { get; set; }
     }
 }

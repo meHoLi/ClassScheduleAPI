@@ -8,39 +8,37 @@ using System.Web.Mvc;
 
 namespace ClassScheduleAPI.Controllers
 {
-    public class PublicCourseInfoController : Controller
+    public class PublicBoxController : Controller
     {
-        public ActionResult Index(string openID, int publicBoxID)
+        public ActionResult Index(string openID, int publicBoxType)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var list = db.PublicCourseInfo.Where(p => p.OpenID == openID && p.PublicBoxID == publicBoxID).ToList();
-                var diary = list.Where(p => p.DefaultType == (int)EnumUnit.PublicCourseInfoDefaultEnum.Diary).ToList();
-                var familyCurriculum = list.Where(p => p.DefaultType == (int)EnumUnit.PublicCourseInfoDefaultEnum.FamilyCurriculum).ToList();
-                msg.Data = new { diary, familyCurriculum };
+                var list = db.PublicBox.Where(p => p.OpenID == openID && p.PublicBoxType == publicBoxType).ToList();
+                msg.Data = list;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
 
-        public ActionResult GetPublicCourseInfoByID(int id)
+        public ActionResult GetPublicBoxByID(int id)
         {
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var model = db.PublicCourseInfo.FirstOrDefault(p => p.ID == id);
+                var model = db.PublicBox.FirstOrDefault(p => p.ID == id);
                 msg.Status = true;
                 msg.Data = model;
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
-        public ActionResult GetPublicCourseInfoByLoginNameAndPassword(string loginName, string password)
+        public ActionResult GetPublicBoxByLoginNameAndPassword(string loginName, string password)
         {
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
-                var model = db.PublicCourseInfo.FirstOrDefault(p => p.LoginName == loginName && p.Password == password);
+                var model = db.PublicBox.FirstOrDefault(p => p.LoginName == loginName && p.Password == password);
                 if (model != null) msg.Status = true;
                 else msg.Status = false;
                 msg.Data = model;
@@ -48,32 +46,29 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-        public ActionResult Add(PublicCourseInfo model)
+        public ActionResult Add(PublicBox model)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    bool isExisted = db.PublicCourseInfo.Any(p => p.LoginName == model.LoginName);
+                    bool isExisted = db.PublicBox.Any(p => p.LoginName == model.LoginName);
                     if (isExisted)
                     {
                         msg.Status = false;
                         msg.Result = "800";
                         return Json(msg, JsonRequestBehavior.AllowGet);
                     }
-                    var entity = db.PublicCourseInfo.Add(model);
+                    var entity = db.PublicBox.Add(model);
                     db.SaveChanges();
-                    //初始化课程
-                    var defaultCourseList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Course).OrderBy(p => p.Sort).ToList();
-                    db.ChildrenStandardCourse.AddRange(defaultCourseList.Select(x => new ChildrenStandardCourse()
-                    {
-                        PublicCourseInfoID = entity.ID,
-                        CourseName = x.CourseName,
-                        Sort = x.Sort
-                    }));
-                    db.SaveChanges();
-
+                    //"家庭日记"默认增加
+                    PublicCourseInfoController pci = new PublicCourseInfoController();
+                    PublicCourseInfo pciModel = new PublicCourseInfo();
+                    pciModel.Name = "家庭日记";
+                    pciModel.OpenID = model.OpenID;
+                    pciModel.PublicBoxID = entity.ID;
+                    pci.Add(pciModel);
                     msg.Status = true;
                 }
                 catch (Exception e)
@@ -85,22 +80,21 @@ namespace ClassScheduleAPI.Controllers
             }
         }
 
-        public ActionResult Update(PublicCourseInfo model)
+        public ActionResult Update(PublicBox model)
         {
-            LogHelper.Info("PublicCourseInfoController->Update");
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    bool isExisted = db.PublicCourseInfo.Any(p => p.ID != model.ID && p.LoginName == model.LoginName);
+                    bool isExisted = db.PublicBox.Any(p => p.ID != model.ID && p.LoginName == model.LoginName);
                     if (isExisted)
                     {
                         msg.Status = false;
                         msg.Result = "700";
                         return Json(msg, JsonRequestBehavior.AllowGet);
                     }
-                    db.PublicCourseInfo.Attach(model);
+                    db.PublicBox.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
                     msg.Status = true;
@@ -120,7 +114,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    db.Database.ExecuteSqlCommand("delete PublicCourseInfo where id= " + id);
+                    db.Database.ExecuteSqlCommand("delete PublicBox where id= " + id);
                     msg.Status = true;
                 }
                 catch (Exception e)

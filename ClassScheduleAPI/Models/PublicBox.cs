@@ -12,15 +12,13 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class PublicCourseInfo
+    public partial class PublicBox
     {
         public int ID { get; set; }
-        public Nullable<int> PublicCourseTypeID { get; set; }
         public string OpenID { get; set; }
         public string Name { get; set; }
         public string LoginName { get; set; }
         public string Password { get; set; }
-        public Nullable<int> PublicBoxID { get; set; }
-        public Nullable<int> DefaultType { get; set; }
+        public Nullable<int> PublicBoxType { get; set; }
     }
 }
