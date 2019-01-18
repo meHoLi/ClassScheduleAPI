@@ -38,10 +38,15 @@ namespace ClassScheduleAPI.Controllers
             ResponseMessage msg = new ResponseMessage();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
+                var publicCourseInfoList = new List<PublicCourseInfo>();
                 var model = db.PublicBox.FirstOrDefault(p => p.LoginName == loginName && p.Password == password);
-                if (model != null) msg.Status = true;
+                if (model != null)
+                {
+                    msg.Status = true;
+                    publicCourseInfoList= db.PublicCourseInfo.Where(p => p.PublicBoxID == model.ID).ToList();
+                }
                 else msg.Status = false;
-                msg.Data = model;
+                msg.Data = new { model, publicCourseInfoList };
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
@@ -68,6 +73,7 @@ namespace ClassScheduleAPI.Controllers
                     pciModel.Name = "家庭日记";
                     pciModel.OpenID = model.OpenID;
                     pciModel.PublicBoxID = entity.ID;
+                    pciModel.DefaultType = (int)EnumUnit.PublicCourseInfoDefaultEnum.Diary;
                     pci.Add(pciModel);
                     msg.Status = true;
                 }

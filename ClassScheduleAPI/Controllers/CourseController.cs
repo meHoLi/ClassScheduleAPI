@@ -492,11 +492,13 @@ namespace ClassScheduleAPI.Controllers
         /// <param name="publicCourseInfoID"></param>
         /// <param name="childrenID"></param>
         /// <param name="isOverlap">是否覆盖，否给出提示，是删除后新增</param>
+        /// <param name="importChildrenCourse">导入课程到孩子，默认导入到孩子，false则导入到公共课程表</param>
+        /// <param name="toPublicCourseInfoID">导入到的公共课程表ID</param>
         /// <returns></returns>
 
-        public ActionResult ImportCourse(int publicCourseInfoID, int childrenID, bool isOverlap = false)
+        public ActionResult ImportCourse(int publicCourseInfoID, int childrenID, bool isOverlap = false,
+            bool importChildrenCourse= true, int toPublicCourseInfoID=0)
         {
-            LogHelper.Info("CourseController->ImportCourse");
             //新加入的课程数据集合
             List<Course> newCourseList = new List<Course>();
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
@@ -512,8 +514,10 @@ namespace ClassScheduleAPI.Controllers
                     string startTime = list.Min(p => p.StartTime);
                     string endTime = list.Max(p => p.EndTime);
                     //校验导入课程表的时间段内是否有课程冲突
-                    var clist = db.Course.Where(p => p.ChildrenID == childrenID
-                  && string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
+                    var query= db.Course.Where(x=>true);
+                    if (importChildrenCourse == true) query = query.Where(p => p.ChildrenID == childrenID);
+                    else query = query.Where(p => p.PublicCourseInfoID == publicCourseInfoID);
+                    var clist = query.Where(p => string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
                   && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                 .ToList();
 
@@ -537,7 +541,8 @@ namespace ClassScheduleAPI.Controllers
                             Course model = ObjectHelper.TransReflection<Course, Course>(item);
                             //model.PublicCourseInfoID = 0;
                             //model.PublicCourseTypeID = 0;
-                            model.ChildrenID = childrenID;
+                            if (importChildrenCourse == true) model.ChildrenID = childrenID;
+                            else model.PublicCourseInfoID = toPublicCourseInfoID;
                             model.BatchID = batchID;
                             newCourseList.Add(model);
                         }
@@ -545,7 +550,8 @@ namespace ClassScheduleAPI.Controllers
                     }
                     //db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID + " and StartTime>= '"
                     //    + startTime + "' and EndTime<='" + endTime + "'");
-                    db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID);
+                    if (importChildrenCourse == true) db.Database.ExecuteSqlCommand("delete Course where ChildrenID=" + childrenID);
+                    else db.Database.ExecuteSqlCommand("delete Course where PublicCourseInfoID=" + toPublicCourseInfoID);
                     var entity = db.Course.AddRange(newCourseList);
                     db.SaveChanges();
                     msg.Status = true;

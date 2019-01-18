@@ -55,13 +55,13 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    bool isExisted = db.PublicCourseInfo.Any(p => p.LoginName == model.LoginName);
-                    if (isExisted)
-                    {
-                        msg.Status = false;
-                        msg.Result = "800";
-                        return Json(msg, JsonRequestBehavior.AllowGet);
-                    }
+                    //bool isExisted = db.PublicCourseInfo.Any(p => p.LoginName == model.LoginName);
+                    //if (isExisted)
+                    //{
+                    //    msg.Status = false;
+                    //    msg.Result = "800";
+                    //    return Json(msg, JsonRequestBehavior.AllowGet);
+                    //}
                     var entity = db.PublicCourseInfo.Add(model);
                     db.SaveChanges();
                     //初始化课程
@@ -93,13 +93,13 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
-                    bool isExisted = db.PublicCourseInfo.Any(p => p.ID != model.ID && p.LoginName == model.LoginName);
-                    if (isExisted)
-                    {
-                        msg.Status = false;
-                        msg.Result = "700";
-                        return Json(msg, JsonRequestBehavior.AllowGet);
-                    }
+                    //bool isExisted = db.PublicCourseInfo.Any(p => p.ID != model.ID && p.LoginName == model.LoginName);
+                    //if (isExisted)
+                    //{
+                    //    msg.Status = false;
+                    //    msg.Result = "700";
+                    //    return Json(msg, JsonRequestBehavior.AllowGet);
+                    //}
                     db.PublicCourseInfo.Attach(model);
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
