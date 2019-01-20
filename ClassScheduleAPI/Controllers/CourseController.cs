@@ -489,7 +489,7 @@ namespace ClassScheduleAPI.Controllers
         /// <summary>
         /// 导入课程表
         /// </summary>
-        /// <param name="publicCourseInfoID"></param>
+        /// <param name="publicCourseInfoID">数据来自于的公共课程表</param>
         /// <param name="childrenID"></param>
         /// <param name="isOverlap">是否覆盖，否给出提示，是删除后新增</param>
         /// <param name="importChildrenCourse">导入课程到孩子，默认导入到孩子，false则导入到公共课程表</param>
@@ -516,7 +516,7 @@ namespace ClassScheduleAPI.Controllers
                     //校验导入课程表的时间段内是否有课程冲突
                     var query= db.Course.Where(x=>true);
                     if (importChildrenCourse == true) query = query.Where(p => p.ChildrenID == childrenID);
-                    else query = query.Where(p => p.PublicCourseInfoID == publicCourseInfoID);
+                    else query = query.Where(p => p.PublicCourseInfoID == toPublicCourseInfoID);
                     var clist = query.Where(p => string.Compare(p.StartTime, startTime, StringComparison.Ordinal) >= 0
                   && string.Compare(p.EndTime, endTime, StringComparison.Ordinal) <= 0)
                 .ToList();

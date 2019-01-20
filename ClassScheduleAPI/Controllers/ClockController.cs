@@ -53,11 +53,6 @@ namespace ClassScheduleAPI.Controllers
                     //打卡
                     if (executeType == EnumUnit.ClockExecuteTypeEnum.Punch)
                     {
-                        //增加积分
-                        if (model.RewardPoints > 0)
-                        {
-                            AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
-                        }
                         //已经完成打卡
                         if (model.ExecutedNum >= model.ExecuteNum)
                         {
@@ -76,19 +71,24 @@ namespace ClassScheduleAPI.Controllers
                             msg.Result = "801";
                             return Json(msg, JsonRequestBehavior.AllowGet);
                         }
-                        model.ExecutedNum--;
-                        model.IsComplated = false;
-
                         //减少积分
-                        if (model.RewardPoints > 0)
+                        if (model.ExecutedNum == model.ExecuteNum && model.RewardPoints > 0)
                         {
                             AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Reduce);
                         }
+                        model.ExecutedNum--;
+                        model.IsComplated = false;
+
                     }
                     //校验是否完成本周期打卡任务
                     if (model.ExecutedNum == model.ExecuteNum)
                     {
                         model.IsComplated = true;
+                        //增加积分
+                        if (model.RewardPoints > 0)
+                        {
+                            AddIntegralRecord(model, EnumUnit.IntegralRecordCalcTypeEnum.Plus);
+                        }
                     }
                     db.Entry(model).State = System.Data.Entity.EntityState.Modified;
                     db.SaveChanges();
@@ -118,6 +118,7 @@ namespace ClassScheduleAPI.Controllers
                     var totalNumber = db.IntegralRecord.Where(p => p.ChildrenID == model.ChildrenID).OrderByDescending(p => p.ID).FirstOrDefault()?.TotalNumber ?? 0;
                     model.IsComplated = true;
                     IntegralRecord irModel = new IntegralRecord();
+                    irModel.ClockID = model.ID;
                     irModel.CalcType = (int)calcType;
                     irModel.ChildrenID = model.ChildrenID;
                     irModel.CreateTime = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
@@ -160,6 +161,8 @@ namespace ClassScheduleAPI.Controllers
                     msg = ExecAddData(model);
                     //以前数据需要留存，今天（包含）之后的数据删除重新添加。
                     db.Database.ExecuteSqlCommand("delete Clock where BatchID= '" + oldBatchID + "' and ClockDate>='" + oldStartTime + "'");
+                    //删除相关打卡积分
+                    new IntegralRecordController().DeleteByClockID(model.ID);
                 }
                 catch (Exception e)
                 {

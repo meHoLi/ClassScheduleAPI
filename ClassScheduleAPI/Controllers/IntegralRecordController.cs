@@ -128,5 +128,23 @@ namespace ClassScheduleAPI.Controllers
                 return Json(msg, JsonRequestBehavior.AllowGet);
             }
         }
+        public ActionResult DeleteByClockID(int clockID)
+        {
+            using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
+            {
+                ResponseMessage msg = new ResponseMessage();
+                try
+                {
+                    db.Database.ExecuteSqlCommand("delete IntegralRecord where ClockID= " + clockID);
+                    msg.Status = true;
+                }
+                catch (Exception e)
+                {
+                    msg.Status = false;
+                    msg.Result = "500";
+                }
+                return Json(msg, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }

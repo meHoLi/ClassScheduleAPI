@@ -125,7 +125,7 @@
           </Key>
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OpenID" Type="varchar" MaxLength="50" />
-          <Property Name="PublicCourseInfoID" Type="int" />
+          <Property Name="PublicBoxID" Type="int" />
           <Property Name="Mood" Type="varchar" MaxLength="500" />
           <Property Name="Weather" Type="varchar" MaxLength="500" />
           <Property Name="Content" Type="varchar" MaxLength="500" />
@@ -135,7 +135,7 @@
           <Property Name="CreateTime" Type="varchar" MaxLength="50" />
           <Property Name="UpdateName" Type="varchar" MaxLength="50" />
           <Property Name="UpdateTime" Type="varchar" MaxLength="50" />
-          <Property Name="SharePublicCourseInfoID" Type="varchar" MaxLength="500" />
+          <Property Name="SharePublicBoxID" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="IntegralRecord">
           <Key>
@@ -149,6 +149,7 @@
           <Property Name="CreateTime" Type="varchar" MaxLength="50" />
           <Property Name="TotalNumber" Type="int" />
           <Property Name="CreateType" Type="int" />
+          <Property Name="ClockID" Type="int" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -170,6 +171,14 @@
           <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="50" />
           <Property Name="OpenID" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PageCommon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OpenID" Type="varchar" MaxLength="50" />
+          <Property Name="Page" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="PublicBox">
           <Key>
@@ -216,6 +225,7 @@
           <EntitySet Name="IntegralRecord" EntityType="Self.IntegralRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MemorandumGroup" EntityType="Self.MemorandumGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PageCommon" EntityType="Self.PageCommon" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicBox" EntityType="Self.PublicBox" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseInfo" EntityType="Self.PublicCourseInfo" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PublicCourseType" EntityType="Self.PublicCourseType" Schema="dbo" store:Type="Tables" />
@@ -237,6 +247,7 @@
           <EntitySet Name="IntegralRecord" EntityType="ClassScheduleDBModel.IntegralRecord" />
           <EntitySet Name="Memorandum" EntityType="ClassScheduleDBModel.Memorandum" />
           <EntitySet Name="MemorandumGroup" EntityType="ClassScheduleDBModel.MemorandumGroup" />
+          <EntitySet Name="PageCommon" EntityType="ClassScheduleDBModel.PageCommon" />
           <EntitySet Name="PublicBox" EntityType="ClassScheduleDBModel.PublicBox" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
@@ -361,7 +372,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="PublicCourseInfoID" Type="Int32" />
+          <Property Name="PublicBoxID" Type="Int32" />
           <Property Name="Mood" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Weather" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="Content" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
@@ -371,7 +382,7 @@
           <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UpdateName" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="UpdateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="SharePublicCourseInfoID" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="SharePublicBoxID" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="IntegralRecord">
           <Key>
@@ -385,6 +396,7 @@
           <Property Name="CreateTime" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="TotalNumber" Type="Int32" />
           <Property Name="CreateType" Type="Int32" />
+          <Property Name="ClockID" Type="Int32" />
         </EntityType>
         <EntityType Name="Memorandum">
           <Key>
@@ -406,6 +418,14 @@
           <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PageCommon">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Page" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="PublicBox">
           <Key>
@@ -570,7 +590,7 @@
           <EntitySetMapping Name="GrowthDiary">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.GrowthDiary">
               <MappingFragment StoreEntitySet="GrowthDiary">
-                <ScalarProperty Name="SharePublicCourseInfoID" ColumnName="SharePublicCourseInfoID" />
+                <ScalarProperty Name="SharePublicBoxID" ColumnName="SharePublicBoxID" />
                 <ScalarProperty Name="UpdateTime" ColumnName="UpdateTime" />
                 <ScalarProperty Name="UpdateName" ColumnName="UpdateName" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
@@ -580,7 +600,7 @@
                 <ScalarProperty Name="Content" ColumnName="Content" />
                 <ScalarProperty Name="Weather" ColumnName="Weather" />
                 <ScalarProperty Name="Mood" ColumnName="Mood" />
-                <ScalarProperty Name="PublicCourseInfoID" ColumnName="PublicCourseInfoID" />
+                <ScalarProperty Name="PublicBoxID" ColumnName="PublicBoxID" />
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
@@ -589,6 +609,7 @@
           <EntitySetMapping Name="IntegralRecord">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.IntegralRecord">
               <MappingFragment StoreEntitySet="IntegralRecord">
+                <ScalarProperty Name="ClockID" ColumnName="ClockID" />
                 <ScalarProperty Name="CreateType" ColumnName="CreateType" />
                 <ScalarProperty Name="TotalNumber" ColumnName="TotalNumber" />
                 <ScalarProperty Name="CreateTime" ColumnName="CreateTime" />
@@ -619,6 +640,15 @@
               <MappingFragment StoreEntitySet="MemorandumGroup">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PageCommon">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.PageCommon">
+              <MappingFragment StoreEntitySet="PageCommon">
+                <ScalarProperty Name="Page" ColumnName="Page" />
+                <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

@@ -11,17 +11,25 @@ namespace ClassScheduleAPI.Controllers
     //GrowthDiary
     public class GrowthDiaryController : Controller
     {
-        public ActionResult Index(int publicCourseInfoID,string key)
+        public ActionResult Index(string openID, int publicBoxID, string key, int entrance)
         {
             using (ClassScheduleDBEntities db = new ClassScheduleDBEntities())
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var query = db.GrowthDiary.Where(p => p.PublicCourseInfoID == publicCourseInfoID
-                || p.SharePublicCourseInfoID.Contains(publicCourseInfoID.ToString()));
-                if (!string.IsNullOrWhiteSpace(key))
+                var query = db.GrowthDiary.Where(p => true);
+                if (entrance == (int)EnumUnit.EntranceEnum.Holdall)
                 {
-                    query = query.Where(p => p.Content.Contains(key));
+                    query = db.GrowthDiary.Where(p => p.OpenID == openID);
+                }
+                else if (entrance == (int)EnumUnit.EntranceEnum.Box)
+                {
+                    query = query.Where(p => p.PublicBoxID == publicBoxID
+                     || p.SharePublicBoxID.Contains(publicBoxID.ToString()));
+                    if (!string.IsNullOrWhiteSpace(key))
+                    {
+                        query = query.Where(p => p.Content.Contains(key));
+                    }
                 }
                 msg.Data = query.ToList();
                 return Json(msg, JsonRequestBehavior.AllowGet);

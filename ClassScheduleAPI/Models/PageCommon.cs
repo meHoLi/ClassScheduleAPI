@@ -12,20 +12,10 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class GrowthDiary
+    public partial class PageCommon
     {
         public int ID { get; set; }
         public string OpenID { get; set; }
-        public Nullable<int> PublicBoxID { get; set; }
-        public string Mood { get; set; }
-        public string Weather { get; set; }
-        public string Content { get; set; }
-        public string Img { get; set; }
-        public Nullable<bool> IsPublic { get; set; }
-        public string CreateName { get; set; }
-        public string CreateTime { get; set; }
-        public string UpdateName { get; set; }
-        public string UpdateTime { get; set; }
-        public string SharePublicBoxID { get; set; }
+        public string Page { get; set; }
     }
 }

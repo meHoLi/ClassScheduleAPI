@@ -123,5 +123,18 @@ namespace ClassScheduleAPI.Common
             //课程表
             FamilyCurriculum = 2
         }
+
+        /// <summary>
+        /// 成长日记入口
+        /// </summary>
+        public enum EntranceEnum
+        {
+            /// <summary>
+            /// 百宝箱进入的
+            /// </summary>
+            Holdall = 1,
+            //共享空间进入
+            Box = 2
+        }
     }
 }
