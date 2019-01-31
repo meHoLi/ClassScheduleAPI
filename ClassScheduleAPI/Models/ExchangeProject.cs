@@ -12,13 +12,12 @@ namespace ClassScheduleAPI.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class DefaultCourse
+    public partial class ExchangeProject
     {
         public int ID { get; set; }
-        public string CourseName { get; set; }
-        public Nullable<int> Sort { get; set; }
-        public string AppClass { get; set; }
-        public Nullable<int> Type { get; set; }
+        public Nullable<int> ChildrenID { get; set; }
+        public string Name { get; set; }
         public Nullable<int> Value { get; set; }
+        public Nullable<int> Sort { get; set; }
     }
 }

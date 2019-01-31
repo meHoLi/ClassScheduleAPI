@@ -182,6 +182,7 @@
     <Compile Include="Common\WeChatAppDecrypt.cs" />
     <Compile Include="Controllers\ChildrenController.cs" />
     <Compile Include="Controllers\ClockController.cs" />
+    <Compile Include="Controllers\ExchangeProjectController.cs" />
     <Compile Include="Controllers\PageCommonController.cs" />
     <Compile Include="Controllers\IntegralRecordController.cs" />
     <Compile Include="Controllers\DefaultCourseTimeSettingController.cs" />
@@ -242,6 +243,9 @@
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DefaultCourseTimeSetting.cs">
+      <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\ExchangeProject.cs">
       <DependentUpon>ClassScheduleDBModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\GrowthDiary.cs">

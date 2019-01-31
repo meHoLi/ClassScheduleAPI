@@ -21,6 +21,7 @@
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicBox" Width="1.5" PointX="10.75" PointY="0.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseInfo" Width="1.5" PointX="10.75" PointY="3.75" />
         <EntityTypeShape EntityType="ClassScheduleDBModel.PublicCourseType" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="ClassScheduleDBModel.ExchangeProject" Width="1.5" PointX="5.375" PointY="11.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

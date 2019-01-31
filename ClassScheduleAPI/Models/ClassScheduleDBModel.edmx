@@ -92,6 +92,7 @@
           <Property Name="Sort" Type="int" />
           <Property Name="AppClass" Type="varchar" MaxLength="50" />
           <Property Name="Type" Type="int" />
+          <Property Name="Value" Type="int" />
         </EntityType>
         <EntityType Name="DefaultCourseSetting">
           <Key>
@@ -118,6 +119,16 @@
           <Property Name="EndTime" Type="varchar" MaxLength="50" />
           <Property Name="CourseIndex" Type="int" />
           <Property Name="PublicCourseInfoID" Type="int" />
+        </EntityType>
+        <EntityType Name="ExchangeProject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ChildrenID" Type="int" />
+          <Property Name="Name" Type="varchar" MaxLength="50" />
+          <Property Name="Value" Type="int" />
+          <Property Name="Sort" Type="int" />
         </EntityType>
         <EntityType Name="GrowthDiary">
           <Key>
@@ -221,6 +232,7 @@
           <EntitySet Name="DefaultCourse" EntityType="Self.DefaultCourse" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefaultCourseSetting" EntityType="Self.DefaultCourseSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DefaultCourseTimeSetting" EntityType="Self.DefaultCourseTimeSetting" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ExchangeProject" EntityType="Self.ExchangeProject" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="GrowthDiary" EntityType="Self.GrowthDiary" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="IntegralRecord" EntityType="Self.IntegralRecord" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Memorandum" EntityType="Self.Memorandum" Schema="dbo" store:Type="Tables" />
@@ -251,6 +263,7 @@
           <EntitySet Name="PublicBox" EntityType="ClassScheduleDBModel.PublicBox" />
           <EntitySet Name="PublicCourseInfo" EntityType="ClassScheduleDBModel.PublicCourseInfo" />
           <EntitySet Name="PublicCourseType" EntityType="ClassScheduleDBModel.PublicCourseType" />
+          <EntitySet Name="ExchangeProject" EntityType="ClassScheduleDBModel.ExchangeProject" />
         </EntityContainer>
         <EntityType Name="Children">
           <Key>
@@ -339,6 +352,7 @@
           <Property Name="Sort" Type="Int32" />
           <Property Name="AppClass" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Type" Type="Int32" />
+          <Property Name="Value" Type="Int32" />
         </EntityType>
         <EntityType Name="DefaultCourseSetting">
           <Key>
@@ -459,6 +473,16 @@
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="OpenID" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="ExchangeProject">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ChildrenID" Type="Int32" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Value" Type="Int32" />
+          <Property Name="Sort" Type="Int32" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -551,6 +575,7 @@
           <EntitySetMapping Name="DefaultCourse">
             <EntityTypeMapping TypeName="ClassScheduleDBModel.DefaultCourse">
               <MappingFragment StoreEntitySet="DefaultCourse">
+                <ScalarProperty Name="Value" ColumnName="Value" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
                 <ScalarProperty Name="AppClass" ColumnName="AppClass" />
                 <ScalarProperty Name="Sort" ColumnName="Sort" />
@@ -684,6 +709,17 @@
               <MappingFragment StoreEntitySet="PublicCourseType">
                 <ScalarProperty Name="OpenID" ColumnName="OpenID" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExchangeProject">
+            <EntityTypeMapping TypeName="ClassScheduleDBModel.ExchangeProject">
+              <MappingFragment StoreEntitySet="ExchangeProject">
+                <ScalarProperty Name="Sort" ColumnName="Sort" />
+                <ScalarProperty Name="Value" ColumnName="Value" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ChildrenID" ColumnName="ChildrenID" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>

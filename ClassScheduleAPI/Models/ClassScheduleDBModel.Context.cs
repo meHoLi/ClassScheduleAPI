@@ -41,5 +41,6 @@ namespace ClassScheduleAPI.Models
         public virtual DbSet<PublicBox> PublicBox { get; set; }
         public virtual DbSet<PublicCourseInfo> PublicCourseInfo { get; set; }
         public virtual DbSet<PublicCourseType> PublicCourseType { get; set; }
+        public virtual DbSet<ExchangeProject> ExchangeProject { get; set; }
     }
 }

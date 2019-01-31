@@ -86,6 +86,15 @@ namespace ClassScheduleAPI.Controllers
                                 Type = x.Type
                             }));
                             db.SaveChanges();
+                            //初始化积分兑换项目
+                            var exchangeProjectList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Exchange).OrderBy(p => p.Sort).ToList();
+                            db.ExchangeProject.AddRange(exchangeProjectList.Select(x => new ExchangeProject()
+                            {
+                                ChildrenID = entity.ID,
+                                Name = x.CourseName,
+                                Sort = x.Sort
+                            }));
+                            db.SaveChanges();
                         }
                         msg.Status = true;
                         scope.Commit();
@@ -130,6 +139,15 @@ namespace ClassScheduleAPI.Controllers
                             Name = x.CourseName,
                             Sort = x.Sort,
                             Type = x.Type
+                        }));
+                        db.SaveChanges();
+                        //初始化积分兑换项目
+                        var exchangeProjectList = db.DefaultCourse.Where(p => p.AppClass == ApplicationConstant.Exchange).OrderBy(p => p.Sort).ToList();
+                        db.ExchangeProject.AddRange(exchangeProjectList.Select(x => new ExchangeProject()
+                        {
+                            ChildrenID = entity.ID,
+                            Name = x.CourseName,
+                            Sort = x.Sort
                         }));
                         db.SaveChanges();
                         scope.Commit();

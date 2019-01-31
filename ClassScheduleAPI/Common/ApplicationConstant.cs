@@ -23,6 +23,11 @@ namespace ClassScheduleAPI.Common
         public const string Clock = "Clock";
 
         /// <summary>
+        /// 积分兑换
+        /// </summary>
+        public const string Exchange = "Exchange";
+
+        /// <summary>
         /// 时间后缀，用于拼接结束时间
         /// </summary>
         public const string EndTimeSuffix = " 23:59:59";
