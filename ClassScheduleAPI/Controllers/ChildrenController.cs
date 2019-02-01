@@ -92,7 +92,8 @@ namespace ClassScheduleAPI.Controllers
                             {
                                 ChildrenID = entity.ID,
                                 Name = x.CourseName,
-                                Sort = x.Sort
+                                Sort = x.Sort,
+                                Value=x.Value
                             }));
                             db.SaveChanges();
                         }
@@ -147,7 +148,8 @@ namespace ClassScheduleAPI.Controllers
                         {
                             ChildrenID = entity.ID,
                             Name = x.CourseName,
-                            Sort = x.Sort
+                            Sort = x.Sort,
+                            Value=x.Value
                         }));
                         db.SaveChanges();
                         scope.Commit();
