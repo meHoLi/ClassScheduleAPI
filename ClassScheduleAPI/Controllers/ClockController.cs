@@ -287,6 +287,7 @@ namespace ClassScheduleAPI.Controllers
                 ResponseMessage msg = new ResponseMessage();
                 try
                 {
+                    model.BatchID = Guid.NewGuid();
                     model.Frequency = ((int)EnumUnit.ClockFrequencyEnum.TodayAdd).ToString();
                     model.ClockDate = DateTime.Now.ToString(FormatDateTime.ShortDateTimeStr);
                     model.KeepStartTime = model.ClockDate;
