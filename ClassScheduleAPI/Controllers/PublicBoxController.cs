@@ -70,8 +70,8 @@ namespace ClassScheduleAPI.Controllers
                     //"家庭日记"默认增加
                     PublicCourseInfoController pci = new PublicCourseInfoController();
                     PublicCourseInfo pciModel = new PublicCourseInfo();
-                    if (model.PublicBoxType == (int)EnumUnit.PublicBoxTypeEnum.Class) pciModel.Name = "家庭日记";
-                    else pciModel.Name = "班级日记";
+                    if (model.PublicBoxType == (int)EnumUnit.PublicBoxTypeEnum.Class) pciModel.Name = "班级日记";
+                    else pciModel.Name = "家庭日记";
                     pciModel.OpenID = model.OpenID;
                     pciModel.PublicBoxID = entity.ID;
                     pciModel.DefaultType = (int)EnumUnit.PublicCourseInfoDefaultEnum.Diary;
