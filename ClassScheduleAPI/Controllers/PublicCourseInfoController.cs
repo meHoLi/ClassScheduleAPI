@@ -16,7 +16,8 @@ namespace ClassScheduleAPI.Controllers
             {
                 ResponseMessage msg = new ResponseMessage();
                 msg.Status = true;
-                var list = db.PublicCourseInfo.Where(p => p.OpenID == openID && p.PublicBoxID == publicBoxID).ToList();
+                //var list = db.PublicCourseInfo.Where(p => p.OpenID == openID && p.PublicBoxID == publicBoxID).ToList();
+                var list = db.PublicCourseInfo.Where(p => p.PublicBoxID == publicBoxID).ToList();
                 var diary = list.Where(p => p.DefaultType == (int)EnumUnit.PublicCourseInfoDefaultEnum.Diary).ToList();
                 var familyCurriculum = list.Where(p => p.DefaultType == (int)EnumUnit.PublicCourseInfoDefaultEnum.FamilyCurriculum).ToList();
                 msg.Data = new { diary, familyCurriculum };

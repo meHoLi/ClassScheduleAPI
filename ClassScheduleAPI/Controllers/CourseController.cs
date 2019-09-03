@@ -657,6 +657,7 @@ namespace ClassScheduleAPI.Controllers
                         //model.SchoolName = item.SchoolName;
                         //model.StartTime = item.StartTime;
                         //model.Teacher = item.Teacher;
+                        if (string.IsNullOrWhiteSpace(model.SchoolName)) model.SchoolName = string.Empty;
                         cbList.Add(model);
                     }
                     msg.Data = cbList;
